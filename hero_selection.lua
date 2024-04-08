@@ -45,10 +45,10 @@ end
 --[[ EDIT BY: Manslaughter ]]--
 
 local SafeLanePool = PRoles["SafeLane"]
-local MidLanePool = PRoles["MidLane"]
-local OffLanePool = PRoles["OffLane"]
-local SoftSupportPool = PRoles["SoftSupport"]
-local HardSupportPool = PRoles["HardSupport"]
+local MidLanePool = PRoles["SafeLane"]
+local OffLanePool = PRoles["SafeLane"]
+local SoftSupportPool = PRoles["SafeLane"]
+local HardSupportPool = PRoles["SafeLane"]
 
 local pools = {SafeLanePool, MidLanePool, OffLanePool, SoftSupportPool, HardSupportPool}
 
@@ -60,7 +60,7 @@ local delaytime = RandomInt(7, 14)
 
 function Think()
 	local playerIDs = GetTeamPlayers(GetTeam())
-	
+
 
 	if GetGameMode() == GAMEMODE_AP then
 		local TableIDs = GetTeamPlayers(GetTeam())
