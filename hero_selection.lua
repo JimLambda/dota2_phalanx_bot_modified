@@ -60,6 +60,7 @@ local delaytime = RandomInt(7, 14)
 
 function Think()
 	local playerIDs = GetTeamPlayers(GetTeam())
+	
 
 	if GetGameMode() == GAMEMODE_AP then
 		local TableIDs = GetTeamPlayers(GetTeam())
