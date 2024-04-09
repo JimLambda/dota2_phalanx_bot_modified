@@ -70,32 +70,40 @@ function X.GetHeroItemBuild()
 
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
 		ItemBuild = { 
-		"item_wraith_band",
-		"item_magic_wand",
-		"item_power_treads",
+		-- "item_wraith_band",
+		-- "item_magic_wand",
+		-- "item_power_treads",
 	
-		"item_hand_of_midas",
+		-- "item_hand_of_midas",
+		"item_boots",
 		"item_dragon_lance",
 		"item_hurricane_pike",
+		"item_travel_boots",
 		"item_black_king_bar",
 		"item_butterfly",
 		"item_skadi",
 		"item_satanic",
+		"item_travel_boots_2",
+		"item_ultimate_scepter_2",
 		}
 	end
 	
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
 		ItemBuild = { 
-		"item_wraith_band",
-		"item_magic_wand",
-		"item_power_treads",
+		-- "item_wraith_band",
+		-- "item_magic_wand",
+		-- "item_power_treads",
 	
+		"item_boots",
 		"item_dragon_lance",
+		"item_travel_boots",
 		"item_lesser_crit",
 		"item_hurricane_pike",
 		"item_black_king_bar",
 		"item_greater_crit",
 		"item_satanic",
+		"item_travel_boots_2",
+		"item_ultimate_scepter_2",
 		}
 	end
 	

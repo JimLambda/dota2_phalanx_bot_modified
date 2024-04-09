@@ -69,19 +69,22 @@ function X.GetHeroItemBuild()
 		local CoreItem = PRoles.GetAOEItem()
 		
 		ItemBuild = { 
-		"item_quelling_blade",
+		-- "item_quelling_blade",
 	
-		"item_bracer",
-		"item_magic_wand",
-		"item_power_treads",
-		"item_hand_of_midas",
+		-- "item_bracer",
+		-- "item_magic_wand",
+		-- "item_power_treads",
+		-- "item_hand_of_midas",
 		
+		"item_boots",
 		CoreItem,
+		"item_travel_boots",
 		"item_radiance",
 		"item_octarine_core",
 		"item_assault",
 		"item_black_king_bar",
 		"item_ultimate_scepter_2",
+		"item_travel_boots_2",
 		}
 	end
 	

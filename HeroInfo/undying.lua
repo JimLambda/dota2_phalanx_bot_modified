@@ -67,16 +67,20 @@ function X.GetHeroItemBuild()
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
 		ItemBuild = { 
 		--"item_null_talisman",
-		"item_magic_wand",
-		"item_arcane_boots",
-		"item_holy_locket",
+		-- "item_magic_wand",
+		-- "item_arcane_boots",
+		-- "item_holy_locket",
 		
+		"item_boots",
 		"item_urn_of_shadows",
 		"item_glimmer_cape",
+		"item_travel_boots",
 		"item_spirit_vessel",
 		"item_lotus_orb",
 		"item_sheepstick",
-		"item_guardian_greaves",
+		-- "item_guardian_greaves",
+		"item_travel_boots_2",
+		"item_ultimate_scepter_2",
 		}
 	end
 	

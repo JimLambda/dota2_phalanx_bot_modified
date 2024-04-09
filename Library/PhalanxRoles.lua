@@ -101,7 +101,7 @@ PRoles["SoftSupport"] = {
 	"npc_dota_hero_nyx_assassin",
 	-- "npc_dota_hero_shadow_demon",
 	"npc_dota_hero_oracle",
-	"npc_dota_hero_tusk",
+	-- "npc_dota_hero_tusk",
 	"npc_dota_hero_winter_wyvern",
 }
 

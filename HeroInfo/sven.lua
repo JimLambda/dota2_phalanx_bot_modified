@@ -73,20 +73,23 @@ function X.GetHeroItemBuild()
 
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
 		ItemBuild = { 
-		"item_quelling_blade",
+		-- "item_quelling_blade",
 	
-		"item_bracer",
-		"item_magic_wand",
-		"item_power_treads",
+		-- "item_bracer",
+		-- "item_magic_wand",
+		-- "item_power_treads",
 	
-		"item_hand_of_midas",
+		-- "item_hand_of_midas",
+		"item_boots",
 		"item_echo_sabre",
 		"item_blink",
 		"item_black_king_bar",
 		"item_harpoon",
+		"item_travel_boots",
 		"item_greater_crit",
 		"item_swift_blink",
 		"item_ultimate_scepter_2",
+		"item_travel_boots_2",
 		}
 	end
 	
