@@ -71,9 +71,9 @@ function PDefend.GetDefendDesire(bot, lane)
 		-- if NotNilOrDead(LaneTierOne) then
 		-- 	return BOT_MODE_DESIRE_VERYHIGH
 		-- end		
-		if NotNilOrDead(LaneTierOne) and ShouldGoDefend(bot, lane) then
+		if NotNilOrDead(LaneTierOne) then
 			return Clamp(DefendDesire * 4, 0.0, 0.9)
-		elseif NotNilOrDead(LaneTierTwo) and ShouldGoDefend(bot, lane) then
+		elseif NotNilOrDead(LaneTierTwo) then
 			return Clamp((DefendDesire * 8), 0.0, 0.9)
 		end
 	else
