@@ -121,6 +121,8 @@ function ShouldGoDefend(bot, lane)
 		-- end
 	elseif #Enemies == 4 then
 		return true
+	elseif #Enemies >= 5 then
+		return true
 	end
 	
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
