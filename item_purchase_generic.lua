@@ -90,19 +90,19 @@ local function GeneralPurchase()
 	local cost = itemCost;
 	
 	--Save the gold for buyback whenever a tier 3 tower damaged or destroyed
-	if t3AlreadyDamaged == false and DotaTime() > t3Check + 1.0 then
-		for i=2, 8, 3 do
-			local tower = GetTower(GetTeam(), i);
-			if tower == nil or tower:GetHealth()/tower:GetMaxHealth() < 0.5 then
-				t3AlreadyDamaged = true;
-				break;
-			end
-		end
-		t3Check = DotaTime();
-	elseif t3AlreadyDamaged == true and bot:GetBuybackCooldown() <= 30 then
-		cost = itemCost + bot:GetBuybackCost() + 100; 
-		--( 200 + bot:GetNetWorth()/12 );
-	end
+	-- if t3AlreadyDamaged == false and DotaTime() > t3Check + 1.0 then
+	-- 	for i=2, 8, 3 do
+	-- 		local tower = GetTower(GetTeam(), i);
+	-- 		if tower == nil or tower:GetHealth()/tower:GetMaxHealth() < 0.5 then
+	-- 			t3AlreadyDamaged = true;
+	-- 			break;
+	-- 		end
+	-- 	end
+	-- 	t3Check = DotaTime();
+	-- elseif t3AlreadyDamaged == true and bot:GetBuybackCooldown() <= 30 then
+	-- 	cost = itemCost + bot:GetBuybackCost() + 100; 
+	-- 	--( 200 + bot:GetNetWorth()/12 );
+	-- end
 	
 	--buy the item if we have the gold
 	if ( bot:GetGold() >= cost ) then
