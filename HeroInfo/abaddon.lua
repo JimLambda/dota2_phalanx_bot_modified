@@ -64,7 +64,7 @@ end
 function X.GetHeroItemBuild()
 	local ItemBuild
 
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
+	if PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
 		ItemBuild = { 
 		--"item_null_talisman",
 		-- "item_magic_wand",

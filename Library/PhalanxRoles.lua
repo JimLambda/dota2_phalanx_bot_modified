@@ -157,54 +157,54 @@ PRoles["SummonHeroes"] = {
 }
 
 function PRoles.GetPRole(bot, hero)
-	return "SafeLane"
-	-- for i = 1, #PRoles["SafeLane"] do
-	-- 	if PRoles['SafeLane'][i] == hero then
-	-- 		if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_BOT then
-	-- 			return "SafeLane"
-	-- 		elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_TOP then
-	-- 			return "SafeLane"
-	-- 		end
-	-- 	end	
-	-- end
+	-- return "SafeLane"
+	for i = 1, #PRoles["SafeLane"] do
+		if PRoles['SafeLane'][i] == hero then
+			if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_BOT then
+				return "SafeLane"
+			elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_TOP then
+				return "SafeLane"
+			end
+		end	
+	end
 	
-	-- for i = 1, #PRoles["MidLane"] do
-	-- 	if PRoles['MidLane'][i] == hero and bot:GetAssignedLane() == LANE_MID then
-	-- 		return "MidLane"
-	-- 	end	
-	-- end
+	for i = 1, #PRoles["MidLane"] do
+		if PRoles['MidLane'][i] == hero and bot:GetAssignedLane() == LANE_MID then
+			return "MidLane"
+		end	
+	end
 	
-	-- for i = 1, #PRoles["OffLane"] do
-	-- 	if PRoles['OffLane'][i] == hero then
-	-- 		if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP then
-	-- 			return "OffLane"
-	-- 		elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT then
-	-- 			return "OffLane"
-	-- 		end
-	-- 	end
-	-- end
+	for i = 1, #PRoles["OffLane"] do
+		if PRoles['OffLane'][i] == hero then
+			if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP then
+				return "OffLane"
+			elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT then
+				return "OffLane"
+			end
+		end
+	end
 	
-	-- for i = 1, #PRoles["SoftSupport"] do
-	-- 	if PRoles['SoftSupport'][i] == hero then
-	-- 		return "HardSupport"
-	-- 		-- if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP then
-	-- 		-- 	return "SoftSupport"
-	-- 		-- elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT then
-	-- 		-- 	return "SoftSupport"
-	-- 		-- end
-	-- 	end
-	-- end
+	for i = 1, #PRoles["SoftSupport"] do
+		if PRoles['SoftSupport'][i] == hero then
+			return "SoftSupport"
+			-- if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP then
+			-- 	return "SoftSupport"
+			-- elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT then
+			-- 	return "SoftSupport"
+			-- end
+		end
+	end
 	
-	-- for i = 1, #PRoles['HardSupport'] do
-	-- 	if PRoles['HardSupport'][i] == hero then
-	-- 		return "HardSupport"
-	-- 		-- if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_BOT then
-	-- 		-- 	return "HardSupport"
-	-- 		-- elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_TOP then
-	-- 		-- 	return "HardSupport"
-	-- 		-- end
-	-- 	end
-	-- end
+	for i = 1, #PRoles['HardSupport'] do
+		if PRoles['HardSupport'][i] == hero then
+			return "SoftSupport"
+			-- if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_BOT then
+			-- 	return "HardSupport"
+			-- elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_TOP then
+			-- 	return "HardSupport"
+			-- end
+		end
+	end
 end
 
 function PRoles.GetAOEItem()

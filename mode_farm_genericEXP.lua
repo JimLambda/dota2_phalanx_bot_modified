@@ -322,15 +322,16 @@ function GetGPM()
 end
 
 function GetGPMGoal()
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
-		return 450
-	end
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
-		return 400
-	end
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
-		return 350
-	end
+	return 450
+	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
+	-- 	return 450
+	-- end
+	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
+	-- 	return 400
+	-- end
+	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
+	-- 	return 350
+	-- end
 end
 
 function IsCoreHero(Unit)

@@ -356,10 +356,15 @@ function GetGPMGoal()
 		return 450
 	end
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
-		return 400
+		-- return 400
+		return 450
 	end
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
-		return 350
+		-- return 350
+		return 450
+	end
+	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
+		return 450
 	end
 end
 
