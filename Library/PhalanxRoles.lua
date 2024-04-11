@@ -21,7 +21,7 @@ PRoles["SafeLane"] = {
 	-- "npc_dota_hero_slark",
 	-- "npc_dota_hero_spectre",
 	-- "npc_dota_hero_razor",
-	-- "npc_dota_hero_alchemist",
+	"npc_dota_hero_alchemist",
 	-- "npc_dota_hero_sniper",
 	-- "npc_dota_hero_templar_assassin",
 	-- "npc_dota_hero_troll_warlord",
