@@ -48,7 +48,7 @@ local SafeLanePool = PRoles["SafeLane"]
 local MidLanePool = PRoles["MidLane"]
 local OffLanePool = PRoles["OffLane"]
 local SoftSupportPool = PRoles["HardSupport"]
-local HardSupportPool = PRoles["SoftSupport"]
+local HardSupportPool = PRoles["HardSupport"]
 
 local pools = {SafeLanePool, MidLanePool, OffLanePool, SoftSupportPool, HardSupportPool}
 

@@ -186,21 +186,23 @@ function PRoles.GetPRole(bot, hero)
 	
 	for i = 1, #PRoles["SoftSupport"] do
 		if PRoles['SoftSupport'][i] == hero then
-			if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP then
-				return "SoftSupport"
-			elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT then
-				return "SoftSupport"
-			end
+			return "HardSupport"
+			-- if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_TOP then
+			-- 	return "SoftSupport"
+			-- elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_BOT then
+			-- 	return "SoftSupport"
+			-- end
 		end
 	end
 	
 	for i = 1, #PRoles['HardSupport'] do
 		if PRoles['HardSupport'][i] == hero then
-			if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_BOT then
-				return "HardSupport"
-			elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_TOP then
-				return "HardSupport"
-			end
+			return "HardSupport"
+			-- if bot:GetTeam() == TEAM_RADIANT and bot:GetAssignedLane() == LANE_BOT then
+			-- 	return "HardSupport"
+			-- elseif bot:GetTeam() == TEAM_DIRE and bot:GetAssignedLane() == LANE_TOP then
+			-- 	return "HardSupport"
+			-- end
 		end
 	end
 end
