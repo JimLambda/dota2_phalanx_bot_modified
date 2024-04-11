@@ -252,9 +252,10 @@ function AbilityLevelUpThink()
 		end
 	end
 	
-	if not HumanOnTeam then
-		UseGlyph()
-	end
+	-- if not HumanOnTeam then
+	-- 	UseGlyph()
+	-- end
+	UseGlyph()
 
 	local BotLevel = bot:GetLevel()
 	local SkillPoints = HeroInfoFile.GetHeroLevelPoints()
