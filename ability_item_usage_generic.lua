@@ -294,7 +294,7 @@ function UseGlyph()
 	for _,t in pairs(T1)
 	do
 		local tower = GetTower(GetTeam(), t);
-		if  tower ~= nil and tower:GetHealth() > 0 and tower:GetHealth()/tower:GetMaxHealth() < 0.75 and tower:GetAttackTarget() ~=  nil
+		if  tower ~= nil and tower:GetHealth() > 0 and tower:GetHealth()/tower:GetMaxHealth() < 0.80 and tower:GetAttackTarget() ~=  nil
 		then
 			bot:ActionImmediate_Glyph( )
 			return
