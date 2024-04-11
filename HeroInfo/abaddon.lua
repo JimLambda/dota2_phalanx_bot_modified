@@ -71,17 +71,27 @@ function X.GetHeroItemBuild()
 		-- "item_arcane_boots",
 		-- "item_holy_locket",
 		
-		"item_boots",
-		"item_urn_of_shadows",
-		"item_glimmer_cape",
-		"item_travel_boots",
-		"item_spirit_vessel",
-		"item_ultimate_scepter",
+		-- "item_boots",
+		-- "item_urn_of_shadows",
+		-- "item_glimmer_cape",
+		-- "item_travel_boots",
+		-- "item_spirit_vessel",
+		-- "item_ultimate_scepter",
+		-- "item_lotus_orb",
+		-- "item_ultimate_scepter_2",
+		-- "item_vladmir",
+		-- -- "item_guardian_greaves",
+		-- "item_travel_boots_2",
+		
+		
 		"item_lotus_orb",
-		"item_ultimate_scepter_2",
-		"item_vladmir",
-		-- "item_guardian_greaves",
+		"item_pipe",
+		"item_crimson_guard",
+		"item_shivas_guard",
+		"item_assault",
 		"item_travel_boots_2",
+		"item_ultimate_scepter_2",
+		"item_moon_shard",
 		}
 	end
 	
