@@ -304,7 +304,8 @@ function ItemPurchaseThink()
 	if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport") then
 		if GetItemStockCount( "item_ward_observer" ) > 0
 		and bot:GetGold() >= GetItemCost( "item_ward_observer" ) 
-		and PItems.GetItemCharges(bot, "item_ward_observer") < 2
+		-- and PItems.GetItemCharges(bot, "item_ward_observer") < 2
+		and PItems.GetItemCharges(bot, "item_ward_observer") < 999
 		and bot:GetCourierValue() == 0 
 		and (DotaTime() < 0 or DotaTime() >= (10 * 60)) then
 			bot:ActionImmediate_PurchaseItem("item_ward_observer")
