@@ -322,7 +322,7 @@ function GetGPM()
 end
 
 function GetGPMGoal()
-	return 0
+	return 450
 	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
 	-- 	return 450
 	-- end

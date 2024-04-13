@@ -75,16 +75,25 @@ function X.GetHeroItemBuild()
 		-- "item_power_treads",
 	
 		-- "item_hand_of_midas",
-		"item_boots",
-		"item_dragon_lance",
+		-- "item_boots",
+		-- "item_dragon_lance",
+		-- "item_hurricane_pike",
+		-- "item_travel_boots",
+		-- "item_black_king_bar",
+		-- "item_butterfly",
+		-- "item_skadi",
+		-- "item_satanic",
+		-- "item_travel_boots_2",
+		-- "item_ultimate_scepter_2",
+		
+		"item_mjollnir",
 		"item_hurricane_pike",
-		"item_travel_boots",
-		"item_black_king_bar",
-		"item_butterfly",
+		"item_desolator",
 		"item_skadi",
 		"item_satanic",
 		"item_travel_boots_2",
 		"item_ultimate_scepter_2",
+		"item_moon_shard",
 		}
 	end
 	

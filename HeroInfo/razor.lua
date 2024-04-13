@@ -75,15 +75,24 @@ function X.GetHeroItemBuild()
 		-- "item_power_treads",
 		-- "item_falcon_blade",
 
-		"item_boots",
-		CoreItem,
-		"item_travel_boots",
+		-- "item_boots",
+		-- CoreItem,
+		-- "item_travel_boots",
+		-- "item_manta",
+		-- "item_black_king_bar",
+		-- "item_heavens_halberd",
+		-- "item_assault",
+		-- "item_ultimate_scepter_2",
+		-- "item_travel_boots_2",
+		
 		"item_manta",
-		"item_black_king_bar",
-		"item_heavens_halberd",
-		"item_assault",
-		"item_ultimate_scepter_2",
+		"item_disperser",
+		"item_hurricane_pike",
+		"item_butterfly",
+		"item_satanic",
 		"item_travel_boots_2",
+		"item_ultimate_scepter_2",
+		"item_moon_shard",
 		}
 	end
 	
@@ -96,15 +105,18 @@ function X.GetHeroItemBuild()
 		-- "item_power_treads",
 		
 		-- "item_falcon_blade",
-		"item_boots",
-		"item_black_king_bar",
-		"item_travel_boots",
-		"item_satanic",
-		"item_butterfly",
-		"item_shivas_guard",
-		"item_refresher",
-		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
+		-- "item_boots",
+		-- "item_black_king_bar",
+		-- "item_travel_boots",
+		-- "item_satanic",
+		-- "item_butterfly",
+		-- "item_shivas_guard",
+		-- "item_refresher",
+		-- "item_ultimate_scepter_2",
+		-- "item_travel_boots_2",
+
+
+		"",
 		}
 	end
 	
