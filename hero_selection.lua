@@ -56,7 +56,7 @@ local PickableHeroes = {}
 local HeroesToAvoid = {}
 
 local lastpicktime = -70
-local delaytime = RandomInt(7, 14)
+local delaytime = RandomInt(0, 1)
 
 function Think()
 	local playerIDs = GetTeamPlayers(GetTeam())
@@ -123,7 +123,7 @@ function Think()
 			
 			SelectHero(TableIDs[RandomID], PickableHeroes[RandomInt(1, #PickableHeroes)])
 			lastpicktime = DotaTime()
-			delaytime = RandomInt(5, 14)
+			delaytime = RandomInt(0, 1)
 		end
 	elseif GetGameMode() == GAMEMODE_CM then
 		
