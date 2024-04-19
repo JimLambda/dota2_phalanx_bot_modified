@@ -56,7 +56,7 @@ local PickableHeroes = {}
 local HeroesToAvoid = {}
 
 -- local lastpicktime = -70
-local lastpicktime = 0
+local lastpicktime = -90
 -- local delaytime = RandomInt(7, 14)
 local delaytime = RandomInt(0, 1)
 
