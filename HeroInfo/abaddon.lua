@@ -84,7 +84,6 @@ function X.GetHeroItemBuild()
 		-- "item_travel_boots_2",
 		
 		
-		"item_hand_of_midas",
 		"item_lotus_orb",
 		"item_pipe",
 		"item_crimson_guard",
