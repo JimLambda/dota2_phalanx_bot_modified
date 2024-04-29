@@ -107,8 +107,8 @@ function X.GetHeroItemBuild()
 		
 		"item_lotus_orb",
 		"item_pipe",
-		"item_shivas_guard",
 		"item_heart",
+		"item_shivas_guard",
 		"item_bloodstone",
 		"item_travel_boots_2",
 		"item_ultimate_scepter_2",
