@@ -89,6 +89,7 @@ function X.GetHeroItemBuild()
 		-- "item_travel_boots_2",
 		-- "item_ultimate_scepter_2",
 		
+		"item_boots",
 		"item_shivas_guard",
 		"item_heart",
 		"item_sphere",

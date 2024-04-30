@@ -84,6 +84,7 @@ function X.GetHeroItemBuild()
 		-- "item_overwhelming_blink",
 		-- "item_travel_boots_2",
 		
+		"item_boots",
 		"item_crimson_guard",
 		"item_heart",
 		"item_lotus_orb",
