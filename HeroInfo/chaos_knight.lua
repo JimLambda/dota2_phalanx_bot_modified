@@ -95,15 +95,28 @@ function X.GetHeroItemBuild()
 		-- "item_magic_wand",
 		-- "item_power_treads",
 		
-		"item_armlet",
-		CoreItem,
-		"item_sange_and_yasha",
+		-- "item_armlet",
+		-- CoreItem,
+		-- "item_sange_and_yasha",
+		-- "item_boots",
+		-- "item_black_king_bar",
+		-- "item_assault",
+		-- "item_travel_boots",
+		-- "item_travel_boots_2",
+		-- "item_ultimate_scepter_2",
+
+
 		"item_boots",
-		"item_black_king_bar",
-		"item_assault",
+		"item_echo_sabre",
+		"item_sange_and_yasha",
+		"item_manta",
+		"item_heart",
 		"item_travel_boots",
+		"item_assault",
+		"item_harpoon",
 		"item_travel_boots_2",
 		"item_ultimate_scepter_2",
+		"item_moon_shard",
 		}
 	end
 	

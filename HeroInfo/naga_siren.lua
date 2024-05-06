@@ -82,13 +82,14 @@ function X.GetHeroItemBuild()
 		"item_boots",
 		"item_manta",
 		"item_orchid",
+		"item_bloodthorn",
+		"item_disperser",
+		"item_butterfly",
 		"item_travel_boots",
 		"item_heart",
-		"item_bloodthorn",
-		"item_butterfly",
-		"item_sheepstick",
 		"item_travel_boots_2",
 		"item_ultimate_scepter_2",
+		"item_moon_shard",
 		}
 	end
 	
