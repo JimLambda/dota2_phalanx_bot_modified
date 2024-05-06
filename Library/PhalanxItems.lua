@@ -289,7 +289,7 @@ PItems["item_mekansm"] = { "item_chainmail"; "item_headdress"; "item_recipe_meka
 
 PItems["item_mjollnir"] = { "item_maelstrom"; "item_hyperstone"; "item_recipe_mjollnir" }
 
-PItems["item_monkey_king_bar"] = { "item_quarterstaff"; "item_javelin"; "item_demon_edge" }
+PItems["item_monkey_king_bar"] = { "item_javelin"; "item_blitz_knuckles"; "item_demon_edge"; "item_recipe_monkey_king_bar" }
 
 PItems["item_moon_shard"] = { "item_hyperstone"; "item_hyperstone"}
 

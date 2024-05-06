@@ -78,15 +78,28 @@ function X.GetHeroItemBuild()
 		-- "item_null_talisman",
 		-- "item_power_treads",
 	
+		-- "item_boots",
+		-- "item_manta",
+		-- "item_travel_boots",
+		-- "item_butterfly",
+		-- "item_skadi",
+		-- "item_black_king_bar",
+		-- "item_greater_crit",
+		-- "item_travel_boots_2",
+		-- "item_ultimate_scepter_2",
+
+
 		"item_boots",
-		"item_manta",
-		"item_travel_boots",
-		"item_butterfly",
+		"item_dragon_lance",
+		"item_mjollnir",
+		"item_desolator",
 		"item_skadi",
-		"item_black_king_bar",
-		"item_greater_crit",
+		"item_travel_boots",
+		"item_disperser",
+		"item_hurricane_pike",
 		"item_travel_boots_2",
 		"item_ultimate_scepter_2",
+		"item_moon_shard",
 		}
 	end
 	
