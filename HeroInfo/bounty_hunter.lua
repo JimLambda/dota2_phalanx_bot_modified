@@ -75,15 +75,28 @@ function X.GetHeroItemBuild()
 		-- "item_phase_boots",
 		-- "item_phylactery",
 		
+		-- "item_boots",
+		-- CoreItem,
+		-- "item_travel_boots",
+		-- "item_black_king_bar",
+		-- "item_angels_demise",
+		-- "item_assault",
+		-- "item_nullifier",
+		-- "item_ultimate_scepter_2",
+		-- "item_travel_boots_2",
+
+		
 		"item_boots",
-		CoreItem,
-		"item_travel_boots",
-		"item_black_king_bar",
+		"item_desolator",
 		"item_angels_demise",
-		"item_assault",
-		"item_nullifier",
+		"item_ultimate_scepter",
+		"item_sange_and_yasha",
+		"item_abyssal_blade",
+		"item_travel_boots",
 		"item_ultimate_scepter_2",
+		"item_nullifier",
 		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	
