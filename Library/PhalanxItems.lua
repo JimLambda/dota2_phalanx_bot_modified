@@ -341,7 +341,7 @@ PItems["item_sange_and_yasha"] = { "item_yasha"; "item_sange" }
 
 PItems["item_satanic"] = { "item_lifesteal"; "item_reaver"; "item_claymore" }
 
-PItems["item_sheepstick"] = { "item_mystic_staff"; "item_tiara_of_selemene"; "item_recipe_sheepstick" }
+PItems["item_sheepstick"] = { "item_tiara_of_selemene"; "item_mystic_staff"; "item_recipe_sheepstick" }
 
 PItems["item_invis_sword"] = { "item_blitz_knuckles"; "item_broadsword"; "item_shadow_amulet" }
 

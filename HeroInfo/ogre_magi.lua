@@ -77,16 +77,30 @@ function X.GetHeroItemBuild()
 		-- "item_arcane_boots",
 		-- "item_hand_of_midas",
 		
+		-- "item_boots",
+		-- CoreItem,
+		-- "item_travel_boots",
+		-- "item_blink",
+		-- "item_heart",
+		-- "item_sange_and_yasha",
+		-- "item_assault",
+		-- "item_overwhelming_blink",
+		-- "item_travel_boots_2",
+		-- "item_ultimate_scepter_2",
+
+
+		"item_hand_of_midas",
 		"item_boots",
-		CoreItem,
-		"item_travel_boots",
-		"item_blink",
 		"item_heart",
 		"item_sange_and_yasha",
-		"item_assault",
-		"item_overwhelming_blink",
-		"item_travel_boots_2",
+		"item_sheepstick",
+		"item_aether_lens",
+		"item_travel_boots",
+		"item_ethereal_blade",
 		"item_ultimate_scepter_2",
+		"item_octarine_core",
+		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	
