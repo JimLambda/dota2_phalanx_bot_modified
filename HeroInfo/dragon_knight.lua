@@ -76,17 +76,30 @@ function X.GetHeroItemBuild()
 		-- "item_power_treads",
 		-- "item_soul_ring",
 		
+		-- "item_boots",
+		-- CoreItem,
+		-- "item_blink",
+		-- "item_travel_boots",
+		-- "item_black_king_bar",
+		-- "item_ultimate_scepter",
+		-- "item_manta",
+		-- "item_ultimate_scepter_2",
+		-- "item_assault",
+		-- "item_overwhelming_blink",
+		-- "item_travel_boots_2",
+
+
 		"item_boots",
-		CoreItem,
-		"item_blink",
-		"item_travel_boots",
-		"item_black_king_bar",
 		"item_ultimate_scepter",
-		"item_manta",
+		"item_greater_crit",
+		"item_hurricane_pike",
+		"item_bloodthorn",
+		"item_octarine_core",
+		"item_travel_boots",
 		"item_ultimate_scepter_2",
-		"item_assault",
-		"item_overwhelming_blink",
+		"item_monkey_king_bar",
 		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	

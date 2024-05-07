@@ -66,7 +66,7 @@ PRoles["OffLane"] = {
 	-- "npc_dota_hero_legion_commander",
 	-- "npc_dota_hero_slardar",
 	-- "npc_dota_hero_tidehunter",
-	-- "npc_dota_hero_dragon_knight",
+	"npc_dota_hero_dragon_knight",
 	-- "npc_dota_hero_death_prophet",
 	-- "npc_dota_hero_enigma",
 	-- "npc_dota_hero_pudge",
