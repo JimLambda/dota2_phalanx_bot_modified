@@ -110,29 +110,15 @@ function X.GetHeroItemBuild()
 		-- "item_power_treads",
 		
 		-- "item_falcon_blade",
-		-- "item_boots",
-		-- "item_black_king_bar",
-		-- "item_travel_boots",
-		-- "item_satanic",
-		-- "item_butterfly",
-		-- "item_shivas_guard",
-		-- "item_refresher",
-		-- "item_ultimate_scepter_2",
-		-- "item_travel_boots_2",
-
-
 		"item_boots",
-		"item_dragon_lance",
-		"item_sange_and_yasha",
-		"item_butterfly",
-		"item_satanic",
-		"item_ultimate_scepter",
+		"item_black_king_bar",
 		"item_travel_boots",
-		"item_hurricane_pike",
+		"item_satanic",
+		"item_butterfly",
+		"item_shivas_guard",
+		"item_refresher",
 		"item_ultimate_scepter_2",
-		"item_sphere",
 		"item_travel_boots_2",
-		"item_moon_shard",
 		}
 	end
 	

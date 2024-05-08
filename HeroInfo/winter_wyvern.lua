@@ -71,28 +71,15 @@ function X.GetHeroItemBuild()
 		-- "item_tranquil_boots",
 		-- "item_holy_locket",
 		
-		-- "item_boots",
-		-- "item_solar_crest",
-		-- "item_force_staff",
-		-- "item_travel_boots",
-		-- "item_aether_lens",
-		-- "item_aeon_disk",
-		-- -- "item_boots_of_bearing",
-		-- "item_travel_boots_2",
-		-- "item_ultimate_scepter_2",
-
-
 		"item_boots",
-		"item_ultimate_scepter",
-		"item_mjollnir",
-		"item_hurricane_pike",
-		"item_monkey_king_bar",
-		"item_greater_crit",
+		"item_solar_crest",
+		"item_force_staff",
 		"item_travel_boots",
-		"item_ultimate_scepter_2",
-		"item_silver_edge",
+		"item_aether_lens",
+		"item_aeon_disk",
+		-- "item_boots_of_bearing",
 		"item_travel_boots_2",
-		"item_moon_shard",
+		"item_ultimate_scepter_2",
 		}
 	end
 	

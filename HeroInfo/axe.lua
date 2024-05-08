@@ -75,29 +75,16 @@ function X.GetHeroItemBuild()
 		-- "item_vanguard",
 		-- "item_phase_boots",
 		
-		-- "item_boots",
-		-- CoreItem,
-		-- "item_blink",
-		-- "item_travel_boots",
-		-- "item_blade_mail",
-		-- "item_black_king_bar",
-		-- "item_assault",
-		-- "item_overwhelming_blink",
-		-- "item_travel_boots_2",
-		-- "item_ultimate_scepter_2",
-
-
 		"item_boots",
-		"item_pipe",
+		CoreItem,
 		"item_blink",
-		"item_bloodstone",
-		"item_kaya_and_sange",
 		"item_travel_boots",
+		"item_blade_mail",
 		"item_black_king_bar",
-		"item_ultimate_scepter_2",
+		"item_assault",
 		"item_overwhelming_blink",
 		"item_travel_boots_2",
-		"item_moon_shard",
+		"item_ultimate_scepter_2",
 		}
 	end
 	
