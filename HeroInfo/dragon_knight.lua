@@ -90,6 +90,7 @@ function X.GetHeroItemBuild()
 
 
 		"item_boots",
+		"item_dragon_lance",
 		"item_ultimate_scepter",
 		"item_greater_crit",
 		"item_hurricane_pike",
