@@ -90,7 +90,7 @@ function X.GetHeroItemBuild()
 		"item_ethereal_blade",
 		"item_gungir",
 		"item_ultimate_scepter_2",
-		"item_wind_waker",
+		"item_sheepstick",
 		"item_travel_boots_2",
 		"item_moon_shard",
 		}
