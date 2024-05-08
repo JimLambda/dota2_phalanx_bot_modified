@@ -118,7 +118,7 @@ PRoles["HardSupport"] = {
 	-- "npc_dota_hero_lich",
 	-- "npc_dota_hero_omniknight",
 	-- "npc_dota_hero_bane",
-	-- "npc_dota_hero_crystal_maiden",
+	"npc_dota_hero_crystal_maiden",
 	"npc_dota_hero_ancient_apparition",
 	-- "npc_dota_hero_lion",
 	-- "npc_dota_hero_undying",
