@@ -67,17 +67,32 @@ function X.GetHeroItemBuild()
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
 		ItemBuild = { 
 		--"item_null_talisman",
-		"item_magic_wand",
-		"item_tranquil_boots",
+		-- "item_magic_wand",
+		-- "item_tranquil_boots",
 		
-		"item_solar_crest",
+		-- "item_solar_crest",
+		-- "item_rod_of_atos",
+		-- "item_force_staff",
+		-- "item_ultimate_scepter",
+		-- "item_aeon_disk",
+		-- "item_ultimate_scepter_2",
+		-- "item_sheepstick",
+		-- "item_boots_of_bearing",
+
+
+		"item_boots",
 		"item_rod_of_atos",
-		"item_force_staff",
 		"item_ultimate_scepter",
-		"item_aeon_disk",
+		"item_aether_lens",
+		"item_octarine_core",
+		"item_kaya_and_sange",
+		"item_travel_boots",
+		"item_ethereal_blade",
+		"item_gungir",
 		"item_ultimate_scepter_2",
 		"item_sheepstick",
-		"item_boots_of_bearing",
+		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	
