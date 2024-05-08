@@ -106,7 +106,7 @@ PRoles["SoftSupport"] = {
 }
 
 PRoles["HardSupport"] = {
-	-- "npc_dota_hero_skywrath_mage",
+	"npc_dota_hero_skywrath_mage",
 	-- "npc_dota_hero_warlock",
 	-- "npc_dota_hero_silencer",
 	-- "npc_dota_hero_shadow_shaman",
@@ -125,7 +125,7 @@ PRoles["HardSupport"] = {
 	-- "npc_dota_hero_witch_doctor",
 	-- "npc_dota_hero_shadow_demon",
 	-- "npc_dota_hero_oracle",
-	"npc_dota_hero_winter_wyvern",
+	-- "npc_dota_hero_winter_wyvern",
 }
 
 -------------------------------------------------------------------------------------------
