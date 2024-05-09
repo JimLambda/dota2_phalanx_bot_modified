@@ -87,6 +87,8 @@ function X.GetHeroItemBuild()
 
 
 
+		"item_quelling_blade",
+		"item_lesser_crit",
 		"item_boots",
 		"item_dragon_lance",
 		"item_manta",

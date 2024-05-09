@@ -77,6 +77,8 @@ function X.GetHeroItemBuild()
 		-- "item_shivas_guard",
 		-- "item_sheepstick",
 
+		"item_quelling_blade",
+		"item_lesser_crit",
 		"item_boots",
 		"item_dragon_lance",
 		"item_manta",
