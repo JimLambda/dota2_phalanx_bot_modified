@@ -260,6 +260,7 @@ end
 
 function CanLastHitCreep(creeps)
 	local attackdmg = bot:GetAttackDamage()
+	local myAttackRange = bot:GetAttackRange()
 	
 	if bot:FindItemSlot("item_quelling_blade") >= 0 then
 		if bot:GetUnitName() == "npc_dota_hero_templar_assassin"
@@ -299,7 +300,7 @@ function CanLastHitCreep(creeps)
 					
 			local actualcasterdmg = hcreep:GetActualIncomingDamage(casterdmg, DAMAGE_TYPE_PHYSICAL)
 				
-			if hcreep:GetHealth() <= incdmg or ((hcreep:GetHealth() - actualcasterdmg) < incdmg and GetUnitToLocationDistance(hcreep, projloc) <= (bot:GetAttackRange() + 300)) then
+			if hcreep:GetHealth() <= incdmg or ((hcreep:GetHealth() - actualcasterdmg) < incdmg and GetUnitToLocationDistance(hcreep, projloc) <= (myAttackRange + 300)) then
 				target = hcreep
 				return true
 			end
