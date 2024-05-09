@@ -143,11 +143,13 @@ function GetDesire()
 		if IsSuitableToLastHit() then
 			if CanLastHitCreep(enemycreeps) and not IsCoreNearby() then
 				desiremode = "LH"
-				return 0.56
+				-- return 0.56
+				return BOT_MODE_DESIRE_ABSOLUTE * 1.3
 			end
 			if CanLastHitCreep(allycreeps) then
 				desiremode = "Deny"
-				return 0.56
+				-- return 0.56
+				return BOT_MODE_DESIRE_ABSOLUTE * 1.12
 			end
 		end
 	end
@@ -156,7 +158,7 @@ function GetDesire()
 	local FilteredAllies = PAF.FilterTrueUnits(AlliesWithinRange)
 	
 	if IsSuitableToLastHit()
-	and not IsCoreNearby()
+	-- and not IsCoreNearby()
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_TOP
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_MID
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_BOT then
@@ -297,7 +299,7 @@ function CanLastHitCreep(creeps)
 					
 			local actualcasterdmg = hcreep:GetActualIncomingDamage(casterdmg, DAMAGE_TYPE_PHYSICAL)
 				
-			if hcreep:GetHealth() <= incdmg or ((hcreep:GetHealth() - actualcasterdmg) < incdmg and GetUnitToLocationDistance(hcreep, projloc) <= 300) then
+			if hcreep:GetHealth() <= incdmg or ((hcreep:GetHealth() - actualcasterdmg) < incdmg and GetUnitToLocationDistance(hcreep, projloc) <= (bot:GetAttackRange() + 300)) then
 				target = hcreep
 				return true
 			end
