@@ -215,7 +215,7 @@ PItems["item_butterfly"] = { "item_talisman_of_evasion"; "item_eagle"; "item_cla
 
 PItems["item_crimson_guard"] = { "item_vanguard"; "item_helm_of_iron_will"; "item_recipe_crimson_guard" }
 
-PItems["item_lesser_crit"] = { "item_claymore"; "item_blades_of_attack"; "item_recipe_lesser_crit" }
+PItems["item_lesser_crit"] = { "item_blades_of_attack"; "item_claymore"; "item_recipe_lesser_crit" }
 
 PItems["item_greater_crit"] = { "item_lesser_crit"; "item_demon_edge"; "item_recipe_greater_crit" }
 
