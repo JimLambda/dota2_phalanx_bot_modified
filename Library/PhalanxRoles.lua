@@ -37,7 +37,7 @@ PRoles["MidLane"] = {
 	-- "npc_dota_hero_storm_spirit",
 	-- "npc_dota_hero_obsidian_destroyer",
 	-- "npc_dota_hero_riki",
-	-- "npc_dota_hero_lina",
+	"npc_dota_hero_lina",
 	-- "npc_dota_hero_queenofpain",
 	-- "npc_dota_hero_death_prophet",
 	-- "npc_dota_hero_pugna",
