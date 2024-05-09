@@ -47,6 +47,7 @@ local unitName = bot:GetUnitName();
 bot.buildBFury = false;
 bot.buildVanguard = false;
 bot.buildHoly = false;
+bot.buildGreaterCritOrAngelsDemise = false;
 
 for i=1, math.ceil(#bot.itemToBuy/2) do
 	if bot.itemToBuy[i] == "item_bfury" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_bfury" then
@@ -60,6 +61,11 @@ for i=1, math.ceil(#bot.itemToBuy/2) do
 	end
 	if bot.itemToBuy[i] == "item_holy_locket" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_holy_locket" then
 		bot.buildHoly = true;
+	end
+	if bot.itemToBuy[i] == "item_greater_crit" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_greater_crit" 
+	or bot.itemToBuy[i] == "item_angels_demise" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_angels_demise"
+	then
+		bot.buildGreaterCritOrAngelsDemise = true;
 	end
 end
 
@@ -380,6 +386,11 @@ function ItemPurchaseThink()
 						end	
 					elseif item == "item_quelling_blade" then
 						if bot.buildBFury == false then
+							slotToSell = itemSlot;
+							break;
+						end
+					elseif item == "item_lesser_crit" then
+						if bot.buildGreaterCritOrAngelsDemise == false then
 							slotToSell = itemSlot;
 							break;
 						end

@@ -88,6 +88,7 @@ PItems['earlyGameItem'] = {
 	 "item_ward_observer",
 	 "item_hand_of_midas",
 	 "item_enchanted_mango",
+	 "item_lesser_crit",
 	 "item_ancient_janggo"
 	 --"item_tpscroll"
 }
