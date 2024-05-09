@@ -89,6 +89,8 @@ function X.GetHeroItemBuild()
 		-- "item_ultimate_scepter_2",
 
 
+		"item_quelling_blade",
+		"item_lesser_crit",
 		"item_boots",
 		"item_dragon_lance",
 		"item_mjollnir",
