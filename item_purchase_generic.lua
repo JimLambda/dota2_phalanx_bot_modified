@@ -48,6 +48,7 @@ bot.buildBFury = false;
 bot.buildVanguard = false;
 bot.buildHoly = false;
 bot.buildGreaterCritOrAngelsDemise = false;
+bot.buildDesolator = false;
 
 for i=1, math.ceil(#bot.itemToBuy/2) do
 	if bot.itemToBuy[i] == "item_bfury" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_bfury" then
@@ -66,6 +67,9 @@ for i=1, math.ceil(#bot.itemToBuy/2) do
 	or bot.itemToBuy[i] == "item_angels_demise" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_angels_demise"
 	then
 		bot.buildGreaterCritOrAngelsDemise = true;
+	end
+	if bot.itemToBuy[i] == "item_desolator" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_desolator" then
+		bot.buildDesolator = true;
 	end
 end
 
@@ -391,6 +395,11 @@ function ItemPurchaseThink()
 						end
 					elseif item == "item_lesser_crit" then
 						if bot.buildGreaterCritOrAngelsDemise == false then
+							slotToSell = itemSlot;
+							break;
+						end
+					elseif item == "item_blight_stone" then
+						if bot.buildDesolator == false then
 							slotToSell = itemSlot;
 							break;
 						end
