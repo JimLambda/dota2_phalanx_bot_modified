@@ -363,7 +363,7 @@ PItems["item_tranquil_boots"] = { "item_wind_lace"; "item_boots"; "item_ring_of_
 
 PItems["item_urn_of_shadows"] = { "item_sobi_mask" ; "item_circlet"; "item_ring_of_protection"; "item_recipe_urn_of_shadows" }
 
-PItems["item_vanguard"] = { "item_vitality_booster"; "item_ring_of_health"  }
+PItems["item_vanguard"] = { "item_ring_of_health"; "item_vitality_booster"  }
 
 PItems["item_veil_of_discord"] = { "item_helm_of_iron_will"; "item_crown"; "item_recipe_veil_of_discord" }
 
