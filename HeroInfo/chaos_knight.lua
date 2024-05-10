@@ -106,6 +106,10 @@ function X.GetHeroItemBuild()
 		-- "item_ultimate_scepter_2",
 
 
+		"item_quelling_blade",
+		"item_blades_of_attack",
+		"item_blight_stone",
+		"item_lesser_crit",
 		"item_boots",
 		"item_echo_sabre",
 		"item_sange_and_yasha",

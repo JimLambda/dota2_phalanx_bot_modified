@@ -90,6 +90,10 @@ function X.GetHeroItemBuild()
 		-- "item_boots_of_bearing",
 
 
+		"item_quelling_blade",
+		"item_blades_of_attack",
+		"item_blight_stone",
+		"item_lesser_crit",
 		"item_boots",
 		"item_aether_lens",
 		"item_octarine_core",
