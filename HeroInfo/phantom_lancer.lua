@@ -73,19 +73,15 @@ function X.GetHeroItemBuild()
 		-- "item_power_treads",
 	
 		
-		"item_quelling_blade",
-		"item_blades_of_attack",
-		"item_blight_stone",
-		"item_lesser_crit",
-		"item_diffusal_blade",
+		"item_boots",
+		"item_crimson_guard",
 		"item_manta",
 		"item_heart",
-		"item_skadi",
-		"item_ultimate_scepter",
-		"item_butterfly",
-		"item_disperser",
+		"item_eternal_shroud",
+		"item_lotus_orb",
+		"item_travel_boots",
 		"item_ultimate_scepter_2",
-		"item_bloodthorn",
+		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end

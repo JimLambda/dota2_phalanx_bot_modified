@@ -106,20 +106,16 @@ function X.GetHeroItemBuild()
 		-- "item_ultimate_scepter_2",
 
 
-		"item_quelling_blade",
-		"item_blades_of_attack",
-		"item_blight_stone",
-		"item_lesser_crit",
 		"item_boots",
-		"item_echo_sabre",
+		"item_sange",
 		"item_sange_and_yasha",
-		"item_manta",
 		"item_heart",
-		"item_travel_boots",
+		"item_manta",
 		"item_assault",
-		"item_harpoon",
-		"item_travel_boots_2",
+		"item_shivas_guard",
+		"item_travel_boots",
 		"item_ultimate_scepter_2",
+		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end
