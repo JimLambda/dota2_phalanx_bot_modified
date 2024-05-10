@@ -65,13 +65,13 @@ function GetDesire()
 			if FarmLaneDesire >= FarmJungleDesire then
 				if HealthyToFarmJungle
 				and IsEnemyNearLane(GetLaneFrontLocation(GetOpposingTeam(), LaneToFarm, 0)) then
-					FarmMode = "Jungle"
+					FarmMode = "Lane"
 				else
 					FarmMode = "Lane"
 				end
 				return Clamp(FarmLaneDesire, 0.0, 0.9)
 			else
-				FarmMode = "Jungle"
+				FarmMode = "Lane"
 				return FarmJungleDesire
 			end
 		end
@@ -268,7 +268,8 @@ function GetDesireToFarmJungle()
 		end
 	end
 	
-	FarmJungleDesire = (FarmJungleDesire + (EnemiesNearLaneFront * ThreatPenalty))
+	-- FarmJungleDesire = (FarmJungleDesire + (EnemiesNearLaneFront * ThreatPenalty))
+	FarmJungleDesire = 0
 	local ClampedDesire = RemapValClamped(FarmJungleDesire, 0.0, 1.0, 0.0, 0.65)
 	return ClampedDesire
 end
