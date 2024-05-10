@@ -143,11 +143,13 @@ function GetDesire()
 		if IsSuitableToLastHit() then
 			if CanLastHitCreep(enemycreeps) and not IsCoreNearby() then
 				desiremode = "LH"
-				return 0.56
+				-- return 0.56
+				return BOT_MODE_DESIRE_ABSOLUTE * 1.4
 			end
 			if CanLastHitCreep(allycreeps) then
 				desiremode = "Deny"
-				return 0.56
+				-- return 0.56
+				return BOT_MODE_DESIRE_ABSOLUTE * 1.12
 			end
 		end
 	end
@@ -156,7 +158,7 @@ function GetDesire()
 	local FilteredAllies = PAF.FilterTrueUnits(AlliesWithinRange)
 	
 	if IsSuitableToLastHit()
-	and not IsCoreNearby()
+	-- and not IsCoreNearby()
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_TOP
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_MID
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_BOT then
@@ -258,6 +260,7 @@ end
 
 function CanLastHitCreep(creeps)
 	local attackdmg = bot:GetAttackDamage()
+	local myAttackRange = bot:GetAttackRange()
 	
 	if bot:FindItemSlot("item_quelling_blade") >= 0 then
 		if bot:GetUnitName() == "npc_dota_hero_templar_assassin"
@@ -297,7 +300,7 @@ function CanLastHitCreep(creeps)
 					
 			local actualcasterdmg = hcreep:GetActualIncomingDamage(casterdmg, DAMAGE_TYPE_PHYSICAL)
 				
-			if hcreep:GetHealth() <= incdmg or ((hcreep:GetHealth() - actualcasterdmg) < incdmg and GetUnitToLocationDistance(hcreep, projloc) <= 300) then
+			if hcreep:GetHealth() <= incdmg or ((hcreep:GetHealth() - actualcasterdmg) < incdmg and GetUnitToLocationDistance(hcreep, projloc) <= (myAttackRange + 300)) then
 				target = hcreep
 				return true
 			end
