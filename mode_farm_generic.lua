@@ -19,7 +19,7 @@ function GetDesire()
 	if P.IsInLaningPhase() then return 0 end
 	
 	if HealthyToFarmJungle then
-		if bot:GetHealth() < (bot:GetMaxHealth() * 0.25) then
+		if bot:GetHealth() < (bot:GetMaxHealth() * 0.8) then
 			HealthyToFarmJungle = false
 		end
 	elseif not HealthyToFarmJungle then
@@ -65,14 +65,17 @@ function GetDesire()
 			if FarmLaneDesire >= FarmJungleDesire then
 				if HealthyToFarmJungle
 				and IsEnemyNearLane(GetLaneFrontLocation(GetOpposingTeam(), LaneToFarm, 0)) then
+					-- FarmMode = "Jungle"
 					FarmMode = "Lane"
 				else
 					FarmMode = "Lane"
 				end
 				return Clamp(FarmLaneDesire, 0.0, 0.9)
 			else
+				-- FarmMode = "Jungle"
 				FarmMode = "Lane"
-				return FarmJungleDesire
+				-- return FarmJungleDesire
+				return FarmLaneDesire
 			end
 		end
 	end
