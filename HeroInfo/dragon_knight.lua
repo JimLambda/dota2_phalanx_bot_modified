@@ -89,10 +89,10 @@ function X.GetHeroItemBuild()
 		-- "item_travel_boots_2",
 
 
-		"item_quelling_blade",
-		"item_blades_of_attack",
-		"item_blight_stone",
-		"item_lesser_crit",
+		-- "item_quelling_blade",
+		-- "item_blades_of_attack",
+		-- "item_blight_stone",
+		-- "item_lesser_crit",
 		"item_boots",
 		"item_dragon_lance",
 		"item_ultimate_scepter",
