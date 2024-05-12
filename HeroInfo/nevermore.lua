@@ -10,9 +10,6 @@ local Necromastery = bot:GetAbilityByName("nevermore_necromastery")
 local DarkLord = bot:GetAbilityByName("nevermore_dark_lord")
 local Requiem = bot:GetAbilityByName("nevermore_requiem")
 
-local AttackRange
-local manathreshold
-
 function X.GetHeroLevelPoints()
 	local abilities = {}
 	
@@ -91,7 +88,7 @@ function X.GetHeroItemBuild()
 		"item_wraith_band",
 		"item_magic_wand",
 		"item_power_treads",
-		"item_hand_of_midas",
+		"item_ring_of_basilius",
 		
 		"item_dragon_lance",
 		"item_black_king_bar",

@@ -66,21 +66,18 @@ function X.GetHeroItemBuild()
 
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
 		ItemBuild = { 
-		-- "item_quelling_blade",
+		"item_quelling_blade",
 	
-		-- "item_bracer",
-		-- "item_magic_wand",
-		-- "item_power_treads",
+		"item_bracer",
+		"item_magic_wand",
+		"item_power_treads",
 	
 		"item_armlet",
 		"item_echo_sabre",
 		"item_heart",
-		"item_boots",
 		"item_black_king_bar",
-		"item_travel_boots",
 		"item_bloodthorn",
 		"item_harpoon",
-		"item_travel_boots_2",
 		"item_ultimate_scepter_2",
 		}
 	end
@@ -89,20 +86,17 @@ function X.GetHeroItemBuild()
 		local CoreItem = PRoles.GetAOEItem()
 		
 		ItemBuild = { 
-		-- "item_quelling_blade",
+		"item_quelling_blade",
 	
-		-- "item_bracer",
-		-- "item_magic_wand",
-		-- "item_power_treads",
+		"item_bracer",
+		"item_magic_wand",
+		"item_power_treads",
 		
 		"item_armlet",
 		CoreItem,
 		"item_sange_and_yasha",
-		"item_boots",
 		"item_black_king_bar",
 		"item_assault",
-		"item_travel_boots",
-		"item_travel_boots_2",
 		"item_ultimate_scepter_2",
 		}
 	end

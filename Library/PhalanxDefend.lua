@@ -67,17 +67,11 @@ function PDefend.GetDefendDesire(bot, lane)
 				return BOT_MODE_DESIRE_VERYHIGH
 			end
 		end
-
-		-- if NotNilOrDead(LaneTierOne) then
-		-- 	return BOT_MODE_DESIRE_VERYHIGH
-		-- end		
-
-		if NotNilOrDead(LaneTierOne) then
-		-- if NotNilOrDead(LaneTierOne) and ShouldGoDefend(bot, lane) then
-			return Clamp(DefendDesire * 4, 0.0, 0.9)
-		elseif NotNilOrDead(LaneTierTwo) then
-			-- elseif NotNilOrDead(LaneTierTwo) and ShouldGoDefend(bot, lane) then
-			return Clamp((DefendDesire * 8), 0.0, 0.9)
+		
+		if NotNilOrDead(LaneTierOne) and ShouldGoDefend(bot, lane) then
+			return Clamp(DefendDesire, 0.0, 0.9)
+		elseif NotNilOrDead(LaneTierTwo) and ShouldGoDefend(bot, lane) then
+			return Clamp((DefendDesire * 2), 0.0, 0.9)
 		end
 	else
 		return 0
@@ -99,29 +93,24 @@ function ShouldGoDefend(bot, lane)
 	end
 	
 	if #Enemies == 1 then
-		return true
-		-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" 
-		-- or PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
-		-- 	return true
-		-- end
+		if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" 
+		or PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
+			return true
+		end
 	elseif #Enemies == 2 then
-		return true
-		-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane"
-		-- or PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport"
-		-- or PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
-		-- 	return true
-		-- end
+		if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane"
+		or PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport"
+		or PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
+			return true
+		end
 	elseif #Enemies == 3 then
-		return true
-		-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane"
-		-- or PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport"
-		-- or PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane"
-		-- or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
-		-- 	return true
-		-- end
+		if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane"
+		or PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport"
+		or PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane"
+		or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
+			return true
+		end
 	elseif #Enemies == 4 then
-		return true
-	elseif #Enemies >= 5 then
 		return true
 	end
 	

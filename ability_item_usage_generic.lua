@@ -252,10 +252,9 @@ function AbilityLevelUpThink()
 		end
 	end
 	
-	-- if not HumanOnTeam then
-	-- 	UseGlyph()
-	-- end
-	UseGlyph()
+	if not HumanOnTeam then
+		UseGlyph()
+	end
 
 	local BotLevel = bot:GetLevel()
 	local SkillPoints = HeroInfoFile.GetHeroLevelPoints()
@@ -281,9 +280,6 @@ function UseGlyph()
 		TOWER_TOP_1,
 		TOWER_MID_1,
 		TOWER_BOT_1,
-		TOWER_TOP_2,
-		TOWER_MID_2, 
-		TOWER_BOT_2, 
 		TOWER_TOP_3,
 		TOWER_MID_3, 
 		TOWER_BOT_3, 
@@ -294,7 +290,7 @@ function UseGlyph()
 	for _,t in pairs(T1)
 	do
 		local tower = GetTower(GetTeam(), t);
-		if  tower ~= nil and tower:GetHealth() > 0 and tower:GetHealth()/tower:GetMaxHealth() < 0.80 and tower:GetAttackTarget() ~=  nil
+		if  tower ~= nil and tower:GetHealth() > 0 and tower:GetHealth()/tower:GetMaxHealth() < 0.15 and tower:GetAttackTarget() ~=  nil
 		then
 			bot:ActionImmediate_Glyph( )
 			return
@@ -311,7 +307,7 @@ function UseGlyph()
 	for _,b in pairs(MeleeBarrack)
 	do
 		local barrack = GetBarracks(GetTeam(), b);
-		if barrack ~= nil and barrack:GetHealth() > 0 and barrack:GetHealth()/barrack:GetMaxHealth() < 0.85 and IsTargetedByEnemy(barrack)
+		if barrack ~= nil and barrack:GetHealth() > 0 and barrack:GetHealth()/barrack:GetMaxHealth() < 0.5 and IsTargetedByEnemy(barrack)
 		then
 			bot:ActionImmediate_Glyph()
 			return

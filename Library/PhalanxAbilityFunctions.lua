@@ -32,14 +32,20 @@ function PAF.AcquireTarget()
 		end
 	end
 	
-	local WeakestEnemy = PAF.GetWeakestUnit(ViableEnemies)
+	local WeakestEnemy = nil
+	
+	if #ViableEnemies > 0 then
+		WeakestEnemy = PAF.GetWeakestUnit(ViableEnemies)
+	end
 		
 	if PAF.IsValidHeroTarget(WeakestEnemy)
 	and GetUnitToUnitDistance(bot, WeakestEnemy) <= 1600 then
 		bot:SetTarget(WeakestEnemy)
+		return
 	else
 		if not PAF.IsEngaging(bot) then
 			bot:SetTarget(nil)
+			return
 		end
 	end
 end
@@ -207,8 +213,7 @@ function PAF.IsEngaging(SelectedUnit)
 	local mode = SelectedUnit:GetActiveMode()
 	return mode == BOT_MODE_ATTACK or
 		   mode == BOT_MODE_DEFEND_ALLY or
-		   mode == BOT_MODE_ROAM or
-		   (mode == BOT_MODE_TEAM_ROAM and not P.IsInLaningPhase())
+		   mode == BOT_MODE_ROAM
 end
 
 function PAF.IsInTeamFight(SelectedUnit)

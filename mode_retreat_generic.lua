@@ -5,6 +5,10 @@ local bot = GetBot()
 local UrgentRetreat = false
 
 function GetDesire()
+	if bot:HasModifier("modifier_skeleton_king_reincarnation_scepter_active") then
+		return 0
+	end
+	
 	local RetreatDesire = 0
 	
 	local BotHealth = bot:GetHealth()

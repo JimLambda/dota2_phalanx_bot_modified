@@ -68,52 +68,36 @@ function X.GetHeroItemBuild()
 		local CoreItem = PRoles.GetAOEItem()
 		
 		ItemBuild = { 
-		-- "item_bracer",
-		-- "item_magic_wand",
-		-- "item_phase_boots",
-		-- "item_soul_ring",
+		"item_bracer",
+		"item_magic_wand",
+		"item_phase_boots",
+		"item_soul_ring",
 		
-		"item_boots",
 		CoreItem,
 		"item_eternal_shroud",
-		"item_travel_boots",
 		"item_ultimate_scepter",
 		"item_blink",
 		"item_black_king_bar",
 		"item_ultimate_scepter_2",
 		"item_assault",
 		"item_overwhelming_blink",
-		"item_travel_boots_2",
 		}
 	end
 	
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
 		ItemBuild = { 
-		-- "item_bracer",
-		-- "item_magic_wand",
-		-- "item_phase_boots",
+		"item_bracer",
+		"item_magic_wand",
+		"item_phase_boots",
 		
-		-- "item_boots",
-		-- "item_eternal_shroud",
-		-- "item_ultimate_scepter",
-		-- "item_travel_boots",
-		-- "item_shivas_guard",
-		-- "item_blink",
-		-- "item_kaya_and_sange",
-		-- "item_ultimate_scepter_2",
-		-- "item_black_king_bar",
-		-- "item_overwhelming_blink",
-		-- "item_travel_boots_2",
-		
-		"item_boots",
-		"item_lotus_orb",
-		"item_pipe",
-		"item_heart",
+		"item_eternal_shroud",
+		"item_ultimate_scepter",
 		"item_shivas_guard",
-		"item_bloodstone",
-		"item_travel_boots_2",
+		"item_blink",
+		"item_kaya_and_sange",
 		"item_ultimate_scepter_2",
-		"item_moon_shard",
+		"item_black_king_bar",
+		"item_overwhelming_blink",
 		}
 	end
 	

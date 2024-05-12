@@ -138,6 +138,8 @@ function UseSpikedCarapace()
 	if P.CantUseAbility(bot) then return 0 end
 	if bot:HasModifier("modifier_nyx_assassin_vendetta") then return 0 end
 	
+	local projectiles = bot:GetIncomingTrackingProjectiles()
+	
 	for v, proj in pairs(projectiles) do
 		if GetUnitToLocationDistance(bot, proj.location) <= 300 then
 			return BOT_ACTION_DESIRE_HIGH

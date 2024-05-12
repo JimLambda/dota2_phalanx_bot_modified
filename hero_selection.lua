@@ -47,7 +47,7 @@ end
 local SafeLanePool = PRoles["SafeLane"]
 local MidLanePool = PRoles["MidLane"]
 local OffLanePool = PRoles["OffLane"]
-local SoftSupportPool = PRoles["HardSupport"]
+local SoftSupportPool = PRoles["SoftSupport"]
 local HardSupportPool = PRoles["HardSupport"]
 
 local pools = {SafeLanePool, MidLanePool, OffLanePool, SoftSupportPool, HardSupportPool}
@@ -55,14 +55,11 @@ local pools = {SafeLanePool, MidLanePool, OffLanePool, SoftSupportPool, HardSupp
 local PickableHeroes = {}
 local HeroesToAvoid = {}
 
--- local lastpicktime = -70
-local lastpicktime = -90
--- local delaytime = RandomInt(7, 14)
-local delaytime = RandomInt(0, 1)
+local lastpicktime = -70
+local delaytime = RandomInt(7, 14)
 
 function Think()
 	local playerIDs = GetTeamPlayers(GetTeam())
-
 
 	if GetGameMode() == GAMEMODE_AP then
 		local TableIDs = GetTeamPlayers(GetTeam())
@@ -125,8 +122,7 @@ function Think()
 			
 			SelectHero(TableIDs[RandomID], PickableHeroes[RandomInt(1, #PickableHeroes)])
 			lastpicktime = DotaTime()
-			-- delaytime = RandomInt(5, 14)
-			delaytime = RandomInt(0, 1)
+			delaytime = RandomInt(5, 14)
 		end
 	elseif GetGameMode() == GAMEMODE_CM then
 		
