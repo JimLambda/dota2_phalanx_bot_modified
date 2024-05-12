@@ -257,7 +257,7 @@ PItems["item_hand_of_midas"] = { "item_gloves"; "item_recipe_hand_of_midas" }
 
 PItems["item_headdress"] = { "item_ring_of_regen"; "item_recipe_headdress" }
 
-PItems["item_heart"] = { "item_reaver"; "item_ring_of_tarrasque"; "item_recipe_heart" }
+PItems["item_heart"] = { "item_ring_of_tarrasque"; "item_reaver"; "item_recipe_heart" }
 
 PItems["item_heavens_halberd"] = { "item_sange"; "item_talisman_of_evasion"; "item_recipe_heavens_halberd"}
 
@@ -361,7 +361,7 @@ PItems["item_tranquil_boots"] = { "item_wind_lace"; "item_boots"; "item_ring_of_
 
 PItems["item_urn_of_shadows"] = { "item_sobi_mask" ; "item_circlet"; "item_ring_of_protection"; "item_recipe_urn_of_shadows" }
 
-PItems["item_vanguard"] = { "item_vitality_booster"; "item_ring_of_health"  }
+PItems["item_vanguard"] = { "item_ring_of_health"; "item_vitality_booster"  }
 
 PItems["item_veil_of_discord"] = { "item_helm_of_iron_will"; "item_crown"; "item_recipe_veil_of_discord" }
 

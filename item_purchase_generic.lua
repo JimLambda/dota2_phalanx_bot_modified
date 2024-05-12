@@ -90,19 +90,19 @@ local function GeneralPurchase()
 	local cost = itemCost;
 	
 	--Save the gold for buyback whenever a tier 3 tower damaged or destroyed
-	if t3AlreadyDamaged == false and DotaTime() > t3Check + 1.0 then
-		for i=2, 8, 3 do
-			local tower = GetTower(GetTeam(), i);
-			if tower == nil or tower:GetHealth()/tower:GetMaxHealth() < 0.5 then
-				t3AlreadyDamaged = true;
-				break;
-			end
-		end
-		t3Check = DotaTime();
-	elseif t3AlreadyDamaged == true and bot:GetBuybackCooldown() <= 30 then
-		cost = itemCost + bot:GetBuybackCost() + 100; 
-		--( 200 + bot:GetNetWorth()/12 );
-	end
+	-- if t3AlreadyDamaged == false and DotaTime() > t3Check + 1.0 then
+	-- 	for i=2, 8, 3 do
+	-- 		local tower = GetTower(GetTeam(), i);
+	-- 		if tower == nil or tower:GetHealth()/tower:GetMaxHealth() < 0.5 then
+	-- 			t3AlreadyDamaged = true;
+	-- 			break;
+	-- 		end
+	-- 	end
+	-- 	t3Check = DotaTime();
+	-- elseif t3AlreadyDamaged == true and bot:GetBuybackCooldown() <= 30 then
+	-- 	cost = itemCost + bot:GetBuybackCost() + 100; 
+	-- 	--( 200 + bot:GetNetWorth()/12 );
+	-- end
 	
 	--buy the item if we have the gold
 	if ( bot:GetGold() >= cost ) then
@@ -165,66 +165,66 @@ function ItemPurchaseThink()
 	PChat.ChatModule()
 	PAF.AcquireTarget()
 
-	if buystartingitems == false then
-		if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
-			if bot:GetUnitName() == "npc_dota_hero_medusa" then
-				bot:ActionImmediate_PurchaseItem("item_magic_stick")
-				bot:ActionImmediate_PurchaseItem("item_branches")
-				bot:ActionImmediate_PurchaseItem("item_branches")
-				bot:ActionImmediate_PurchaseItem("item_recipe_magic_wand")
-			else
-				bot:ActionImmediate_PurchaseItem("item_tango")
-				bot:ActionImmediate_PurchaseItem("item_flask")
-				bot:ActionImmediate_PurchaseItem("item_circlet")
-				bot:ActionImmediate_PurchaseItem("item_branches")
-				bot:ActionImmediate_PurchaseItem("item_branches")
-			end
+	-- if buystartingitems == false then
+	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
+	-- 		if bot:GetUnitName() == "npc_dota_hero_medusa" then
+	-- 			bot:ActionImmediate_PurchaseItem("item_magic_stick")
+	-- 			bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 			bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 			bot:ActionImmediate_PurchaseItem("item_recipe_magic_wand")
+	-- 		else
+	-- 			bot:ActionImmediate_PurchaseItem("item_tango")
+	-- 			bot:ActionImmediate_PurchaseItem("item_flask")
+	-- 			bot:ActionImmediate_PurchaseItem("item_circlet")
+	-- 			bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 			bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 		end
 			
-			buystartingitems = true
-		end
+	-- 		buystartingitems = true
+	-- 	end
 		
-		if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
-			bot:ActionImmediate_PurchaseItem("item_tango")
-			bot:ActionImmediate_PurchaseItem("item_flask")
-			bot:ActionImmediate_PurchaseItem("item_circlet")
-			bot:ActionImmediate_PurchaseItem("item_branches")
-			bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
+	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
+	-- 		bot:ActionImmediate_PurchaseItem("item_flask")
+	-- 		bot:ActionImmediate_PurchaseItem("item_circlet")
+	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
 			
-			buystartingitems = true
-		end
+	-- 		buystartingitems = true
+	-- 	end
 		
-		if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
-			bot:ActionImmediate_PurchaseItem("item_tango")
-			bot:ActionImmediate_PurchaseItem("item_tango")
-			bot:ActionImmediate_PurchaseItem("item_circlet")
-			bot:ActionImmediate_PurchaseItem("item_branches")
-			bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
+	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
+	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
+	-- 		bot:ActionImmediate_PurchaseItem("item_circlet")
+	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
 			
-			buystartingitems = true
-		end
+	-- 		buystartingitems = true
+	-- 	end
 		
-		if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
-			bot:ActionImmediate_PurchaseItem("item_tango")
-			bot:ActionImmediate_PurchaseItem("item_tango")
-			bot:ActionImmediate_PurchaseItem("item_flask")
-			bot:ActionImmediate_PurchaseItem("item_blood_grenade")
-			bot:ActionImmediate_PurchaseItem("item_branches")
-			bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
+	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
+	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
+	-- 		bot:ActionImmediate_PurchaseItem("item_flask")
+	-- 		bot:ActionImmediate_PurchaseItem("item_blood_grenade")
+	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
 			
-			buystartingitems = true
-		end 
+	-- 		buystartingitems = true
+	-- 	end 
 		
-		if PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
-			bot:ActionImmediate_PurchaseItem("item_tango")
-			bot:ActionImmediate_PurchaseItem("item_tango")
-			bot:ActionImmediate_PurchaseItem("item_flask")
-			bot:ActionImmediate_PurchaseItem("item_blood_grenade")
-			bot:ActionImmediate_PurchaseItem("item_branches")
-			bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
+	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
+	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
+	-- 		bot:ActionImmediate_PurchaseItem("item_flask")
+	-- 		bot:ActionImmediate_PurchaseItem("item_blood_grenade")
+	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
+	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
 			
-			buystartingitems = true
-		end
-	end
+	-- 		buystartingitems = true
+	-- 	end
+	-- end
 	
 	if ( GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS ) 
 	then
@@ -280,59 +280,60 @@ function ItemPurchaseThink()
 	if buyBootsStatus == false and DotaTime() > lastBootsCheck + 2.0 then buyBootsStatus = PItems.UpdateBuyBootStatus(bot); lastBootsCheck = DotaTime() end
 	
 	--purchase flying courier and support item
-	if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport") then
-		if PRoles['invisEnemyExist'] == true and buyBootsStatus == true and bot:GetGold() >= GetItemCost( "item_dust" ) 
-			and PItems.GetEmptyInventoryAmount(bot) >= 4 and PItems.GetItemCharges(bot, "item_dust") < 1 and bot:GetCourierValue() == 0 
-		then
-			bot:ActionImmediate_PurchaseItem("item_dust"); 
-		end
-	end
+	-- if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport") then
+	-- 	if PRoles['invisEnemyExist'] == true and buyBootsStatus == true and bot:GetGold() >= GetItemCost( "item_dust" ) 
+	-- 		and PItems.GetEmptyInventoryAmount(bot) >= 4 and PItems.GetItemCharges(bot, "item_dust") < 1 and bot:GetCourierValue() == 0 
+	-- 	then
+	-- 		bot:ActionImmediate_PurchaseItem("item_dust"); 
+	-- 	end
+	-- end
 	
 	-- Smoke
-	if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport")
-	and not P.IsInLaningPhase() then
-		if GetItemStockCount( "item_smoke_of_deceit" ) > 0
-		and bot:GetGold() >= GetItemCost( "item_smoke_of_deceit" ) 
-		and PItems.GetEmptyInventoryAmount(bot) >= 4
-		and PItems.GetItemCharges(bot, "item_smoke_of_deceit") < 1
-		and bot:GetCourierValue() == 0 then
-			bot:ActionImmediate_PurchaseItem("item_smoke_of_deceit")
-		end
-	end
+	-- if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport")
+	-- and not P.IsInLaningPhase() then
+	-- 	if GetItemStockCount( "item_smoke_of_deceit" ) > 0
+	-- 	and bot:GetGold() >= GetItemCost( "item_smoke_of_deceit" ) 
+	-- 	and PItems.GetEmptyInventoryAmount(bot) >= 4
+	-- 	and PItems.GetItemCharges(bot, "item_smoke_of_deceit") < 1
+	-- 	and bot:GetCourierValue() == 0 then
+	-- 		bot:ActionImmediate_PurchaseItem("item_smoke_of_deceit")
+	-- 	end
+	-- end
 	
 	-- Wards
 	if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport") then
 		if GetItemStockCount( "item_ward_observer" ) > 0
 		and bot:GetGold() >= GetItemCost( "item_ward_observer" ) 
-		and PItems.GetItemCharges(bot, "item_ward_observer") < 2
+		-- and PItems.GetItemCharges(bot, "item_ward_observer") < 2
+		and PItems.GetItemCharges(bot, "item_ward_observer") < 999
 		and bot:GetCourierValue() == 0 
 		and (DotaTime() < 0 or DotaTime() >= (10 * 60)) then
 			bot:ActionImmediate_PurchaseItem("item_ward_observer")
 		end
 	end
 	
-	if (PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport") then
-		if GetItemStockCount( "item_ward_sentry" ) > 0
-		and bot:GetGold() >= GetItemCost( "item_ward_sentry" ) 
-		and PItems.GetItemCharges(bot, "item_ward_sentry") < 2
-		and bot:GetCourierValue() == 0
-		and not P.IsInLaningPhase() then
-			bot:ActionImmediate_PurchaseItem("item_ward_sentry")
-		end
-	end
+	-- if (PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport") then
+	-- 	if GetItemStockCount( "item_ward_sentry" ) > 0
+	-- 	and bot:GetGold() >= GetItemCost( "item_ward_sentry" ) 
+	-- 	and PItems.GetItemCharges(bot, "item_ward_sentry") < 2
+	-- 	and bot:GetCourierValue() == 0
+	-- 	and not P.IsInLaningPhase() then
+	-- 		bot:ActionImmediate_PurchaseItem("item_ward_sentry")
+	-- 	end
+	-- end
 	
 	-- Blood Grenade
-	if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport")
-	and P.IsInLaningPhase() then
-		if GetItemStockCount( "item_blood_grenade" ) > 0
-		and DotaTime() > 0
-		and bot:GetGold() >= GetItemCost( "item_blood_grenade" ) 
-		and PItems.GetEmptyInventoryAmount(bot) >= 4
-		and PItems.GetItemCharges(bot, "item_blood_grenade") < 1
-		and bot:GetCourierValue() == 0 then
-			bot:ActionImmediate_PurchaseItem("item_blood_grenade")
-		end
-	end
+	-- if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport")
+	-- and P.IsInLaningPhase() then
+	-- 	if GetItemStockCount( "item_blood_grenade" ) > 0
+	-- 	and DotaTime() > 0
+	-- 	and bot:GetGold() >= GetItemCost( "item_blood_grenade" ) 
+	-- 	and PItems.GetEmptyInventoryAmount(bot) >= 4
+	-- 	and PItems.GetItemCharges(bot, "item_blood_grenade") < 1
+	-- 	and bot:GetCourierValue() == 0 then
+	-- 		bot:ActionImmediate_PurchaseItem("item_blood_grenade")
+	-- 	end
+	-- end
 	
 	---buy tom of knowledge
 	if GetItemStockCount( "item_tome_of_knowledge" ) > 0 and bot:GetGold() >= GetItemCost( "item_tome_of_knowledge" ) and 
@@ -341,19 +342,19 @@ function ItemPurchaseThink()
 		bot:ActionImmediate_PurchaseItem("item_tome_of_knowledge"); 
 	end
 	
-	if shardpurchased == false and GetItemStockCount( "item_aghanims_shard" ) > 0 and bot:GetGold() >= GetItemCost( "item_aghanims_shard" ) then
+	if shardpurchased == false and GetItemStockCount( "item_aghanims_shard" ) > 0 and bot:GetGold() >= GetItemCost( "item_aghanims_shard" ) and DotaTime() >= (50 * 60) then
 		shardpurchased = true
 		bot.shard = true
 		bot:ActionImmediate_PurchaseItem("item_aghanims_shard")
 	end
 	
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane"
-	and raindroppurchased == false
-	and GetItemStockCount( "item_infused_raindrop" ) > 0
-	and bot:GetGold() >= GetItemCost( "item_infused_raindrop" ) then
-		raindroppurchased = true
-		bot:ActionImmediate_PurchaseItem("item_infused_raindrop")
-	end
+	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane"
+	-- and raindroppurchased == false
+	-- and GetItemStockCount( "item_infused_raindrop" ) > 0
+	-- and bot:GetGold() >= GetItemCost( "item_infused_raindrop" ) then
+	-- 	raindroppurchased = true
+	-- 	bot:ActionImmediate_PurchaseItem("item_infused_raindrop")
+	-- end
 	  
 	--sell early game item   
 	if  ( GetGameMode() ~= 23 and DotaTime() > 20*60 and DotaTime() > fullInvCheck + 2.0 
@@ -414,18 +415,18 @@ function ItemPurchaseThink()
 	end
 	
 	--Insert tp scroll to list item to buy and then change the buyTP flag so the bots don't reapeatedly add the tp scroll to list item to buy 
-	if buyTP == false 
-		and DotaTime() > 0 and bot:GetCourierValue() == 0 and bot:FindItemSlot('item_tpscroll') == -1 
-	then
-		bot.currentComponentToBuy = nil;	
-		bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll';
-		buyTP = true
-		return
-	end
+	-- if buyTP == false 
+	-- 	and DotaTime() > 0 and bot:GetCourierValue() == 0 and bot:FindItemSlot('item_tpscroll') == -1 
+	-- then
+	-- 	bot.currentComponentToBuy = nil;	
+	-- 	bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll';
+	-- 	buyTP = true
+	-- 	return
+	-- end
 	--Change the flag to buy tp scroll to false when it already has it in inventory so the bot can insert tp scroll to list item to buy whenever they don't have any tp scroll
-	if buyTP == true and bot:FindItemSlot('item_tpscroll') > -1 then
-		buyTP = false
-	end
+	-- if buyTP == true and bot:FindItemSlot('item_tpscroll') > -1 then
+	-- 	buyTP = false
+	-- end
 	
 	--No need to purchase item when no item to purchase in the list
 	if #bot.itemToBuy == 0 then bot:SetNextItemPurchaseValue( 0 ) return end
