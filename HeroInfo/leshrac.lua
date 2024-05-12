@@ -3,18 +3,18 @@ local bot = GetBot()
 local PRoles = require(GetScriptDirectory() .. "/Library/PhalanxRoles")
 local P = require(GetScriptDirectory() ..  "/Library/PhalanxFunctions")
 
-local Impale = bot:GetAbilityByName("nyx_assassin_impale")
-local MindFlare = bot:GetAbilityByName("nyx_assassin_jolt")
-local SpikedCarapace = bot:GetAbilityByName("nyx_assassin_spiked_carapace")
-local Vendetta = bot:GetAbilityByName("nyx_assassin_vendetta")
+local SplitEarth = bot:GetAbilityByName("leshrac_split_earth")
+local DiabolicEdict = bot:GetAbilityByName("leshrac_diabolic_edict")
+local LightningStorm = bot:GetAbilityByName("leshrac_lightning_storm")
+local PulseNova = bot:GetAbilityByName("leshrac_pulse_nova")
 
 function X.GetHeroLevelPoints()
 	local abilities = {}
 	
-	table.insert(abilities, Impale:GetName())
-	table.insert(abilities, MindFlare:GetName())
-	table.insert(abilities, SpikedCarapace:GetName())
-	table.insert(abilities, Vendetta:GetName())
+	table.insert(abilities, SplitEarth:GetName())
+	table.insert(abilities, DiabolicEdict:GetName())
+	table.insert(abilities, LightningStorm:GetName())
+	table.insert(abilities, PulseNova:GetName())
 	
 	local talents = {}
 	
@@ -27,20 +27,20 @@ function X.GetHeroLevelPoints()
 	
 	local SkillPoints = {
 	abilities[1], -- Level 1
-	abilities[2], -- Level 2
-	abilities[1], -- Level 3
-	abilities[3], -- Level 4
-	abilities[1], -- Level 5
+	abilities[3], -- Level 2
+	abilities[3], -- Level 3
+	abilities[1], -- Level 4
+	abilities[2], -- Level 5
 	abilities[4], -- Level 6
-	abilities[1], -- Level 7
+	abilities[2], -- Level 7
 	abilities[2], -- Level 8
 	abilities[2], -- Level 9
 	talents[2],   -- Level 10
-	abilities[2], -- Level 11
+	abilities[1], -- Level 11
 	abilities[4], -- Level 12
-	abilities[3], -- Level 13
+	abilities[1], -- Level 13
 	abilities[3], -- Level 14
-	talents[4],   -- Level 15
+	talents[3],   -- Level 15
 	abilities[3], -- Level 16
 	"NoLevel",    -- Level 17
 	abilities[4], -- Level 18
@@ -53,7 +53,7 @@ function X.GetHeroLevelPoints()
 	talents[8],   -- Level 25
 	"NoLevel",    -- Level 26
 	talents[1],   -- Level 27
-	talents[3],   -- Level 28
+	talents[4],   -- Level 28
 	talents[5],   -- Level 29
 	talents[7]    -- Level 30
 	}
@@ -64,18 +64,18 @@ end
 function X.GetHeroItemBuild()
 	local ItemBuild
 
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
+	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
 		ItemBuild = { 
-		--"item_null_talisman",
+		"item_null_talisman",
 		"item_magic_wand",
-		"item_tranquil_boots",
-	
-		"item_solar_crest",
-		"item_dagon_5",
-		"item_blink",
-		"item_force_staff",
-		"item_octarine_core",
-		"item_boots_of_bearing",
+		"item_arcane_boots",
+		
+		"item_bloodstone",
+		"item_shivas_guard",
+		"item_eternal_shroud",
+		"item_black_king_bar",
+		"item_kaya_and_sange",
+		"item_ultimate_scepter_2",
 		}
 	end
 	

@@ -9,9 +9,6 @@ local TakeAim = bot:GetAbilityByName("sniper_take_aim")
 local Assassinate = bot:GetAbilityByName("sniper_assassinate")
 local ConcussiveGrenade = bot:GetAbilityByName("sniper_concussive_grenade")
 
-local AttackRange
-local manathreshold
-
 function X.GetHeroLevelPoints()
 	local abilities = {}
 	
@@ -70,40 +67,31 @@ function X.GetHeroItemBuild()
 
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
 		ItemBuild = { 
-		-- "item_wraith_band",
-		-- "item_magic_wand",
-		-- "item_power_treads",
+		"item_wraith_band",
+		"item_magic_wand",
+		"item_power_treads",
 	
-		-- "item_hand_of_midas",
-		"item_boots",
 		"item_dragon_lance",
-		"item_hurricane_pike",
-		"item_travel_boots",
+		"item_greater_crit",
 		"item_black_king_bar",
-		"item_butterfly",
-		"item_skadi",
+		"item_hurricane_pike",
 		"item_satanic",
-		"item_travel_boots_2",
-		"item_ultimate_scepter_2",
+		"item_skadi",
 		}
 	end
 	
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
 		ItemBuild = { 
-		-- "item_wraith_band",
-		-- "item_magic_wand",
-		-- "item_power_treads",
+		"item_wraith_band",
+		"item_magic_wand",
+		"item_power_treads",
 	
-		"item_boots",
 		"item_dragon_lance",
-		"item_travel_boots",
-		"item_lesser_crit",
-		"item_hurricane_pike",
-		"item_black_king_bar",
 		"item_greater_crit",
+		"item_black_king_bar",
+		"item_hurricane_pike",
 		"item_satanic",
-		"item_travel_boots_2",
-		"item_ultimate_scepter_2",
+		"item_monkey_king_bar",
 		}
 	end
 	

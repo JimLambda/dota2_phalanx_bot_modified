@@ -63,8 +63,12 @@ function GetDesire()
 			
 			-- Determine farm mode
 			if FarmLaneDesire >= FarmJungleDesire then
+				local FountainLocation = PAF.GetFountainLocation(bot)
+				local LFL = GetLaneFrontLocation(GetOpposingTeam(), LaneToFarm, 0)
+				local LFLDistanceToFountain = P.GetDistance(FountainLocation, LFL)
+				
 				if HealthyToFarmJungle
-				and IsEnemyNearLane(GetLaneFrontLocation(GetOpposingTeam(), LaneToFarm, 0)) then
+				and (IsEnemyNearLane(LFL) and LFLDistanceToFountain >= 5000) then
 					FarmMode = "Jungle"
 				else
 					FarmMode = "Lane"
@@ -352,21 +356,15 @@ function GetGPM()
 end
 
 function GetGPMGoal()
-	return 0
-	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
-	-- 	return 450
-	-- end
-	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
-	-- 	-- return 400
-	-- 	return 450
-	-- end
-	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
-	-- 	-- return 350
-	-- 	return 450
-	-- end
-	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
-	-- 	return 450
-	-- end
+	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
+		return 450
+	end
+	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
+		return 400
+	end
+	if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
+		return 350
+	end
 end
 
 function IsCoreHero(Unit)
