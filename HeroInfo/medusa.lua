@@ -99,7 +99,7 @@ function X.GetHeroItemBuild()
 		"item_desolator",
 		"item_skadi",
 		"item_travel_boots",
-		"item_disperser",
+		"item_monkey_king_bar",
 		"item_hurricane_pike",
 		"item_travel_boots_2",
 		"item_ultimate_scepter_2",

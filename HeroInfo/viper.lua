@@ -85,7 +85,7 @@ function X.GetHeroItemBuild()
 		"item_dragon_lance",
 		"item_manta",
 		"item_bloodthorn",
-		"item_butterfly",
+		"item_monkey_king_bar",
 		"item_hurricane_pike",
 		"item_travel_boots",
 		"item_satanic",

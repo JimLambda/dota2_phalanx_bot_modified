@@ -96,7 +96,7 @@ function X.GetHeroItemBuild()
 		"item_manta",
 		"item_heavens_halberd",
 		"item_sange_and_yasha",
-		"item_disperser",
+		"item_monkey_king_bar",
 		"item_travel_boots",
 		"item_hurricane_pike",
 		"item_travel_boots_2",

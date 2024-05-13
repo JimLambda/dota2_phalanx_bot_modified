@@ -63,8 +63,12 @@ function GetDesire()
 			
 			-- Determine farm mode
 			if FarmLaneDesire >= FarmJungleDesire then
+				local FountainLocation = PAF.GetFountainLocation(bot)
+				local LFL = GetLaneFrontLocation(GetOpposingTeam(), LaneToFarm, 0)
+				local LFLDistanceToFountain = P.GetDistance(FountainLocation, LFL)
+				
 				if HealthyToFarmJungle
-				and IsEnemyNearLane(GetLaneFrontLocation(GetOpposingTeam(), LaneToFarm, 0)) then
+				and (IsEnemyNearLane(LFL) and LFLDistanceToFountain >= 5000) then
 					FarmMode = "Jungle"
 				else
 					FarmMode = "Lane"
@@ -352,7 +356,7 @@ function GetGPM()
 end
 
 function GetGPMGoal()
-	return 0
+	return 450
 	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
 	-- 	return 450
 	-- end

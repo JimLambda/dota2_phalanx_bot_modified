@@ -91,7 +91,7 @@ function X.GetHeroItemBuild()
 		"item_mjollnir",
 		"item_bloodthorn",
 		"item_travel_boots",
-		"item_yasha_and_kaya",
+		"item_monkey_king_bar",
 		"item_travel_boots_2",
 		"item_ultimate_scepter_2",
 		"item_moon_shard",

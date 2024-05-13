@@ -90,7 +90,7 @@ function X.GetHeroItemBuild()
 		"item_silver_edge",
 		"item_bloodthorn",
 		"item_mjollnir",
-		"item_greater_crit",
+		"item_monkey_king_bar",
 		"item_travel_boots",
 		"item_ultimate_scepter_2",
 		"item_travel_boots_2",
