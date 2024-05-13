@@ -144,7 +144,7 @@ function GetDesire()
 			if CanLastHitCreep(enemycreeps) and not IsCoreNearby() then
 				desiremode = "LH"
 				-- return 0.56
-				return BOT_MODE_DESIRE_ABSOLUTE * 1.4
+				return BOT_MODE_DESIRE_ABSOLUTE * 1.3
 			end
 			if CanLastHitCreep(allycreeps) then
 				desiremode = "Deny"
