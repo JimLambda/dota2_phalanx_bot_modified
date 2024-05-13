@@ -311,20 +311,20 @@ function IsCoreNearby()
 	local AlliesWithinRange = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
 	local FilteredAllies = PAF.FilterTrueUnits(AlliesWithinRange)
 	
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport"
-	or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
-		for v, Ally in pairs(FilteredAllies) do
-			if PRoles.GetPRole(Ally, Ally:GetUnitName()) == "MidLane"
-			or PRoles.GetPRole(Ally, Ally:GetUnitName()) == "OffLane"
-			or PRoles.GetPRole(Ally, Ally:GetUnitName()) == "SafeLane" then
-				return true
-			end
+	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport"
+	-- or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
+	-- 	for v, Ally in pairs(FilteredAllies) do
+	-- 		if PRoles.GetPRole(Ally, Ally:GetUnitName()) == "MidLane"
+	-- 		or PRoles.GetPRole(Ally, Ally:GetUnitName()) == "OffLane"
+	-- 		or PRoles.GetPRole(Ally, Ally:GetUnitName()) == "SafeLane" then
+	-- 			return true
+	-- 		end
 				
-			if not Ally:IsBot() then
-				return true
-			end
-		end
-	end
+	-- 		if not Ally:IsBot() then
+	-- 			return true
+	-- 		end
+	-- 	end
+	-- end
 	
 	return false
 end
