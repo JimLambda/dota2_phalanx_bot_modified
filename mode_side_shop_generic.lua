@@ -143,13 +143,11 @@ function GetDesire()
 		if IsSuitableToLastHit() then
 			if CanLastHitCreep(enemycreeps) and not IsCoreNearby() then
 				desiremode = "LH"
-				-- return 0.56
-				return BOT_MODE_DESIRE_ABSOLUTE * 1.3
+				return 0.56
 			end
 			if CanLastHitCreep(allycreeps) then
 				desiremode = "Deny"
-				-- return 0.56
-				return BOT_MODE_DESIRE_ABSOLUTE * 1.12
+				return 0.56
 			end
 		end
 	end
@@ -158,7 +156,7 @@ function GetDesire()
 	local FilteredAllies = PAF.FilterTrueUnits(AlliesWithinRange)
 	
 	if IsSuitableToLastHit()
-	-- and not IsCoreNearby()
+	and not IsCoreNearby()
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_TOP
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_MID
 	and bot:GetActiveMode() ~= BOT_MODE_DEFEND_TOWER_BOT then
@@ -300,7 +298,7 @@ function CanLastHitCreep(creeps)
 					
 			local actualcasterdmg = hcreep:GetActualIncomingDamage(casterdmg, DAMAGE_TYPE_PHYSICAL)
 				
-			if hcreep:GetHealth() <= incdmg or ((hcreep:GetHealth() - actualcasterdmg) < incdmg and GetUnitToLocationDistance(hcreep, projloc) <= (myAttackRange + 300)) then
+			if hcreep:GetHealth() <= incdmg or ((hcreep:GetHealth() - actualcasterdmg) < incdmg and GetUnitToLocationDistance(hcreep, projloc) <= 300) then
 				target = hcreep
 				return true
 			end
@@ -314,20 +312,20 @@ function IsCoreNearby()
 	local AlliesWithinRange = bot:GetNearbyHeroes(1000, false, BOT_MODE_NONE)
 	local FilteredAllies = PAF.FilterTrueUnits(AlliesWithinRange)
 	
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport"
-	or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
-		for v, Ally in pairs(FilteredAllies) do
-			if PRoles.GetPRole(Ally, Ally:GetUnitName()) == "MidLane"
-			or PRoles.GetPRole(Ally, Ally:GetUnitName()) == "OffLane"
-			or PRoles.GetPRole(Ally, Ally:GetUnitName()) == "SafeLane" then
-				return true
-			end
+	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport"
+	-- or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
+	-- 	for v, Ally in pairs(FilteredAllies) do
+	-- 		if PRoles.GetPRole(Ally, Ally:GetUnitName()) == "MidLane"
+	-- 		or PRoles.GetPRole(Ally, Ally:GetUnitName()) == "OffLane"
+	-- 		or PRoles.GetPRole(Ally, Ally:GetUnitName()) == "SafeLane" then
+	-- 			return true
+	-- 		end
 				
-			if not Ally:IsBot() then
-				return true
-			end
-		end
-	end
+	-- 		if not Ally:IsBot() then
+	-- 			return true
+	-- 		end
+	-- 	end
+	-- end
 	
 	return false
 end
