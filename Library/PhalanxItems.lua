@@ -193,7 +193,7 @@ PItems["item_arcane_boots"] = { "item_boots"; "item_ring_of_basilius"; "item_rec
 
 PItems["item_armlet"] = { "item_helm_of_iron_will"; "item_gloves"; "item_blades_of_attack"; "item_recipe_armlet" }
 
-PItems["item_assault"] = { "item_platemail"; "item_hyperstone"; "item_recipe_assault"; "item_buckler" }
+PItems["item_assault"] = { "item_buckler"; "item_platemail"; "item_hyperstone"; "item_recipe_assault" }
 
 PItems["item_bfury"] = { "item_quelling_blade"; "item_cornucopia"; "item_broadsword"; "item_claymore"; "item_recipe_bfury" }
 
@@ -339,7 +339,7 @@ PItems["item_rod_of_atos"] = { "item_staff_of_wizardry"; "item_vitality_booster"
 
 PItems["item_sange"] = { "item_belt_of_strength"; "item_ogre_axe"; "item_recipe_sange" }
 			    
-PItems["item_sange_and_yasha"] = { "item_yasha"; "item_sange" }
+PItems["item_sange_and_yasha"] = { "item_sange"; "item_yasha" }
 
 PItems["item_satanic"] = { "item_lifesteal"; "item_reaver"; "item_claymore" }
 

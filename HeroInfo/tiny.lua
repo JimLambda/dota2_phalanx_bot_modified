@@ -71,15 +71,27 @@ function X.GetHeroItemBuild()
 
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
 		ItemBuild = { 
-		"item_bracer",
-		"item_magic_wand",
-		"item_power_treads",
+		-- "item_bracer",
+		-- "item_magic_wand",
+		-- "item_power_treads",
 		
-		"item_blink",
-		"item_echo_sabre",
-		"item_ultimate_scepter",
-		"item_greater_crit",
-		"item_black_king_bar",
+		-- "item_blink",
+		-- "item_echo_sabre",
+		-- "item_ultimate_scepter",
+		-- "item_greater_crit",
+		-- "item_black_king_bar",
+
+
+		"item_boots",
+		"item_crimson_guard",
+		"item_pipe",
+		"item_heart",
+		"item_satanic",
+		"item_assault",
+		"item_travel_boots",
+		"item_ultimate_scepter_2",
+		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	

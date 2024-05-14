@@ -67,20 +67,33 @@ function X.GetHeroItemBuild()
 
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
 		ItemBuild = { 
-		"item_quelling_blade",
+		-- "item_quelling_blade",
 	
-		"item_bracer",
-		"item_magic_wand",
-		"item_phase_boots",
-		"item_soul_ring",
+		-- "item_bracer",
+		-- "item_magic_wand",
+		-- "item_phase_boots",
+		-- "item_soul_ring",
 		
+		-- "item_pipe",
+		-- "item_eternal_shroud",
+		-- "item_blink",
+		-- "item_ultimate_scepter",
+		-- "item_heavens_halberd",
+		-- "item_assault",
+		-- "item_overwhelming_blink",
+
+
+
+		"item_boots",
 		"item_pipe",
 		"item_eternal_shroud",
-		"item_blink",
-		"item_ultimate_scepter",
-		"item_heavens_halberd",
-		"item_assault",
-		"item_overwhelming_blink",
+		"item_lotus_orb",
+		"item_shivas_guard",
+		"item_heart",
+		"item_travel_boots",
+		"item_ultimate_scepter_2",
+		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	

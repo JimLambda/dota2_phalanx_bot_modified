@@ -71,17 +71,29 @@ function X.GetHeroItemBuild()
 
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
 		ItemBuild = { 
-		"item_bracer",
-		"item_magic_wand",
-		"item_phase_boots",
+		-- "item_bracer",
+		-- "item_magic_wand",
+		-- "item_phase_boots",
 		
-		"item_blade_mail",
-		"item_ultimate_scepter",
-		"item_black_king_bar",
+		-- "item_blade_mail",
+		-- "item_ultimate_scepter",
+		-- "item_black_king_bar",
+		-- "item_shivas_guard",
+		-- "item_greater_crit",
+		-- "item_ultimate_scepter_2",
+		-- "item_octarine_core",
+
+
+		"item_boots",
+		"item_crimson_guard",
+		"item_lotus_orb",
 		"item_shivas_guard",
-		"item_greater_crit",
+		"item_heart",
+		"item_assault",
+		"item_travel_boots",
 		"item_ultimate_scepter_2",
-		"item_octarine_core",
+		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	
@@ -89,17 +101,29 @@ function X.GetHeroItemBuild()
 		local CoreItem = PRoles.GetAOEItem()
 		
 		ItemBuild = { 
-		"item_bracer",
-		"item_magic_wand",
-		"item_phase_boots",
+		-- "item_bracer",
+		-- "item_magic_wand",
+		-- "item_phase_boots",
 		
-		CoreItem,
-		"item_blade_mail",
-		"item_ultimate_scepter",
-		"item_black_king_bar",
-		"item_heavens_halberd",
-		"item_ultimate_scepter_2",
+		-- CoreItem,
+		-- "item_blade_mail",
+		-- "item_ultimate_scepter",
+		-- "item_black_king_bar",
+		-- "item_heavens_halberd",
+		-- "item_ultimate_scepter_2",
+		-- "item_assault",
+
+
+		"item_boots",
+		"item_crimson_guard",
+		"item_lotus_orb",
+		"item_shivas_guard",
+		"item_heart",
 		"item_assault",
+		"item_travel_boots",
+		"item_ultimate_scepter_2",
+		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	
