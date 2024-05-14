@@ -258,6 +258,7 @@ end
 
 function CanLastHitCreep(creeps)
 	local attackdmg = bot:GetAttackDamage()
+	local myAttackRange = bot:GetAttackRange()
 	
 	if bot:FindItemSlot("item_quelling_blade") >= 0 then
 		if bot:GetUnitName() == "npc_dota_hero_templar_assassin"

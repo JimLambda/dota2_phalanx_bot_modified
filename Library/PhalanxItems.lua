@@ -88,6 +88,8 @@ PItems['earlyGameItem'] = {
 	 "item_ward_observer",
 	 "item_hand_of_midas",
 	 "item_enchanted_mango",
+	 "item_lesser_crit",
+	 "item_blight_stone",
 	 "item_ancient_janggo"
 	 --"item_tpscroll"
 }
@@ -215,7 +217,7 @@ PItems["item_butterfly"] = { "item_talisman_of_evasion"; "item_eagle"; "item_cla
 
 PItems["item_crimson_guard"] = { "item_vanguard"; "item_helm_of_iron_will"; "item_recipe_crimson_guard" }
 
-PItems["item_lesser_crit"] = { "item_claymore"; "item_blades_of_attack"; "item_recipe_lesser_crit" }
+PItems["item_lesser_crit"] = { "item_blades_of_attack"; "item_claymore"; "item_recipe_lesser_crit" }
 
 PItems["item_greater_crit"] = { "item_lesser_crit"; "item_demon_edge"; "item_recipe_greater_crit" }
 
@@ -289,7 +291,7 @@ PItems["item_mekansm"] = { "item_chainmail"; "item_headdress"; "item_recipe_meka
 
 PItems["item_mjollnir"] = { "item_maelstrom"; "item_hyperstone"; "item_recipe_mjollnir" }
 
-PItems["item_monkey_king_bar"] = { "item_quarterstaff"; "item_javelin"; "item_demon_edge" }
+PItems["item_monkey_king_bar"] = { "item_javelin"; "item_blitz_knuckles"; "item_demon_edge"; "item_recipe_monkey_king_bar" }
 
 PItems["item_moon_shard"] = { "item_hyperstone"; "item_hyperstone"}
 
