@@ -352,7 +352,7 @@ function ItemPurchaseThink()
 		bot:ActionImmediate_PurchaseItem("item_tome_of_knowledge"); 
 	end
 	
-	if shardpurchased == false and GetItemStockCount( "item_aghanims_shard" ) > 0 and bot:GetGold() >= GetItemCost( "item_aghanims_shard" ) and DotaTime() >= (50 * 60) then
+	if shardpurchased == false and GetItemStockCount( "item_aghanims_shard" ) > 0 and bot:GetGold() >= GetItemCost( "item_aghanims_shard" ) and (DotaTime() >= (50 * 60) or ((GetGameMode() == 23) and (DotaTime() >= (25 * 60)))) then
 		shardpurchased = true
 		bot.shard = true
 		bot:ActionImmediate_PurchaseItem("item_aghanims_shard")
