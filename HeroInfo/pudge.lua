@@ -83,13 +83,12 @@ function X.GetHeroItemBuild()
 		-- "item_overwhelming_blink",
 
 
-		"item_boots",
 		"item_lotus_orb",
 		"item_pipe",
 		"item_heart",
 		"item_shivas_guard",
 		"item_bloodstone",
-		"item_travel_boots_2",
+		"item_assault",
 		"item_ultimate_scepter_2",
 		"item_moon_shard",
 		}
@@ -113,13 +112,12 @@ function X.GetHeroItemBuild()
 		-- "item_overwhelming_blink",
 		-- "item_travel_boots_2",
 		
-		"item_boots",
 		"item_lotus_orb",
 		"item_pipe",
 		"item_heart",
 		"item_shivas_guard",
 		"item_bloodstone",
-		"item_travel_boots_2",
+		"item_assault",
 		"item_ultimate_scepter_2",
 		"item_moon_shard",
 		}

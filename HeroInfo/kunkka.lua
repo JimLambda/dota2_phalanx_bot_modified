@@ -84,15 +84,13 @@ function X.GetHeroItemBuild()
 		-- "item_octarine_core",
 
 
-		"item_boots",
 		"item_crimson_guard",
 		"item_lotus_orb",
 		"item_shivas_guard",
 		"item_heart",
 		"item_assault",
-		"item_travel_boots",
+		"item_sphere",
 		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end
@@ -114,15 +112,13 @@ function X.GetHeroItemBuild()
 		-- "item_assault",
 
 
-		"item_boots",
 		"item_crimson_guard",
 		"item_lotus_orb",
 		"item_shivas_guard",
 		"item_heart",
 		"item_assault",
-		"item_travel_boots",
+		"item_sphere",
 		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end

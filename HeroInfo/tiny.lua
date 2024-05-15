@@ -82,15 +82,13 @@ function X.GetHeroItemBuild()
 		-- "item_black_king_bar",
 
 
-		"item_boots",
 		"item_crimson_guard",
 		"item_pipe",
 		"item_heart",
 		"item_satanic",
 		"item_assault",
-		"item_travel_boots",
+		"item_shivas_guard",
 		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end

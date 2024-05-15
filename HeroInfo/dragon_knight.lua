@@ -86,15 +86,13 @@ function X.GetHeroItemBuild()
 		-- "item_overwhelming_blink",
 
 
-		"item_boots",
 		"item_lotus_orb",
 		"item_heavens_halberd",
 		"item_assault",
 		"item_satanic",
 		"item_heart",
-		"item_travel_boots",
+		"item_shivas_guard",
 		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end

@@ -80,17 +80,16 @@ function X.GetHeroItemBuild()
 
 
 
-		"item_boots",
+
 		"item_aether_lens",
 		"item_aeon_disk",
 		"item_lotus_orb",
 		"item_cyclone",
 		"item_octarine_core",
-		"item_travel_boots",
+		"item_sheepstick",
 		"item_ultimate_scepter_2",
 		"item_wind_waker",
 		"item_ethereal_blade",
-		"item_travel_boots_2",
 		"item_moon_shard",
 
 		

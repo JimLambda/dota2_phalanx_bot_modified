@@ -81,15 +81,13 @@ function X.GetHeroItemBuild()
 		-- "item_ultimate_scepter_2",
 
 
-		"item_boots",
 		"item_sange_and_yasha",
 		"item_heart",
 		"item_assault",
 		"item_satanic",
+		"item_abyssal_blade",
 		"item_manta",
-		"item_travel_boots",
 		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end
@@ -113,15 +111,13 @@ function X.GetHeroItemBuild()
 
 
 
-		"item_boots",
 		"item_sange_and_yasha",
 		"item_heart",
 		"item_assault",
 		"item_satanic",
+		"item_abyssal_blade",
 		"item_manta",
-		"item_travel_boots",
 		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end

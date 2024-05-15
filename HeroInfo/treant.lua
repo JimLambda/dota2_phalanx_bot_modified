@@ -79,15 +79,13 @@ function X.GetHeroItemBuild()
 		-- "item_boots_of_bearing",
 
 
-		"item_boots",
 		"item_crimson_guard",
 		"item_pipe",
 		"item_lotus_orb",
 		"item_heart",
 		"item_shivas_guard",
-		"item_travel_boots",
+		"item_sphere",
 		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end

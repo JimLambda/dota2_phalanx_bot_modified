@@ -94,13 +94,12 @@ function X.GetHeroItemBuild()
 		-- "item_travel_boots_2",
 		
 		
-		"item_boots",
 		"item_eternal_shroud",
 		"item_shivas_guard",
 		"item_lotus_orb",
 		"item_bloodstone",
 		"item_sphere",
-		"item_travel_boots_2",
+		"item_octarine_core",
 		"item_ultimate_scepter_2",
 		"item_moon_shard",
 		}

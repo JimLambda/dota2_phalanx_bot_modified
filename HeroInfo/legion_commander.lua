@@ -86,15 +86,13 @@ function X.GetHeroItemBuild()
 
 
 
-		"item_boots",
 		"item_crimson_guard",
 		"item_assault",
 		"item_sange_and_yasha",
 		"item_heart",
 		"item_satanic",
-		"item_travel_boots",
+		"item_lotus_orb",
 		"item_ultimate_scepter_2",
-		"item_travel_boots_2",
 		"item_moon_shard",
 		}
 	end
