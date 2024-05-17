@@ -63,8 +63,7 @@ local delaytime = RandomInt(0, 1)
 function Think()
 	local playerIDs = GetTeamPlayers(GetTeam())
 
-
-	if GetGameMode() == GAMEMODE_AP then
+	if GetGameMode() == GAMEMODE_AP or GetGameMode() == 23 then
 		local TableIDs = GetTeamPlayers(GetTeam())
 		local RandomID = RandomInt(1, #TableIDs)
 		
