@@ -64,7 +64,7 @@ function PDefend.GetDefendDesire(bot, lane)
 		
 		if DefendDesire > 0.1 then
 			if not NotNilOrDead(LaneTierTwo) then
-				return DefendDesire * 4
+				return DefendDesire * 6
 			end
 		end
 
