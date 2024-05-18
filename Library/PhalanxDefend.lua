@@ -76,7 +76,9 @@ function PDefend.GetDefendDesire(bot, lane)
 			end
 		end
 
-		
+		if not NotNilOrDead(LaneTierTwo) then
+			return DefendDesire * 4
+		end
 		
 		-- if NotNilOrDead(LaneTierOne) and ShouldGoDefend(bot, lane) then
 		if NotNilOrDead(LaneTierOne) then
