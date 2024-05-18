@@ -61,12 +61,6 @@ function PDefend.GetDefendDesire(bot, lane)
 				end
 			end
 		end
-		
-		if DefendDesire > 0.1 then
-			if not NotNilOrDead(LaneTierTwo) then
-				return DefendDesire * 6
-			end
-		end
 
 		if DotaTime() >= (29 * 60) or ((GetGameMode() == 23) and (DotaTime() >= (15 * 60))) then
 			if NotNilOrDead(LaneTierOne) then
@@ -75,6 +69,14 @@ function PDefend.GetDefendDesire(bot, lane)
 				return DefendDesire * 8
 			end
 		end
+		
+		if DefendDesire > 0.1 then
+			if not NotNilOrDead(LaneTierTwo) then
+				return DefendDesire * 6
+			end
+		end
+
+		
 		
 		-- if NotNilOrDead(LaneTierOne) and ShouldGoDefend(bot, lane) then
 		if NotNilOrDead(LaneTierOne) then
