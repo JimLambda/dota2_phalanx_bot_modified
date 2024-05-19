@@ -55,8 +55,8 @@ function PDefend.GetDefendDesire(bot, lane)
 				local FilteredEnemies = PAF.FilterTrueUnits(EnemyHeroes)
 				
 				for v, Enemy in pairs(FilteredEnemies) do
-					if GetUnitToLocationDistance(Enemy, AncientLoc) <= 1400 then
-						return BOT_MODE_DESIRE_VERYHIGH
+					if GetUnitToLocationDistance(Enemy, AncientLoc) <= 2400 then
+						return Clamp(BOT_MODE_DESIRE_VERYHIGH, 0.0, 0.82)
 					end
 				end
 			end
@@ -64,22 +64,14 @@ function PDefend.GetDefendDesire(bot, lane)
 		
 		if DefendDesire > 0.1 then
 			if not NotNilOrDead(LaneTierTwo) then
-				return BOT_MODE_DESIRE_VERYHIGH
-			end
-		end
-
-		if DotaTime() >= (29 * 60) or ((GetGameMode() == 23) and (DotaTime() >= (15 * 60))) then
-			if NotNilOrDead(LaneTierOne) then
-				return Clamp(DefendDesire * 4, 0.0, 0.9)
-			elseif NotNilOrDead(LaneTierTwo) then
-				return Clamp((DefendDesire * 8), 0.0, 0.9)
+				return Clamp(BOT_MODE_DESIRE_VERYHIGH, 0.0, 0.82)
 			end
 		end
 		
 		if NotNilOrDead(LaneTierOne) and ShouldGoDefend(bot, lane) then
-			return Clamp(DefendDesire, 0.0, 0.9)
+			return Clamp(DefendDesire, 0.0, 0.82)
 		elseif NotNilOrDead(LaneTierTwo) and ShouldGoDefend(bot, lane) then
-			return Clamp((DefendDesire * 2), 0.0, 0.9)
+			return Clamp((DefendDesire * 2), 0.0, 0.82)
 		end
 	else
 		return 0

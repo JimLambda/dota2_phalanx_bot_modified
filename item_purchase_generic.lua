@@ -434,19 +434,19 @@ function ItemPurchaseThink()
 		end
 	end
 	
-	--Insert tp scroll to list item to buy and then change the buyTP flag so the bots don't reapeatedly add the tp scroll to list item to buy 
-	-- if buyTP == false 
-	-- 	and DotaTime() > 0 and bot:GetCourierValue() == 0 and bot:FindItemSlot('item_tpscroll') == -1 
-	-- then
-	-- 	bot.currentComponentToBuy = nil;	
-	-- 	bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll';
-	-- 	buyTP = true
-	-- 	return
-	-- end
-	--Change the flag to buy tp scroll to false when it already has it in inventory so the bot can insert tp scroll to list item to buy whenever they don't have any tp scroll
-	-- if buyTP == true and bot:FindItemSlot('item_tpscroll') > -1 then
-	-- 	buyTP = false
-	-- end
+	-- Insert tp scroll to list item to buy and then change the buyTP flag so the bots don't reapeatedly add the tp scroll to list item to buy 
+	if buyTP == false 
+		and DotaTime() > 0 and bot:GetCourierValue() == 0 and bot:FindItemSlot('item_tpscroll') == -1 
+	then
+		bot.currentComponentToBuy = nil;	
+		bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll';
+		buyTP = true
+		return
+	end
+	-- Change the flag to buy tp scroll to false when it already has it in inventory so the bot can insert tp scroll to list item to buy whenever they don't have any tp scroll
+	if buyTP == true and bot:FindItemSlot('item_tpscroll') > -1 then
+		buyTP = false
+	end
 	
 	--No need to purchase item when no item to purchase in the list
 	if #bot.itemToBuy == 0 then bot:SetNextItemPurchaseValue( 0 ) return end
