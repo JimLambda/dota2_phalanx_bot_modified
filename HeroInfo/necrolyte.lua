@@ -78,9 +78,11 @@ function X.GetHeroItemBuild()
 		"item_heart",
 		"item_eternal_shroud",
 		"item_ultimate_scepter",
-		"item_heavens_halberd",
+		"item_shivas_guard",
 		"item_ultimate_scepter_2",
-		"item_assault",
+		"item_octarine_core",
+		"item_travel_boots_2",
+		"item_moon_shard",
 		}
 	end
 	

@@ -76,27 +76,21 @@ function X.GetHeroItemBuild()
 
 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
 		ItemBuild = { 
-		"item_null_talisman",
-		"item_magic_wand",
-		"item_arcane_boots",
+		-- "item_null_talisman",
+		-- "item_magic_wand",
+		-- "item_arcane_boots",
 		
-		"item_phylactery",
-		"item_cyclone",
-		"item_octarine_core",
-		"item_aether_lens",
-		"item_wind_waker",
-		"item_kaya_and_sange",
-		"item_angels_demise",
-		"item_ultimate_scepter_2",
-		}
-	end
-	
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
-		ItemBuild = { 
-		"item_null_talisman",
-		"item_magic_wand",
+		-- "item_phylactery",
+		-- "item_cyclone",
+		-- "item_octarine_core",
+		-- "item_aether_lens",
+		-- "item_wind_waker",
+		-- "item_kaya_and_sange",
+		-- "item_angels_demise",
+		-- "item_ultimate_scepter_2",
+
+
 		"item_power_treads",
-		
 		"item_phylactery",
 		"item_manta",
 		"item_hurricane_pike",
@@ -104,7 +98,37 @@ function X.GetHeroItemBuild()
 		"item_moon_shard",
 		"item_angels_demise",
 		"item_ultimate_scepter_2",
-		"item_skadi",
+		"item_octarine_core",
+		"item_moon_shard",
+		}
+	end
+	
+	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
+		ItemBuild = { 
+		-- "item_null_talisman",
+		-- "item_magic_wand",
+		-- "item_power_treads",
+		
+		-- "item_phylactery",
+		-- "item_manta",
+		-- "item_hurricane_pike",
+		-- "item_kaya_and_sange",
+		-- "item_moon_shard",
+		-- "item_angels_demise",
+		-- "item_ultimate_scepter_2",
+		-- "item_skadi",
+
+
+		"item_power_treads",
+		"item_phylactery",
+		"item_manta",
+		"item_hurricane_pike",
+		"item_kaya_and_sange",
+		"item_moon_shard",
+		"item_angels_demise",
+		"item_ultimate_scepter_2",
+		"item_octarine_core",
+		"item_moon_shard",
 		}
 	end
 	
