@@ -5,28 +5,21 @@
 --- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
 -----------------------------------------------------------------------------
 if GetBot():IsInvulnerable() or not GetBot():IsHero() or not string.find(GetBot():GetUnitName(), "hero") or GetBot():IsIllusion() then
-	return;
+	return
 end
 
+if string.find(GetScriptDirectory(), "srcds")
+	or string.find(GetScriptDirectory(), "/var/")
+then
+
 function GetDesire()
-	
+
 	return BOT_MODE_DESIRE_NONE
 
 end
-
-function Think()
-		
-end
-
-function OnStart()
-
-end
-
-
-function OnEnd()
-
 	
-
 end
+
+
 
 -- dota2jmz@163.com QQ:2462331592..

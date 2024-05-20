@@ -1,483 +1,652 @@
+----------------------------------------------------------------------------------------------------
+--- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
+--- BOT EXPERIMENT Author: Arizona Fauzie
+--- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
+--- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
+--- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
+--- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
+----------------------------------------------------------------------------------------------------
+local Item = require( GetScriptDirectory()..'/FunLib/aba_item' )
+local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
+
 local bot = GetBot()
 
-if bot:GetUnitName() == 'npc_dota_hero_monkey_king' then
-	local trueMK = nil;
-	for i, id in pairs(GetTeamPlayers(GetTeam())) do
-		if IsPlayerBot(id) and GetSelectedHeroName(id) == 'npc_dota_hero_monkey_king' then
-			local member = GetTeamMember(i)
-			if member ~= nil then
-				trueMK = member
-			end
-		end
-	end
-	if trueMK ~= nil and bot ~= trueMK then
-		print("AbilityItemUsage "..tostring(bot).." isn't true MK")
-		return;
-	elseif trueMK == nil or bot == trueMK then
-		print("AbilityItemUsage "..tostring(bot).." is true MK")
-	end
-end
-
-if bot:IsInvulnerable() or bot:IsHero() == false or bot:IsIllusion()
+if bot:IsInvulnerable()
+	or not bot:IsHero()
+	or bot:IsIllusion()
+	or bot:GetUnitName() == "npc_dota_hero_techies"
 then
 	return
 end
 
-local HeroInfoFile = "NOT IMPLEMENTED"
+local BotBuild = require( GetScriptDirectory() .. "/BotLib/" .. string.gsub( bot:GetUnitName(), "npc_dota_", "" ) )
 
-if bot:IsHero() then
-	HeroInfoFile = require(GetScriptDirectory() .. "/HeroInfo/" .. string.gsub(GetBot():GetUnitName(), "npc_dota_hero_", ""));
+if BotBuild == nil then return end
+
+bot.itemToBuy = {}
+bot.currentItemToBuy = nil
+bot.currentComponentToBuy = nil
+bot.currListItemToBuy = {}
+bot.SecretShop = false
+
+
+local sPurchaseList = BotBuild['sBuyList']
+local sItemSellList = BotBuild['sSellList']
+
+
+for i = 1, #sPurchaseList
+do
+	bot.itemToBuy[i] = sPurchaseList[#sPurchaseList - i + 1]
 end
 
-local P = require(GetScriptDirectory() ..  "/Library/PhalanxFunctions")
-local PItems = require(GetScriptDirectory() .. "/Library/PhalanxItems")
-local PRoles = require(GetScriptDirectory() .. "/Library/PhalanxRoles")
-local PAF = require(GetScriptDirectory() ..  "/Library/PhalanxAbilityFunctions")
-local PChat = require(GetScriptDirectory() .. "/Library/PhalanxChat")
 
-bot.itemToBuy = {};
-bot.currentItemToBuy = nil;
-bot.currentComponentToBuy = nil;
-bot.currListItemToBuy = {};
-bot.SecretShop = false;
-bot.SideShop = false;
-local unitName = bot:GetUnitName();
 
----Update the status to prevent bots selling stout shield and queling blade
-bot.buildBFury = false;
-bot.buildVanguard = false;
-bot.buildHoly = false;
-bot.buildGreaterCritOrAngelsDemise = false;
-bot.buildDesolator = false;
+if Role.IsBanShadow()
+then
 
-for i=1, math.ceil(#bot.itemToBuy/2) do
-	if bot.itemToBuy[i] == "item_bfury" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_bfury" then
-		bot.buildBFury = true;
+	for i = 1, #bot.itemToBuy
+	do 
+		if bot.itemToBuy[i] == "item_glimmer_cape"
+		then
+			bot.itemToBuy[i] = "item_tpscroll"
+		end
 	end
-	if bot.itemToBuy[i] == "item_vanguard" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_vanguard" 
-	or bot.itemToBuy[i] == "item_crimson_guard" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_crimson_guard"
-	or bot.itemToBuy[i] == "item_abyssal_blade" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_abyssal_blade"
-	then
-		bot.buildVanguard = true;
-	end
-	if bot.itemToBuy[i] == "item_holy_locket" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_holy_locket" then
-		bot.buildHoly = true;
-	end
-	if bot.itemToBuy[i] == "item_greater_crit" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_greater_crit" 
-	or bot.itemToBuy[i] == "item_angels_demise" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_angels_demise"
-	then
-		bot.buildGreaterCritOrAngelsDemise = true;
-	end
-	if bot.itemToBuy[i] == "item_desolator" or bot.itemToBuy[#bot.itemToBuy-i+1] == "item_desolator" then
-		bot.buildDesolator = true;
-	end
+
 end
 
-local courier = nil;
-local buytime = -90;
-local check_time = -90;
 
-local lastItemToBuy = nil;
-local CanPurchaseFromSecret = false;
-local CanPurchaseFromSide = false;
-local itemCost = 0;
-local courier = nil;
-local t3AlreadyDamaged = false;
-local t3Check = -90;
+local sell_time = -90
+local check_time = -90
 
---General item purchase logic
+
+local lastItemToBuy = nil
+local bPurchaseFromSecret = false
+local itemCost = 0
+local courier = nil
+local t3AlreadyDamaged = false
+local t3Check = -90
+local hasBuyShard = true
+
 local function GeneralPurchase()
 
-	--Cache all needed item properties when the last item to buy not equal to current item component to buy
-	if lastItemToBuy ~= bot.currentComponentToBuy then
-		lastItemToBuy = bot.currentComponentToBuy;
-		bot:SetNextItemPurchaseValue( GetItemCost( bot.currentComponentToBuy ) );
-		CanPurchaseFromSecret = IsItemPurchasedFromSecretShop(bot.currentComponentToBuy);
-		itemCost = GetItemCost( bot.currentComponentToBuy );
-		lastItemToBuy = bot.currentComponentToBuy ;
+	
+	if lastItemToBuy ~= bot.currentComponentToBuy
+	then
+		lastItemToBuy = bot.currentComponentToBuy
+		bot:SetNextItemPurchaseValue( GetItemCost( bot.currentComponentToBuy ) )
+		bPurchaseFromSecret = IsItemPurchasedFromSecretShop( bot.currentComponentToBuy )
+		itemCost = GetItemCost( bot.currentComponentToBuy )
+	end
+
+	if bot.currentComponentToBuy == "item_infused_raindrop"
+		or bot.currentComponentToBuy == "item_tome_of_knowledge"
+		or bot.currentComponentToBuy == "item_ward_observer"
+		or bot.currentComponentToBuy == "item_ward_sentry"
+		or bot.currentComponentToBuy == "item_flask"
+	then
+		if GetItemStockCount( bot.currentComponentToBuy ) <= 0
+		then
+			return	
+		end
+	end
+
+	local cost = itemCost
+
+
+	if lastItemToBuy == 'item_boots'
+		and bot.currentItemToBuy == 'item_travel_boots'
+		and Item.HasBootsInMainSolt( bot )
+	then
+		cost = GetItemCost( 'item_travel_boots' )
 	end
 	
-	local cost = itemCost;
-	
-	--Save the gold for buyback whenever a tier 3 tower damaged or destroyed
-	-- if t3AlreadyDamaged == false and DotaTime() > t3Check + 1.0 then
-	-- 	for i=2, 8, 3 do
-	-- 		local tower = GetTower(GetTeam(), i);
-	-- 		if tower == nil or tower:GetHealth()/tower:GetMaxHealth() < 0.5 then
-	-- 			t3AlreadyDamaged = true;
-	-- 			break;
-	-- 		end
-	-- 	end
-	-- 	t3Check = DotaTime();
-	-- elseif t3AlreadyDamaged == true and bot:GetBuybackCooldown() <= 30 then
-	-- 	cost = itemCost + bot:GetBuybackCost() + 100; 
-	-- 	--( 200 + bot:GetNetWorth()/12 );
-	-- end
-	
-	--buy the item if we have the gold
-	if ( bot:GetGold() >= cost ) then
-		
-		if courier == nil and bot.courierAssigned == true then
-			courier = GetCourier(bot.courierID);
+
+
+	if bot:GetLevel() >= 18
+		and t3AlreadyDamaged == false
+		and DotaTime() > t3Check + 1.0
+	then
+
+		for i = 2, 8, 3
+		do
+			local tower = GetTower( GetTeam(), i )
+			if tower == nil or tower:GetHealth() / tower:GetMaxHealth() < 0.3
+			then
+				t3AlreadyDamaged = true
+				break
+			end
 		end
-		
-		--purchase done by courier for secret shop item
-		if bot.SecretShop and courier ~= nil and GetCourierState(courier) == COURIER_STATE_IDLE and courier:DistanceFromSecretShop() == 0 then
-			if courier:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS then
-				bot.currentComponentToBuy = nil;
-				bot.currListItemToBuy[#bot.currListItemToBuy] = nil; 
-				courier.latestUser = bot;
-				bot.SecretShop = false;
+
+
+		for i = 1, 7, 3
+		do
+			local tower = GetTower( GetTeam(), i )
+			if tower ~= nil
+				and tower:IsAlive()
+			then
+				t3AlreadyDamaged = false
+				break
+			end
+		end
+
+
+		for i = 9, 10, 1
+		do
+			local tower = GetTower( GetTeam(), i )
+			if tower == nil
+				or tower:GetHealth() / tower:GetMaxHealth() < 0.9
+			then
+				t3AlreadyDamaged = true
+				break
+			end
+		end
+
+
+		if DotaTime() >= 54 * 60 then t3AlreadyDamaged = true end
+
+		t3Check = DotaTime()
+
+	elseif t3AlreadyDamaged == true
+			and bot:GetBuybackCooldown() <= 10
+	then
+		cost = itemCost + bot:GetBuybackCost() + bot:GetNetWorth() / 40 - 300
+	end
+
+	--如果只剩下一个小配件则不留
+	if #bot.currListItemToBuy == 1
+		or Role.IsPvNMode()
+	then
+		cost = itemCost
+	end
+	
+	
+	--从第12分钟起存钱买魔晶
+	if not hasBuyShard
+		and DotaTime() > 12 * 60
+	then
+		local shardCDTime = 15 * 60 - DotaTime()
+		if shardCDTime < 0
+		then
+			cost = cost + 1400
+		else
+			cost = cost + 1400 * ( 1 - shardCDTime / 300 )
+		end		
+	end
+	
+	
+	--开始购买魔晶
+	if bot.currentComponentToBuy == "item_aghanims_shard"
+	then
+		hasBuyShard = false
+		bot.currentComponentToBuy = nil
+		bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+		return	
+	end
+	
+
+	--达到金钱需要时购物
+	if bot:GetGold() >= cost
+		and bot:GetItemInSlot( 14 ) == nil
+	then
+
+		if courier == nil
+		then
+			courier = bot.theCourier
+		end
+
+		--当信使购买神秘商店物品后
+		if bot.SecretShop
+			and courier ~= nil
+			and GetCourierState( courier ) == COURIER_STATE_IDLE
+			and courier:DistanceFromSecretShop() == 0
+		then
+			if courier:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
+			then
+				bot.currentComponentToBuy = nil
+				bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+				bot.SecretShop = false
 				return
 			end
 		end
-		
-		--Get bot distance from side shop and secret shop
-		local dSecretShop = bot:DistanceFromSecretShop();
-		
-		--Logic to decide in which shop bot have to purchase the item
-		if CanPurchaseFromSecret and bot:DistanceFromSecretShop() > 0 then
-			bot.SecretShop = true;
+
+		--决定是否在神秘购物
+		if bPurchaseFromSecret
+			and bot:DistanceFromSecretShop() > 0
+		then
+			bot.SecretShop = true
 		else
-			if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS then
-				bot.currentComponentToBuy = nil;
-				bot.currListItemToBuy[#bot.currListItemToBuy] = nil; 
-				bot.SecretShop = false;
+			if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
+			then
+				bot.currentComponentToBuy = nil
+				bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+				bot.SecretShop = false
 				return
 			else
-				if not P.IsMeepoClone(bot) then
-					print("[item_purchase_generic] "..bot:GetUnitName().." failed to purchase "..bot.currentComponentToBuy.." : "..tostring(bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy )))
-				end
+				print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
 			end
-		end	
+		end
 	else
-		bot.SecretShop = false;
+		bot.SecretShop = false
 	end
 end
+
+
+--加速模式购物逻辑
+local function TurboModeGeneralPurchase()
+
+	if lastItemToBuy ~= bot.currentComponentToBuy
+	then
+		lastItemToBuy = bot.currentComponentToBuy
+		bot:SetNextItemPurchaseValue( GetItemCost( bot.currentComponentToBuy ) )
+		itemCost = GetItemCost( bot.currentComponentToBuy )
+		lastItemToBuy = bot.currentComponentToBuy
+	end
+
+	if bot.currentComponentToBuy == "item_infused_raindrop"
+		or bot.currentComponentToBuy == "item_tome_of_knowledge"
+		or bot.currentComponentToBuy == "item_ward_observer"
+		or bot.currentComponentToBuy == "item_ward_sentry"
+	then
+		if GetItemStockCount( bot.currentComponentToBuy ) <= 0
+		then
+			return
+		end
+	end
+
+	local cost = itemCost
+
+	if lastItemToBuy == 'item_boots'
+		and bot.currentItemToBuy == 'item_travel_boots'
+		and Item.HasBootsInMainSolt( bot )
+	then
+		cost = GetItemCost( 'item_travel_boots' )
+	end
+	
+
+	if not hasBuyShard
+		and DotaTime() > 6 * 60
+	then
+		local shardCDTime = 10 * 60 - DotaTime()
+		if shardCDTime < 0
+		then
+			cost = cost + 1400
+		else
+			cost = cost + 1400 * ( 1 - shardCDTime / 180 )
+		end		
+	end
+	
+	
+
+	if bot.currentComponentToBuy == "item_aghanims_shard"
+	then
+		hasBuyShard = false
+		bot.currentComponentToBuy = nil
+		bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+		return	
+	end
+	
+
+
+	if bot:GetGold() >= cost
+		and bot:GetItemInSlot( 14 ) == nil
+	then
+		if bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) == PURCHASE_ITEM_SUCCESS
+		then
+			bot.currentComponentToBuy = nil
+			bot.currListItemToBuy[#bot.currListItemToBuy] = nil
+			return
+		else
+			print( bot:GetUnitName().." 未能购买物品 "..bot.currentComponentToBuy.." : "..tostring( bot:ActionImmediate_PurchaseItem( bot.currentComponentToBuy ) ) )
+		end
+	end
+end
+
 
 local lastInvCheck = -90
 local fullInvCheck = -90
 local lastBootsCheck = -90
 local buyBootsStatus = false
-local addVeryLateGameItem = false
 local buyRD = false
 local buyTP = false
-local buyBottle = false
-local buystartingitems = false
-local shardpurchased = false
-bot.shard = false
-local raindroppurchased = false
 
-local declarePosition = false
-local listset = false
+local switchTime = 0
+local buyWardTime = -999
 
-function ItemPurchaseThink()  
-	PChat.ChatModule()
-	PAF.AcquireTarget()
+local buyTPtime = 0
+local buyBookTime = 0
+local hasBuyClarity = false
 
-	-- if buystartingitems == false then
-	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
-	-- 		if bot:GetUnitName() == "npc_dota_hero_medusa" then
-	-- 			bot:ActionImmediate_PurchaseItem("item_magic_stick")
-	-- 			bot:ActionImmediate_PurchaseItem("item_branches")
-	-- 			bot:ActionImmediate_PurchaseItem("item_branches")
-	-- 			bot:ActionImmediate_PurchaseItem("item_recipe_magic_wand")
-	-- 		else
-	-- 			bot:ActionImmediate_PurchaseItem("item_tango")
-	-- 			bot:ActionImmediate_PurchaseItem("item_flask")
-	-- 			bot:ActionImmediate_PurchaseItem("item_circlet")
-	-- 			bot:ActionImmediate_PurchaseItem("item_branches")
-	-- 			bot:ActionImmediate_PurchaseItem("item_branches")
-	-- 		end
-			
-	-- 		buystartingitems = true
-	-- 	end
-		
-	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
-	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
-	-- 		bot:ActionImmediate_PurchaseItem("item_flask")
-	-- 		bot:ActionImmediate_PurchaseItem("item_circlet")
-	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
-	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
-			
-	-- 		buystartingitems = true
-	-- 	end
-		
-	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
-	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
-	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
-	-- 		bot:ActionImmediate_PurchaseItem("item_circlet")
-	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
-	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
-			
-	-- 		buystartingitems = true
-	-- 	end
-		
-	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
-	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
-	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
-	-- 		bot:ActionImmediate_PurchaseItem("item_flask")
-	-- 		bot:ActionImmediate_PurchaseItem("item_blood_grenade")
-	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
-	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
-			
-	-- 		buystartingitems = true
-	-- 	end 
-		
-	-- 	if PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
-	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
-	-- 		bot:ActionImmediate_PurchaseItem("item_tango")
-	-- 		bot:ActionImmediate_PurchaseItem("item_flask")
-	-- 		bot:ActionImmediate_PurchaseItem("item_blood_grenade")
-	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
-	-- 		bot:ActionImmediate_PurchaseItem("item_branches")
-			
-	-- 		buystartingitems = true
-	-- 	end
-	-- end
-	
-	if ( GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS ) 
+
+
+function ItemPurchaseThink()
+
+	if ( GetGameState() ~= GAME_STATE_PRE_GAME and GetGameState() ~= GAME_STATE_GAME_IN_PROGRESS )
+	then return	end
+
+	if bot:HasModifier( 'modifier_arc_warden_tempest_double' )
 	then
-		return;
-	end
-	
-	if listset == false and HeroInfoFile.GetHeroItemBuild() ~= nil then
-		for i=1, math.ceil(#HeroInfoFile.GetHeroItemBuild()/2) do
-			bot.itemToBuy[i] = HeroInfoFile.GetHeroItemBuild()[#HeroInfoFile.GetHeroItemBuild()-i+1]; 
-			bot.itemToBuy[#HeroInfoFile.GetHeroItemBuild()-i+1] = HeroInfoFile.GetHeroItemBuild()[i];
-		end
-			
-		listset = true
-	end
-	
-	if bot:HasModifier('modifier_arc_warden_tempest_double') then
-		bot.itemToBuy = {};
+		bot.itemToBuy = {}
 		return
 	end
-	
-	-- Announce positions
-	if PRoles.GetPRole(bot, bot:GetUnitName()) == "MidLane" then
-		if declarePosition == false and DotaTime() >= -74 then
-			declarePosition = true
-			bot:ActionImmediate_Chat("I will play Position 2 (MidLane Core).", false)
-		end
-	elseif PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane" then
-		if declarePosition == false and DotaTime() >= -75 then
-			declarePosition = true
-			bot:ActionImmediate_Chat("I will play Position 1 (SafeLane Carry).", false)
-		end
-	elseif PRoles.GetPRole(bot, bot:GetUnitName()) == "OffLane" then
-		if declarePosition == false and DotaTime() >= -73 then
-			declarePosition = true
-			bot:ActionImmediate_Chat("I will play Position 3 (OffLane Core).", false)
-		end
-	elseif PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" then
-		if declarePosition == false and DotaTime() >= -72 then
-			declarePosition = true
-			bot:ActionImmediate_Chat("I will play Position 4 (OffLane Support).", false)
-		end
-	elseif PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport" then
-		if declarePosition == false and DotaTime() >= -71 then
-			declarePosition = true
-			bot:ActionImmediate_Chat("I will play Position 5 (SafeLane Support).", false)
-		end
-	end
-	
-	--Update invisible hero or item availability status
-	if PRoles['invisEnemyExist'] == false then PRoles.UpdateInvisEnemyStatus(bot); end
-	
-	--Update boots availability status to make the bot start buy support item and rain drop
-	if buyBootsStatus == false and DotaTime() > lastBootsCheck + 2.0 then buyBootsStatus = PItems.UpdateBuyBootStatus(bot); lastBootsCheck = DotaTime() end
-	
-	--purchase flying courier and support item
-	-- if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport") then
-	-- 	if PRoles['invisEnemyExist'] == true and buyBootsStatus == true and bot:GetGold() >= GetItemCost( "item_dust" ) 
-	-- 		and PItems.GetEmptyInventoryAmount(bot) >= 4 and PItems.GetItemCharges(bot, "item_dust") < 1 and bot:GetCourierValue() == 0 
-	-- 	then
-	-- 		bot:ActionImmediate_PurchaseItem("item_dust"); 
-	-- 	end
-	-- end
-	
-	-- Smoke
-	-- if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport")
-	-- and not P.IsInLaningPhase() then
-	-- 	if GetItemStockCount( "item_smoke_of_deceit" ) > 0
-	-- 	and bot:GetGold() >= GetItemCost( "item_smoke_of_deceit" ) 
-	-- 	and PItems.GetEmptyInventoryAmount(bot) >= 4
-	-- 	and PItems.GetItemCharges(bot, "item_smoke_of_deceit") < 1
-	-- 	and bot:GetCourierValue() == 0 then
-	-- 		bot:ActionImmediate_PurchaseItem("item_smoke_of_deceit")
-	-- 	end
-	-- end
-	
-	-- Wards
-	if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport") then
-		if GetItemStockCount( "item_ward_observer" ) > 0
-		and bot:GetGold() >= GetItemCost( "item_ward_observer" ) 
-		-- and PItems.GetItemCharges(bot, "item_ward_observer") < 2
-		and PItems.GetItemCharges(bot, "item_ward_observer") < 999
-		and bot:GetCourierValue() == 0 
-		and (DotaTime() < 0 or DotaTime() >= (10 * 60)) then
-			bot:ActionImmediate_PurchaseItem("item_ward_observer")
-		end
-	end
-	
-	-- if (PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport") then
-	-- 	if GetItemStockCount( "item_ward_sentry" ) > 0
-	-- 	and bot:GetGold() >= GetItemCost( "item_ward_sentry" ) 
-	-- 	and PItems.GetItemCharges(bot, "item_ward_sentry") < 2
-	-- 	and bot:GetCourierValue() == 0
-	-- 	and not P.IsInLaningPhase() then
-	-- 		bot:ActionImmediate_PurchaseItem("item_ward_sentry")
-	-- 	end
-	-- end
-	
-	-- Blood Grenade
-	-- if (PRoles.GetPRole(bot, bot:GetUnitName()) == "SoftSupport" or PRoles.GetPRole(bot, bot:GetUnitName()) == "HardSupport")
-	-- and P.IsInLaningPhase() then
-	-- 	if GetItemStockCount( "item_blood_grenade" ) > 0
-	-- 	and DotaTime() > 0
-	-- 	and bot:GetGold() >= GetItemCost( "item_blood_grenade" ) 
-	-- 	and PItems.GetEmptyInventoryAmount(bot) >= 4
-	-- 	and PItems.GetItemCharges(bot, "item_blood_grenade") < 1
-	-- 	and bot:GetCourierValue() == 0 then
-	-- 		bot:ActionImmediate_PurchaseItem("item_blood_grenade")
-	-- 	end
-	-- end
-	
-	---buy tom of knowledge
-	if GetItemStockCount( "item_tome_of_knowledge" ) > 0 and bot:GetGold() >= GetItemCost( "item_tome_of_knowledge" ) and 
-	   PItems.GetEmptyInventoryAmount(bot) >= 4 and PRoles.IsTheLowestLevel(bot)
+
+	--------*******----------------*******----------------*******--------
+	local currentTime = DotaTime()
+	local botName = bot:GetUnitName()
+	local botLevel = bot:GetLevel()
+	local botGold = bot:GetGold()
+	local botWorth = bot:GetNetWorth()
+	local botMode = bot:GetActiveMode()
+	local botHP	= bot:GetHealth() / bot:GetMaxHealth()
+	--------*******----------------*******----------------*******--------
+
+
+
+	--更新队伍里是否有辅助的定位
+	if Role['supportExist'] == nil then Role.UpdateSupportStatus( bot ) end
+
+	--更新敌方是否有隐身英雄或道具的状态
+	if Role['invisEnemyExist'] == false then Role.UpdateInvisEnemyStatus( bot ) end
+
+	--更新是否出鞋的状态
+	if buyBootsStatus == false
+		and currentTime > lastBootsCheck + 2.0
 	then
-		bot:ActionImmediate_PurchaseItem("item_tome_of_knowledge"); 
+		buyBootsStatus = Item.HasBuyBoots( bot )
+		lastBootsCheck = currentTime
 	end
-	
-	if shardpurchased == false and GetItemStockCount( "item_aghanims_shard" ) > 0 and bot:GetGold() >= GetItemCost( "item_aghanims_shard" ) and (DotaTime() >= (50 * 60) or ((GetGameMode() == 23) and (DotaTime() >= (22 * 60)))) then
-		shardpurchased = true
-		bot.shard = true
-		bot:ActionImmediate_PurchaseItem("item_aghanims_shard")
-	end
-	
-	-- if PRoles.GetPRole(bot, bot:GetUnitName()) == "SafeLane"
-	-- and raindroppurchased == false
-	-- and GetItemStockCount( "item_infused_raindrop" ) > 0
-	-- and bot:GetGold() >= GetItemCost( "item_infused_raindrop" ) then
-	-- 	raindroppurchased = true
-	-- 	bot:ActionImmediate_PurchaseItem("item_infused_raindrop")
-	-- end
-	  
-	--sell early game item   
-	if  ( GetGameMode() ~= 23 and DotaTime() > 20*60 and DotaTime() > fullInvCheck + 2.0 
-	      and ( bot:DistanceFromFountain() == 0 or bot:DistanceFromSecretShop() == 0 ) ) 
-		or ( GetGameMode() == 23 and DotaTime() > 10*60 and DotaTime() > fullInvCheck + 2.0  )
+
+	--辅助定位英雄购买辅助物品
+	if bot.theRole == 'support'
 	then
-		local emptySlot = PItems.GetEmptyInventoryAmount(bot);
-		local slotToSell = nil;
-		if emptySlot < 2 then
-			for i=1,#PItems['earlyGameItem'] do
-				local item = PItems['earlyGameItem'][i];
-				local itemSlot = bot:FindItemSlot(item);
-				if itemSlot >= 0 and itemSlot <= 8 then
-					if item == "item_stout_shield" then
-						if bot.buildVanguard == false  then
-							slotToSell = itemSlot;
-							break;
-						end
-					elseif item == "item_magic_wand" or item == "item_magic_stick" then
-						if bot.buildHoly == false then
-							slotToSell = itemSlot;
-							break;
-						end	
-					elseif item == "item_quelling_blade" then
-						if bot.buildBFury == false then
-							slotToSell = itemSlot;
-							break;
-						end
-					elseif item == "item_lesser_crit" then
-						if bot.buildGreaterCritOrAngelsDemise == false then
-							slotToSell = itemSlot;
-							break;
-						end
-					elseif item == "item_blight_stone" then
-						if bot.buildDesolator == false then
-							slotToSell = itemSlot;
-							break;
-						end
-					elseif item == "item_hand_of_midas" then
-						if #bot.itemToBuy <= 2 then
-							slotToSell = itemSlot;
-							break;
-						end
-					else
-						slotToSell = itemSlot
-						break;
-					end
+		if currentTime > 30 and not hasBuyClarity
+			and botGold >= GetItemCost( "item_clarity" )
+			and not Role.IsPvNMode()
+		then
+			hasBuyClarity = true
+			bot:ActionImmediate_PurchaseItem( "item_clarity" )
+			return
+		elseif botLevel >= 5
+			and Role['invisEnemyExist'] == true
+			and buyBootsStatus == true
+			and botGold >= GetItemCost( "item_dust" )
+			and Item.GetEmptyInventoryAmount( bot ) >= 2
+			and Item.GetItemCharges( bot, "item_dust" ) <= 0
+			and bot:GetCourierValue() == 0
+		then
+			bot:ActionImmediate_PurchaseItem( "item_dust" )
+			return
+		end
+	end
+		
+	
+	--为自己购买魔晶
+	if not hasBuyShard
+		and GetItemStockCount( "item_aghanims_shard" ) > 0
+		and botGold >= 1400
+	then
+		hasBuyShard = true
+		
+		bot:ActionImmediate_PurchaseItem( "item_aghanims_shard" )
+				
+		return
+	end
+
+
+	--防止非辅助购买魂泪
+	if buyRD == false
+		and currentTime < 0
+		and bot.theRole ~= 'support'
+	then
+		buyRD = true
+	end
+
+
+	--死前如果会损失金钱则购买额外TP
+	if botGold >= GetItemCost( "item_tpscroll" )
+		and bot:IsAlive()
+		and botGold < ( GetItemCost( "item_tpscroll" ) + botWorth / 40 )
+		and botHP < 0.08
+		and GetGameMode() ~= 23
+		and bot:GetHealth() >= 1
+		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
+		and not Item.HasItem( bot, 'item_travel_boots' )
+		and not Item.HasItem( bot, 'item_travel_boots_2' )
+		and Item.GetItemCharges( bot, 'item_tpscroll' ) <= 2
+	then
+		bot:ActionImmediate_PurchaseItem( "item_tpscroll" )
+		return
+	end
+
+
+	--辅助死前如果会损失金钱则购买粉
+	if botGold >= GetItemCost( "item_dust" )
+		and bot:IsAlive()
+		and GetGameMode() ~= 23
+		and botLevel > 6
+		and bot.theRole == 'support'
+		and botGold < ( GetItemCost( "item_dust" )  + botWorth / 40 )
+		and botHP < 0.06
+		and bot:WasRecentlyDamagedByAnyHero( 3.1 )
+		and Item.GetItemCharges( bot, 'item_dust' ) <= 1
+	then
+		bot:ActionImmediate_PurchaseItem( "item_dust" )
+		return
+	end
+
+
+
+	--交换魂泪的位置避免过早被破坏
+	if currentTime > 180
+		and currentTime < 1800
+		and switchTime < currentTime - 5.6
+	then
+		local raindrop = bot:FindItemSlot( "item_infused_raindrop" )
+		local raindropCharge = Item.GetItemCharges( bot, "item_infused_raindrop" )
+		local nEnemyHeroes = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
+		if ( raindrop >= 0 and raindrop <= 5 )
+			and ( nEnemyHeroes[1] ~= nil
+				or botMode == BOT_MODE_ROSHAN
+				or bot:WasRecentlyDamagedByAnyHero( 3.1 ) )
+			and ( raindropCharge == 1 or raindropCharge >= 7 )
+		then
+			switchTime = currentTime
+			bot:ActionImmediate_SwapItems( raindrop, 6 )
+			return
+		end
+	end
+
+	
+
+	if ( GetGameMode() ~= 23 and botLevel > 6 and currentTime > fullInvCheck + 1.0
+		and ( bot:DistanceFromFountain() <= 200 or bot:DistanceFromSecretShop() <= 200 ) )
+		or ( GetGameMode() == 23 and botLevel > 9 and currentTime > fullInvCheck + 1.0 )
+	then
+		local emptySlot = Item.GetEmptyInventoryAmount( bot )
+		local slotToSell = nil
+
+		local preEmpty = 2
+		if botLevel <= 17 then preEmpty = 1 end
+		if emptySlot <= preEmpty - 1
+		then
+			for i = 1, #Item['tEarlyItem']
+			do
+				local itemName = Item['tEarlyItem'][i]
+				local itemSlot = bot:FindItemSlot( itemName )
+				if itemSlot >= 0 and itemSlot <= 8
+				then
+					slotToSell = itemSlot
+					break
 				end
 			end
-		end	
-		if slotToSell ~= nil then
-			bot:ActionImmediate_SellItem(bot:GetItemInSlot(slotToSell))
 		end
-		fullInvCheck = DotaTime()
-	end
-	
-	--Sell non BoT boots when have BoT
-	if DotaTime() > 30*60 and ( PItems.HasItem( bot, "item_travel_boots") or PItems.HasItem( bot, "item_travel_boots_2")) and
-	   ( bot:DistanceFromFountain() == 0 or bot:DistanceFromSecretShop() == 0 )
-	then	
-		for i=1,#PItems['earlyBoots']
-		do
-			local bootsSlot = bot:FindItemSlot(PItems['earlyBoots'][i])
-			if bootsSlot >= 0 then
-				bot:ActionImmediate_SellItem(bot:GetItemInSlot(bootsSlot))
+
+
+		if botWorth > 9999 
+			and bot:GetItemInSlot( 6 ) ~= nil
+			and bot:GetItemInSlot( 7 ) ~= nil
+		then
+			local wand = bot:FindItemSlot( "item_magic_wand" )
+			local assitItem = bot:FindItemSlot( "item_infused_raindrop" )
+			if assitItem < 0 then assitItem = bot:FindItemSlot( "item_bracer" ) end
+			if assitItem < 0 then assitItem = bot:FindItemSlot( "item_null_talisman" ) end
+			if assitItem < 0 then assitItem = bot:FindItemSlot( "item_wraith_band" ) end
+			if assitItem >= 0
+				and wand >= 6
+				and wand <= 8
+			then
+				slotToSell = assitItem
 			end
 		end
+
+		if slotToSell ~= nil
+		then
+			bot:ActionImmediate_SellItem( bot:GetItemInSlot( slotToSell ) )
+			return
+		end
+
+		fullInvCheck = currentTime
 	end
-	
-	-- Insert tp scroll to list item to buy and then change the buyTP flag so the bots don't reapeatedly add the tp scroll to list item to buy 
-	if buyTP == false 
-		and DotaTime() > 0 and bot:GetCourierValue() == 0 and bot:FindItemSlot('item_tpscroll') == -1 
+
+	--出售过度装备
+	if currentTime > sell_time + 0.5
+		and ( bot:GetItemInSlot( 6 ) ~= nil or bot:GetItemInSlot( 7 ) ~= nil or bot:GetItemInSlot( 8 ) ~= nil )
+		and ( bot:DistanceFromFountain() <= 100 or bot:DistanceFromSecretShop() <= 100 )
 	then
-		bot.currentComponentToBuy = nil;	
-		bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll';
-		buyTP = true
+		sell_time = currentTime
+
+		for i = 2 , #sItemSellList, 2
+		do
+			local nNewSlot = bot:FindItemSlot( sItemSellList[i - 1] )
+			local nOldSlot = bot:FindItemSlot( sItemSellList[i] )
+			if nNewSlot >= 0 and nOldSlot >= 0
+			then
+				bot:ActionImmediate_SellItem( bot:GetItemInSlot( nOldSlot ) )
+				return
+			end
+		end
+
+
+		if currentTime > 18 * 60
+			and ( Item.HasItem( bot, "item_travel_boots" ) or Item.HasItem( bot, "item_travel_boots_2" ) )
+		then
+			for i = 1, #Item['tEarlyBoots']
+			do
+				local bootsSlot = bot:FindItemSlot( Item['tEarlyBoots'][i] )
+				if bootsSlot >= 0
+				then
+					bot:ActionImmediate_SellItem( bot:GetItemInSlot( bootsSlot ) )
+					return
+				end
+			end
+		end
+
+	end
+
+
+	
+	if currentTime > 4 * 60
+		and buyTP == false
+		and bot:GetCourierValue() == 0
+		and botGold >= GetItemCost( "item_tpscroll" )
+		and not Item.HasItem( bot, 'item_travel_boots' )
+		and not Item.HasItem( bot, 'item_travel_boots_2' )
+	then
+		local tCharges = Item.GetItemCharges( bot, 'item_tpscroll' )		
+		if bot:HasModifier("modifier_teleporting") then tCharges = tCharges - 1 end
+		
+		if tCharges <= 0
+			or ( botLevel >= 18 and tCharges <= 1 )
+		then
+
+			if botLevel < 18 or ( botLevel >= 18 and tCharges == 1 )
+			then
+				buyTP = true
+				buyTPtime = currentTime
+				bot.currentComponentToBuy = nil
+				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
+				if #bot.itemToBuy == 0
+				then
+					bot.itemToBuy = { 'item_tpscroll' }
+					if bot.currentItemToBuy == nil
+					then
+						bot.currentItemToBuy = 'item_tpscroll'
+					end
+				end
+				return
+			end
+
+			if botLevel >= 18 and tCharges == 0 and botGold >= GetItemCost( "item_tpscroll" ) * 2
+			then
+				buyTP = true
+				buyTPtime = currentTime
+				bot.currentComponentToBuy = nil
+				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
+				bot.currListItemToBuy[#bot.currListItemToBuy+1] = 'item_tpscroll'
+				if #bot.itemToBuy == 0
+				then
+					bot.itemToBuy = { 'item_tpscroll' }
+					if bot.currentItemToBuy == nil
+					then
+						bot.currentItemToBuy = 'item_tpscroll'
+					end
+				end
+				return
+			end
+			
+		end
+	end
+
+	
+	if buyTP == true and buyTPtime < currentTime - 70
+	then
+		buyTP = false
 		return
 	end
-	-- Change the flag to buy tp scroll to false when it already has it in inventory so the bot can insert tp scroll to list item to buy whenever they don't have any tp scroll
-	if buyTP == true and bot:FindItemSlot('item_tpscroll') > -1 then
-		buyTP = false
-	end
 	
-	--No need to purchase item when no item to purchase in the list
+	
+
+
 	if #bot.itemToBuy == 0 then bot:SetNextItemPurchaseValue( 0 ) return end
+
 	
-	--Get the next item to buy and break it to item components then add it to currListItemToBuy. 
-	--It'll only done if the bot already has the item that formed from its component in their hero's inventory (not stash) to prevent unintended item combining
-	if  bot.currentItemToBuy == nil and #bot.currListItemToBuy == 0 then
-		bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy];
-		local tempTable = PItems.GetBasicItems({PItems.NormItemName(bot.currentItemToBuy)})
-		for i=1,math.ceil(#tempTable/2) 
-		do	
+	if bot.currentItemToBuy == nil
+		and #bot.currListItemToBuy == 0
+	then
+		bot.currentItemToBuy = bot.itemToBuy[#bot.itemToBuy]
+		local tempTable = Item.GetBasicItems( { bot.currentItemToBuy } )
+		for i = 1, math.ceil( #tempTable / 2 )
+		do
 			bot.currListItemToBuy[i] = tempTable[#tempTable-i+1]
 			bot.currListItemToBuy[#tempTable-i+1] = tempTable[i]
 		end
-		
 	end
 	
-	--Check if the bot already has the item formed from its components in their inventory (not stash)
-	if  #bot.currListItemToBuy == 0 and DotaTime() > lastInvCheck + 3.0 then
-			if PItems.IsItemInHero(bot.currentItemToBuy) or ( bot.currentItemToBuy == 'item_ultimate_scepter_2' and  bot:HasScepter() ) then
-				bot.currentItemToBuy = nil;
-				bot.itemToBuy[#bot.itemToBuy] = nil
-			else
-				lastInvCheck = DotaTime();
-			end
-	--Added item component to current item component to buy and do the purchase	
-	elseif #bot.currListItemToBuy > 0 then
-		if bot.currentComponentToBuy == nil then
+	
+	
+	if #bot.currListItemToBuy == 0 and currentTime > lastInvCheck + 1.0
+	then
+		if Item.IsItemInHero( bot.currentItemToBuy )
+			or bot.currentItemToBuy == "item_aghanims_shard"
+		then
+			bot.currentItemToBuy = nil
+			bot.itemToBuy[#bot.itemToBuy] = nil
+		else
+			lastInvCheck = currentTime
+		end
+	elseif #bot.currListItemToBuy > 0
+	then
+		if bot.currentComponentToBuy == nil
+		then
 			bot.currentComponentToBuy = bot.currListItemToBuy[#bot.currListItemToBuy]
 		else
-			GeneralPurchase()
+			if GetGameMode() == 23
+			then
+				TurboModeGeneralPurchase()
+			else
+				GeneralPurchase()
+			end
 		end
 	end
+
 end
+-- dota2jmz@163.com QQ:2462331592..
