@@ -14,55 +14,65 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
+						['t25'] = {0, 10},
 						['t20'] = {0, 10},
 						['t15'] = {0, 10},
 						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{2,3,2,1,2,6,2,3,3,3,6,1,1,1,6},
-						--{3,2,1,3,2,6,3,3,2,2,6,1,1,1,6},
+						{2,3,2,1,2,6,2,3,3,3,6,1,1,1,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-X['sBuyList'] = {
+local sRoleItemsBuyList = {}
 
-	"item_phantom_assassin_outfit",
-	"item_hand_of_midas",
-	"item_bfury",
-    "item_ultimate_scepter",
-    "item_greater_crit",
-	"item_abyssal_blade",
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_slippers",
+	"item_circlet",
+
+	"item_wraith_band",
+	"item_power_treads",
+	"item_magic_wand",
+	"item_diffusal_blade",
+	"item_manta",--
+	"item_ultimate_scepter",
+	"item_greater_crit",--
+	"item_basher",
+	"item_sphere",--
+	"item_disperser",--
+	"item_abyssal_blade",--
 	"item_ultimate_scepter_2",
-	"item_butterfly",
-	"item_travel_boots",
-	"item_nullifier",
-    "item_moon_shard",
-    "item_aghanims_shard",				
-	"item_travel_boots_2", 
-
+	"item_monkey_king_bar",--
+	"item_moon_shard",
+	"item_aghanims_shard",
 }
 
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
 X['sSellList'] = {
-
-	"item_bfury",
-	"item_magic_wand",
-
-	"item_ultimate_scepter",
+	"item_quelling_blade",
 	"item_wraith_band",
-
-	"item_greater_crit",
-	"item_orb_of_corrosion",
-
-	"item_travel_boots",
-	"item_hand_of_midas",
+	"item_power_treads",
+	"item_magic_wand",
 }
 
 if J.Role.IsPvNMode() then X['sBuyList'], X['sSellList'] = { 'PvN_BH' }, {{"item_power_treads", 'item_quelling_blade'}, 'item_quelling_blade'} end
@@ -148,12 +158,7 @@ function X.SkillsComplement()
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 
 	castQDesire, castQTarget, sMotive = X.ConsiderQ()
 	if ( castQDesire > 0 )
@@ -182,8 +187,9 @@ function X.SkillsComplement()
 	then
 		J.SetReportMotive( bDebugMode, sMotive )
 
-		J.SetQueuePtToINT( bot, true )  
-    bot:ActionQueue_UseAbilityOnLocation( abilityE, castETarget )
+		J.SetQueuePtToINT( bot, true )
+
+		bot:ActionQueue_UseAbilityOnLocation( abilityE, castETarget )
 		return
 
 	end
@@ -208,7 +214,7 @@ function X.ConsiderQ()
 	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
 
 	local nRadius = abilityQ:GetSpecialValueInt( "radius" )
-	--if talent8:IsTrained() then nRadius = nRadius + talent8:GetSpecialValueInt( "value" ) end
+	if talent8:IsTrained() then nRadius = nRadius + talent8:GetSpecialValueInt( "value" ) end
 	local nCastTarget = nil
 
 	--打断
@@ -555,8 +561,7 @@ function X.ConsiderE()
 	local nCastTarget = nil
 
 	--躲避弹道, 可包括无目标弹道
-	if nHP <= 0.4
-    and J.IsNotAttackProjectileIncoming( bot, 1000 )
+	if J.IsNotAttackProjectileIncoming( bot, 1000 )
 		or ( J.IsWithoutTarget( bot ) and J.GetAttackProjectileDamageByRange( bot, 1600 ) >= bot:GetHealth() )
 	then
 		return BOT_ACTION_DESIRE_HIGH, vEscapeLoc, 'E-躲避'
@@ -565,14 +570,15 @@ function X.ConsiderE()
 
 	--团战Aoe
 	if J.IsInTeamFight( bot, 1000 )
-  then
-    local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, nCastRange, nRadius, 2 )
+	then
+		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, nCastRange, nRadius, 2 )
 		if nAoeLoc ~= nil
 		then
 			return BOT_ACTION_DESIRE_HIGH, nAoeLoc, 'E-团战Aoe'
 		end
-  end
-    
+	end
+
+
 	--进攻
 	if J.IsGoingOnSomeone( bot )
 	then

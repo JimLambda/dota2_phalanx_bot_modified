@@ -14,80 +14,93 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
-						['t20'] = {10, 0},
-						['t15'] = {0, 10},
+						['t20'] = {0, 10},
+						['t15'] = {10, 0},
 						['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{1,2,1,3,1,6,1,2,2,2,6,3,3,3,6},
+						{1,3,1,2,1,6,1,2,2,2,3,6,3,3,6},
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_mid'] = {
-  
-  	"item_crystal_maiden_outfit",
-	"item_phylactery",
-	"item_glimmer_cape",
-	"item_aether_lens",
-	"item_aghanims_shard",
-	"item_kaya_and_sange",
-	"item_angels_demise",
-	"item_ethereal_blade",
-	"item_ultimate_scepter",
-  	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-  	"item_arcane_blink",
-  	"item_travel_boots_2",
-  
-}
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_blood_grenade",
 
-tOutFitList['outfit_carry'] = tOutFitList['outfit_mid']
-
-tOutFitList['outfit_priest'] = {
-
-	"item_priest_outfit",
- 	"item_solar_crest",
-  	"item_spirit_vessel",
-	"item_aghanims_shard",
-	"item_mekansm",
-	"item_holy_locket",
-	"item_glimmer_cape",
-	"item_guardian_greaves",
-	"item_ultimate_scepter",
-	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
-
-}
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_mid']
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_mid']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-
-	"item_aether_lens",
+	"item_boots",
+	"item_tranquil_boots",
 	"item_magic_wand",
-
-	"item_ethereal_blade",
-	"item_null_talisman",
-
-	"item_ultimate_scepter",
-	"item_solar_crest",
-
+	"item_glimmer_cape",--
+	"item_aether_lens",--
+	"item_aghanims_shard",
+	"item_force_staff",--
+	"item_boots_of_bearing",--
+	"item_cyclone",
+	"item_lotus_orb",--
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_enchanted_mango",
+	"item_blood_grenade",
+
+	"item_boots",
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_glimmer_cape",--
+	"item_aether_lens",--
+	"item_aghanims_shard",
+	"item_force_staff",--
+	"item_guardian_greaves",--
+	"item_cyclone",
+	"item_lotus_orb",--
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+Pos4SellList = {
+	"item_magic_wand",
+}
+
+Pos5SellList = {
+	"item_magic_wand",
+}
+
+X['sSellList'] = {}
+
+if sRole == "pos_4"
+then
+    X['sSellList'] = Pos4SellList
+else
+    X['sSellList'] = Pos5SellList
+end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end
 
@@ -96,9 +109,7 @@ nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHe
 X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 
 X['bDeafaultAbility'] = false
-X['bDeafaultItem'] = false
-
-local hNetherWard = nil
+X['bDeafaultItem'] = true
 
 function X.MinionThink( hMinionUnit )
 
@@ -109,7 +120,7 @@ function X.MinionThink( hMinionUnit )
 			hNetherWard = hMinionUnit
 			return
 		end
-    
+
 		Minion.IllusionThink( hMinionUnit )
 	end
 
@@ -154,22 +165,14 @@ local castEDesire, castELocation
 local castRDesire, castRTarget
 
 
-local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive, HealedAlly
+local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
 local talent7Damage = 0
 
-
+local hNetherWard = nil
 
 function X.SkillsComplement()
-  
-  X.ConsiderCombo()
-  
-  if X.ConsiderStopDrain() > 0
-	then
-		bot:Action_ClearActions( true )
-		return
-	end
-  
+
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
 	nKeepMana = 400
@@ -181,16 +184,10 @@ function X.SkillsComplement()
 	botTarget = J.GetProperTarget( bot )
 	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
-  HealedAlly = nil
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 	if talent7:IsTrained() then talent7Damage = talent7:GetSpecialValueInt( "value" ) end
 
 
@@ -232,7 +229,7 @@ function X.SkillsComplement()
 	then
 		J.SetReportMotive( bDebugMode, sMotive )
 
-		bot:Action_ClearActions( false )
+		J.SetQueuePtToINT( bot, true )
 
 		bot:ActionQueue_UseAbilityOnEntity( abilityR, castRTarget )
 		return
@@ -241,117 +238,6 @@ function X.SkillsComplement()
 
 end
 
-function X.ConsiderCombo()
-	if bot:IsAlive()
-		and bot:IsChanneling()
-		and not bot:IsInvisible()
-	then
-		local nEnemyTowers = bot:GetNearbyTowers( 880, true )
-
-		if nEnemyTowers[1] ~= nil then return end
-
-		local amulet = J.IsItemAvailable( 'item_shadow_amulet' )
-		if amulet~=nil and amulet:IsFullyCastable() and amuletTime < DotaTime()- 10
-		then
-			amuletTime = DotaTime()
-			bot:Action_UseAbilityOnEntity( amulet, bot )
-			return
-		end
-
-		if not bot:HasModifier( 'modifier_teleporting' )
-		then
-			local glimer = J.IsItemAvailable( 'item_glimmer_cape' )
-			if glimer ~= nil and glimer:IsFullyCastable()
-			then
-				bot:Action_UseAbilityOnEntity( glimer, bot )
-				return
-			end
-
-			local invissword = J.IsItemAvailable( 'item_invis_sword' )
-			if invissword ~= nil and invissword:IsFullyCastable()
-			then
-				bot:Action_UseAbility( invissword )
-				return
-			end
-
-			local silveredge = J.IsItemAvailable( 'item_silver_edge' )
-			if silveredge ~= nil and silveredge:IsFullyCastable()
-			then
-				bot:Action_UseAbility( silveredge )
-				return
-			end
-		end
-	end
-end
-
-function X.ConsiderStopDrain()
-
-	if X.IsAbilityRChanneling() then 
-    if J.IsRetreating( bot ) then
-      return BOT_ACTION_DESIRE_HIGH
-    elseif X.ShouldCancelHealing() then
-      return BOT_ACTION_DESIRE_HIGH
-    end
-  end
-	return BOT_ACTION_DESIRE_NONE
-
-end
-
-
-function X.IsAbilityRChanneling()
-
-	if bot:IsChanneling()
-	then
-		local nEnemyCreepList = bot:GetNearbyCreeps( 1200, true )
-		for _, nCreep in pairs( nEnemyCreepList )
-		do
-			if nCreep:HasModifier( "modifier_pugna_life_drain" )
-        or nCreep:HasModifier( "modifier_pugna_life_drain_spell_amp" )
-			then
-				return true
-			end
-		end
-
-		local nEnemyHeroList = bot:GetNearbyHeroes( 1200, true, BOT_MODE_NONE )
-		for _, npcEnemy in pairs( nEnemyHeroList )
-		do
-			if npcEnemy:HasModifier( "modifier_pugna_life_drain" )
-        or npcEnemy:HasModifier( "modifier_pugna_life_drain_spell_amp" )
-			then
-				return true
-			end
-		end
-    
-    if bot:HasModifier( "modifier_pugna_life_drain" )
-      or bot:HasModifier( "modifier_pugna_life_drain_spell_amp" )
-    then
-      return true
-		end
-	end
-
-	return false
-
-end
-
-function X.ShouldCancelHealing()
-  
-  if X.IsAbilityRChanneling()
-	then
-    if bot:HasModifier( "modifier_pugna_life_drain" )
-      or bot:HasModifier( "modifier_pugna_life_drain_spell_amp" )
-    then
-      if J.IsValidHero( HealedAlly )
-        and J.GetHP( HealedAlly ) == 1
-      then
-        return true
-      elseif J.GetHP( bot ) <= 0.4
-      then
-        return true
-      end
-    end
-  end
-  return false
-end
 
 function X.ConsiderQ()
 
@@ -595,7 +481,7 @@ function X.ConsiderW()
 
 	if J.IsValid( hNetherWard )
 		and J.IsInRange( bot, hNetherWard, nCastRange )
-		and J.GetHP( hNetherWard ) <= 0.9
+		and J.GetHP( hNetherWard ) < 0.9
 	then
 		for _, npcEnemy in pairs( hEnemyList )
 		do
@@ -761,7 +647,25 @@ function X.ConsiderR()
 	local nDamage = abilityR:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-  local nInRangeAllyList = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
+	local nInWardRangeEnemyList = bot:GetNearbyHeroes( 1400, true, BOT_MODE_NONE )
+
+	if J.IsInTeamFight( bot, 1400 )
+	and J.HasAghanimsShard(bot)
+	then
+		if #nInWardRangeEnemyList >= 2
+		then
+			local nAllyUnits = GetUnitList(UNIT_LIST_ALLIES)
+
+			for _, a in pairs(nAllyUnits)
+			do
+				if (string.find(a:GetUnitName(), "nether_ward"))
+				and J.IsInRange(bot, a, nCastRange)
+				then
+					return BOT_ACTION_DESIRE_HIGH, a, "Nether Ward"..J.Chat.GetNormName( botTarget )
+				end
+			end
+		end
+	end
 
 	if J.IsGoingOnSomeone( bot )
 	then
@@ -794,38 +698,12 @@ function X.ConsiderR()
 			end
 		end
 	end
-  
-  if not J.IsRetreating( bot ) and nHP >= 0.6 then
-    for _, ally in pairs( nInRangeAllyList ) do
-      if J.GetHP( ally ) < 0.3
-        and not ally:HasModifier( "modifier_ice_blast" )
-        and not ally:HasModifier( "modifier_doom_bringer_doom" ) then
-        HealedAlly = ally
-        break
-      end
-    end
-  end
-  
-  if HealedAlly ~= nil 
-    and J.IsValidHero( HealedAlly ) then
-    return BOT_ACTION_DESIRE_HIGH, HealedAlly
-  end
 
 	return BOT_ACTION_DESIRE_NONE
 
 
 end
 
-function X.HasShard()
-  
-  local nCastRange = abilityE:GetCastRange() - aetherRange
-  
-  if nCastRange >= 350 then
-    return true
-  end
-  
-  return false
-end
 
 return X
 -- dota2jmz@163.com QQ:2462331592..

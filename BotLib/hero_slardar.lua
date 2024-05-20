@@ -14,91 +14,62 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
 						['t20'] = {0, 10},
-						['t15'] = {10, 0},
-						['t10'] = {10, 0},
+						['t15'] = {0, 10},
+						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-  
-						{2,3,3,1,3,6,3,2,2,2,6,1,1,1,6},
+						{2,3,3,1,3,6,3,1,1,1,6,2,2,2,6},--pos3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
 
-	"item_bristleback_outfit",
+	"item_bracer",
+	"item_power_treads",
+	"item_magic_wand",
 	"item_echo_sabre",
-  	"item_aghanims_shard",
-  	"item_desolator",
-  	"item_black_king_bar",
-  	"item_harpoon",
-	"item_ultimate_scepter",
-  	"item_assault",
-	"item_travel_boots",
-	"item_ultimate_scepter_2",
-  	"item_nullifier",
-	"item_moon_shard",
-	"item_travel_boots_2",
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = {
-	
-	"item_tank_outfit",
-	"item_vanguard",
-  	"item_blink",
-	"item_crimson_guard",
-	"item_ultimate_scepter",
+	"item_blink",
 	"item_aghanims_shard",
-	"item_assault",
-	"item_heart",
-	"item_overwhelming_blink",
-	"item_travel_boots",
+	"item_ultimate_scepter",
+	"item_black_king_bar",--
+	"item_octarine_core",--
+	"item_assault",--
+	"item_swift_blink",--
 	"item_ultimate_scepter_2",
-	"item_lotus_orb",
-	"item_moon_shard",
-	"item_travel_boots_2",
+	"item_monkey_king_bar",--
+	"item_travel_boots_2",--
 	
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_desolator",
 	"item_quelling_blade",
-
-	"item_harpoon",
-	"item_magic_wand",
-
-	"item_ultimate_scepter",
 	"item_bracer",
-	
-	"item_crimson_guard",
-	"item_quelling_blade",
-
-	"item_ultimate_scepter",
 	"item_magic_wand",
-
-	"item_assault",
-	"item_bracer",
-	
+	"item_echo_sabre",
 }
 
 
@@ -276,8 +247,8 @@ function X.ConsiderW()
 	local nRadius = abilityW:GetSpecialValueInt( 'crush_radius' )
 	local nCastPoint = abilityW:GetCastPoint()
 	local nManaCost = abilityW:GetManaCost()
-	local nDamage = abilityW:GetSpecialValueInt( "crush_damage" )
-	local nDamageType = DAMAGE_TYPE_PHYSICAL
+	local nDamage = abilityW:GetAbilityDamage()
+	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange - 30 )
 	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange - 100 )
 	local hCastTarget = nil
@@ -287,7 +258,7 @@ function X.ConsiderW()
 	--击杀打断敌人
 	for _, npcEnemy in pairs( nInRangeEnemyList )
 	do 
-		if J.IsValidHero( npcEnemy )
+		if J.IsValid( npcEnemy )
 			and J.CanCastOnNonMagicImmune( npcEnemy )
 			and ( J.CanKillTarget( npcEnemy, nDamage, nDamageType )
 					or npcEnemy:IsChanneling() )
@@ -427,20 +398,7 @@ function X.ConsiderR()
 	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 )
 	local hCastTarget = nil
 	local sCastMotive = nil
-  
-  for _, npcEnemy in pairs( hEnemyList )
-  do
-    if J.IsValidHero( npcEnemy )
-      and not npcEnemy:HasModifier( 'modifier_slardar_amplify_damage' )
-      and J.CanCastOnMagicImmune( npcEnemy )
-      and J.CanCastOnTargetAdvanced( npcEnemy )
-      and X.TargetInviHeroFirst( npcEnemy )
-    then
-      hCastTarget = npcEnemy
-      return BOT_ACTION_DESIRE_HIGH, hCastTarget
-    end
-  end
-  
+
 	--攻击敌人时
 	if J.IsGoingOnSomeone( bot )
 	then
@@ -528,7 +486,7 @@ function X.ConsiderR()
 	then
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and not npcEnemy:HasModifier( 'modifier_slardar_amplify_damage' )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
@@ -546,40 +504,6 @@ function X.ConsiderR()
 
 end
 
-local InvisHero = {
-  
-  "npc_dota_hero_clinkz",
-  "npc_dota_hero_invoker",
-  "npc_dota_hero_mirana",
-  "npc_dota_hero_nyx_assassin",
-  "npc_dota_hero_riki",
-  "npc_dota_hero_sand_king",
-  "npc_dota_hero_templar_assassin",
-  "npc_dota_hero_treant",
-  "npc_dota_hero_weaver",
-  "npc_dota_hero_windrunner",
-  
-}
-
-function X.TargetInviHeroFirst( botTarget )
-  
-  for _, IsInvi in ipairs(InvisHero) do
-    if botTarget:GetUnitName() == IsInvi then
-      return true
-    end
-  end
-  
-  if J.IsValidHero( botTarget )
-    and (J.HasItem( botTarget, "item_shadow_amulet" )
-      or J.HasItem( botTarget, "item_silver_edge" )
-      or J.HasItem( botTarget, "item_invis_sword" )
-      or J.HasItem( botTarget, "item_glimmer_cape" ))
-  then
-    return true
-  end
-      
-  return false
-end
 
 return X
 -- dota2jmz@163.com QQ:2462331592..

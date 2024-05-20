@@ -14,84 +14,96 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
-						['t20'] = {10, 0},
+						['t25'] = {10, 0},
+						['t20'] = {0, 10},
 						['t15'] = {10, 0},
 						['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{1,3,3,2,3,6,3,1,1,1,6,2,2,2,6},
+						{1,3,3,2,3,6,3,2,2,2,1,6,1,1},
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_double_branches",
+	"item_blood_grenade",
 
-	"item_crystal_maiden_outfit",
-  	"item_phylactery",
-  	"item_kaya_and_sange",
-  	"item_force_staff",
-  	"item_angels_demise",
-  	"item_ultimate_scepter",
+	"item_ring_of_basilius",
+	"item_boots",
+	"item_magic_wand",
+	"item_tranquil_boots",
+	"item_aether_lens",--
+	"item_glimmer_cape",--
+	"item_force_staff",--
 	"item_aghanims_shard",
-	"item_octarine_core",
-  	"item_travel_boots",
+	"item_boots_of_bearing",--
+	"item_ultimate_scepter",
+	"item_refresher",--
+	"item_sheepstick",--
 	"item_ultimate_scepter_2",
-	"item_sheepstick",
 	"item_moon_shard",
-  	"item_travel_boots_2",
-
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	"item_double_branches",
+	"item_blood_grenade",
 
-tOutFitList['outfit_priest'] = {
-
-	"item_priest_outfit",
- 	"item_solar_crest",
-  	"item_spirit_vessel",
-	"item_aghanims_shard",
-	"item_mekansm",
-	"item_holy_locket",
-	"item_glimmer_cape",
-	"item_guardian_greaves",
-	"item_ultimate_scepter",
-	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
-
-
-}
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-  
-  	"item_angels_demise",
-  	"item_magic_wand",
-  
-	"item_ultimate_scepter",
-	"item_null_talisman",
-
-	"item_travel_boots",
+	"item_ring_of_basilius",
+	"item_boots",
+	"item_magic_wand",
 	"item_arcane_boots",
-
+	"item_aether_lens",--
+	"item_glimmer_cape",--
+	"item_force_staff",--
+	"item_aghanims_shard",
+	"item_guardian_greaves",--
 	"item_ultimate_scepter",
-	"item_solar_crest",
-
+	"item_refresher",--
+	"item_sheepstick",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+Pos4SellList = {
+	"item_ring_of_basilius",
+	"item_magic_wand",
+}
+
+Pos5SellList = {
+	"item_magic_wand",
+}
+
+X['sSellList'] = {}
+
+if sRole == "pos_4"
+then
+    X['sSellList'] = Pos4SellList
+else
+    X['sSellList'] = Pos5SellList
+end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end
 
@@ -99,8 +111,8 @@ nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHe
 
 X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 
-X['bDeafaultAbility'] = false
-X['bDeafaultItem'] = false
+X['bDeafaultAbility'] = true
+X['bDeafaultItem'] = true
 
 function X.MinionThink( hMinionUnit )
 
@@ -141,8 +153,6 @@ modifier_oracle_false_promise
 --]]
 
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
-local abilityQ1 = bot:GetAbilityByName( sAbilityList[1] )
-local abilityQ2 = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
@@ -150,8 +160,6 @@ local talent3 = bot:GetAbilityByName( sTalentList[3] )
 local abilityD = bot:GetAbilityByName( sAbilityList[4] )
 
 local castQDesire, castQTarget
-local castQ1Desire, castQ1Target
-local castQ2Desire, castQ2Target
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castRDesire, castRTarget
@@ -162,15 +170,9 @@ local aetherRange = 0
 
 function X.SkillsComplement()
 
-	if X.ConsiderStopChannel() > 0
-	then
-		bot:Action_ClearActions( true )
-		return
-	end
-
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
-	nKeepMana = 250
+	nKeepMana = 400
 	aetherRange = 0
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
@@ -181,12 +183,7 @@ function X.SkillsComplement()
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 --	if talent3:IsTrained() then aetherRange = aetherRange + talent3:GetSpecialValueInt( "value" ) end
 
 	castRDesire, castRTarget, sMotive = X.ConsiderR()
@@ -223,25 +220,6 @@ function X.SkillsComplement()
 		return
 	end
 
-	--for self dispel
-	castQ1Desire, castQ1Target, sMotive = X.ConsiderQ1()
-	if ( castQ1Desire > 0 )
-	then
-
-		bot:Action_UseAbilityOnEntity( abilityQ1, castQ1Target )
-
-		return
-	end
-
-	--to cancel enemy healing from ability E earlier
-	castQ2Desire, castQ2Target, sMotive = X.ConsiderQ2()
-	if ( castQ2Desire > 0 )
-	then
-
-		bot:Action_UseAbilityOnEntity( abilityQ2, castQ2Target )
-		return
-	end
-
 	castQDesire, castQTarget, sMotive = X.ConsiderQ()
 	if ( castQDesire > 0 )
 	then
@@ -272,92 +250,8 @@ function X.SkillsComplement()
 
 end
 
-function X.ConsiderStopChannel()
 
-	if bot:HasModifier("modifier_teleporting") then return 0 end
 
-	if bot:IsChanneling() then
-		if castQDesire > 0 then
-			return BOT_ACTION_DESIRE_NONE
-		else
-			local nCoolDown = abilityQ:GetSpecialValueInt("AbilityCooldown")
-			local nCoolDownRemain = abilityQ:GetCooldownTimeRemaining()
-    		if nCoolDownRemain <= nCoolDown - 0.1 then
-      			return BOT_ACTION_DESIRE_HIGH
-			end
-    	end
-  	end
-	return BOT_ACTION_DESIRE_NONE
-
-end
-
-function X.ConsiderQ1()
-
-	if not abilityQ1:IsFullyCastable() then return 0 end
-
-	local nSkillLV = abilityQ1:GetLevel()
-	local nCastRange = abilityQ1:GetCastRange() + aetherRange
-	local nCastPoint = abilityQ1:GetCastPoint()
-	local nManaCost = abilityQ1:GetManaCost()
-	local nDamage = abilityQ1:GetAbilityDamage()
-	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nRadius = 300
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nInRangeAllyList = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
-
-	if ( J.IsRetreating( bot ) or J.ShouldEscape( bot ) or nHP <= 0.3 )
-		and X.CanDispell( bot )
-	then
-		
-		return BOT_ACTION_DESIRE_HIGH, bot
-	end
-
-	for _, npcAlly in pairs( nInRangeAllyList )
-	do
-		if J.IsValidHero( npcAlly )
-			and J.IsRetreating( npcAlly )
-		then
-			if X.CanDispell( npcAlly )
-			then
-				return BOT_ACTION_DESIRE_HIGH, npcAlly
-			end
-		end
-	end
-
-	return BOT_ACTION_DESIRE_NONE
-end
-
-function X.ConsiderQ2()
-
-	if not abilityQ2:IsFullyCastable() then return 0 end
-
-	local nSkillLV = abilityQ2:GetLevel()
-	local nCastRange = abilityQ2:GetCastRange() + aetherRange
-	local nCastPoint = abilityQ2:GetCastPoint()
-	local nManaCost = abilityQ2:GetManaCost()
-	local nDamage = abilityQ2:GetAbilityDamage()
-	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nRadius = 300
-	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
-	local nInRangeAllyList = bot:GetNearbyHeroes( nCastRange, false, BOT_MODE_NONE )
-
-	for _, npcEnemy in pairs( nInRangeEnemyList )
-	do
-		if J.IsValidHero( npcEnemy )
-			and J.CanCastOnNonMagicImmune( npcEnemy )
-			and J.CanCastOnTargetAdvanced( npcEnemy )
-		then
-			if npcEnemy:HasModifier( "modifier_oracle_purifying_flames" )
-				or npcEnemy:IsChanneling()
-				or X.EnemyCanBeDispell( npcEnemy )
-			then
-				return BOT_ACTION_DESIRE_HIGH, npcEnemy
-			end
-		end
-	end
-
-	return BOT_ACTION_DESIRE_NONE
-end
 
 function X.ConsiderD()
 
@@ -378,23 +272,12 @@ function X.ConsiderD()
 		if J.IsValidHero( botTarget )
 			and J.IsInRange( bot, botTarget, nCastRange )
 			and J.CanCastOnNonMagicImmune( botTarget )
-			--and ( botTarget:GetAttackTarget() ~= nil or bot:GetAttackTarget() ~= nil )
-      and #hEnemyList >= 2
+			and ( botTarget:GetAttackTarget() ~= nil or bot:GetAttackTarget() ~= nil )
 		then			
 			return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation(), "D-Attack"..J.Chat.GetNormName( botTarget )
 		end
 	end
-  
-	for _, npcAlly in pairs( hAllyList )
-	do
-		if J.IsValidHero( npcAlly )
-			and J.IsInRange( bot, npcAlly, nCastRange )
-			and J.CanCastOnNonMagicImmune( npcAlly )
-      and npcAlly:HasModifier( "modifier_oracle_false_promise_timer" )
-		then
-      return BOT_ACTION_DESIRE_HIGH, npcAlly:GetLocation()
-    end
-  end
+	
 
 	return BOT_ACTION_DESIRE_NONE
 
@@ -423,8 +306,6 @@ function X.ConsiderQ()
 		if J.IsValidHero( botTarget )
 			and J.IsInRange( bot, botTarget, nCastRange )
 			and J.CanCastOnNonMagicImmune( botTarget )
-			and not X.EnemyCanBeDispell( botTarget )
-			and J.IsChasingTarget( bot, botTarget )
 		then
 			return BOT_ACTION_DESIRE_HIGH, botTarget, "Q-Attack"..J.Chat.GetNormName( botTarget )
 		end
@@ -455,7 +336,7 @@ function X.ConsiderW()
 
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and not J.IsDisabled( npcEnemy )
@@ -517,7 +398,7 @@ function X.ConsiderE()
 	do
 		if J.IsValidHero( npcEnemy )
 			and J.CanCastOnNonMagicImmune( npcEnemy )
-			and ( J.WillMagicKillTarget( bot, npcEnemy, nDamage, nCastPoint ) or J.CanSlowWithPhylacteryOrKhanda() )
+			and J.WillMagicKillTarget( bot, npcEnemy, nDamage, nCastPoint )
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcEnemy, "E-击杀"..J.Chat.GetNormName( npcEnemy )
 		end
@@ -539,7 +420,7 @@ function X.ConsiderE()
 		end
 
 		if npcAlly:HasModifier( 'modifier_oracle_false_promise_timer' )
-			--and J.GetModifierTime( npcAlly, 'modifier_oracle_false_promise_timer' ) > 3.8
+			and J.GetModifierTime( npcAlly, 'modifier_oracle_false_promise_timer' ) > 3.8
 			and J.IsInRange( bot, npcAlly, nCastRange )
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcAlly, "E-支援抢救"..J.Chat.GetNormName( npcAlly )
@@ -555,17 +436,8 @@ function X.ConsiderE()
 		if J.IsValidHero( botTarget )
 			and J.IsInRange( bot, botTarget, nCastRange + 50 )
 			and J.CanCastOnNonMagicImmune( botTarget )
-			--and botTarget:GetMagicResist() < 0.6
+			and botTarget:GetMagicResist() < 0.6
 		then
-			if nSkillLV >= 2
-				and abilityQ:IsFullyCastable()
-				and abilityE:IsFullyCastable()
-				and bot:GetMana() > abilityQ:GetManaCost() + abilityE:GetManaCost()
-				and J.IsAllowedToSpam( bot, abilityQ:GetManaCost() + abilityE:GetManaCost())
-			then
-				return BOT_ACTION_DESIRE_HIGH, botTarget
-			end
-
 			local nProjectList = botTarget:GetIncomingTrackingProjectiles()
 			for _, p in pairs( nProjectList )
 			do
@@ -595,8 +467,8 @@ function X.ConsiderE()
 
 
 	--推进
-	if not J.IsRetreating( bot ) 
-    and J.IsAllowedToSpam( bot, nManaCost )
+	if ( J.IsPushing( bot ) or J.IsDefending( bot ) or J.IsFarming( bot ) )
+		and #hAllyList <= 2 and nSkillLV >= 3 and J.IsAllowedToSpam( bot, 30 )
 	then
 		local nLaneCreeps = bot:GetNearbyLaneCreeps( nCastRange + 350, true )
 		for _, creep in pairs( nLaneCreeps )
@@ -604,6 +476,7 @@ function X.ConsiderE()
 			if J.IsValid( creep )
 				and not creep:HasModifier( 'modifier_fountain_glyph' )
 				and creep:GetHealth() > nDamage * 0.6
+				and not J.IsOtherAllysTarget( creep )
 			then
 				if J.IsKeyWordUnit( 'ranged', creep )
 					and J.WillKillTarget( creep, nDamage, nDamageType, nCastPoint )
@@ -684,7 +557,8 @@ function X.ConsiderR()
 			
 			if not ally:IsBot()
 				and J.GetHP( ally ) <= 0.6
-				and J.IsValidHero( ally:GetAttackTarget() )
+				and ally:GetAttackTarget() ~= nil
+				and ally:GetAttackTarget():IsHero()
 				and ally:WasRecentlyDamagedByAnyHero( 2.0 )
 				and #hEnemyList >= 2
 				and ( J.IsGoingOnSomeone( bot ) or J.IsGoingOnSomeone( ally ) )
@@ -702,80 +576,6 @@ function X.ConsiderR()
 
 end
 
-local Dispellable = {
-  
-	"modifier_item_spirit_vessel_damage",
-	"modifier_arc_warden_flux",
-	"modifier_axe_battle_hunger",
-	"modifier_bane_enfeeble_effect",
-	"modifier_cold_feet",
-	"modifier_crystal_maiden_crystal_nova",
-	"modifier_crystal_maiden_frostbite",
-	"modifier_dazzle_poison_touch",
-	"modifier_enchantress_enchant_slow",
-	"modifier_enigma_malefice",
-	"modifier_huskar_life_break_slow",
-	"modifier_lich_chainfrost_slow",
-	"modifier_jakiro_dual_breath_slow",
-	"modifier_keeper_of_the_light_radiant_bind",
-	"modifier_ogre_magi_ignite",
-	"modifier_pugna_decrepify",
-	"modifier_queenofpain_shadow_strike",
-	"modifier_silencer_curse_of_the_silent",
-	"modifier_silencer_last_word",
-	"modifier_slardar_amplify_damage",
-	"modifier_templar_assassin_trap_slow",
-	"modifier_treant_leech_seed",
-	"modifier_treant_overgrowth",
-	"modifier_troll_warlord_whirling_axes_slow",
-	"modifier_venomancer_venomous_gale",
-	"modifier_warlock_fatal_bonds",
-	"modifier_warlock_shadow_word",
-	"modifier_warlock_upheaval",
-}
-  
-function X.CanDispell( bot )
-	
-	for _, modifierName in ipairs(Dispellable) do
-		if bot:HasModifier(modifierName) then
-			return true
-	  	end
-	end
-	return false
-end
-
-local EnemyDispellable = {
-	"modifier_item_aeon_disk_buff",
-	"modifier_item_crimson_guard_extra",
-	"modifier_item_pavise_shield",
-	"modifier_item_solar_crest_armor_addition",
-	"modifier_abaddon_aphotic_shield",
-	"modifier_ember_spirit_flame_guard",
-	"modifier_grimstroke_spirit_walk_buff",
-	"modifier_legion_commander_press_the_attack",
-	"modifier_lich_frost_shield",
-	"modifier_aboreal_might_attack_damage",
-	"modifier_aboreal_might_armor",
-	"modifier_necrolyte_sadist_active",
-	"modifier_ogre_magi_bloodlust",
-	"modifier_ogre_magi_smash_buff",
-	"modifier_omninight_guardian_angel",
-	"modifier_pangolier_shield_crash_buff",
-	"modifier_pugna_decrepify",
-	"modifier_spirit_breaker_bulldoze",
-	"modifier_void_spirit_resonant_pulse_physical_buff",
-	"modifier_windrunner_windrun",
-}
-  
-function X.EnemyCanBeDispell( Target )
-	
-	for _, modifierName in ipairs( EnemyDispellable ) do
-		if Target:HasModifier(modifierName) then
-			return true
-	  	end
-	end
-	return false
-end
 
 return X
 -- dota2jmz@163.com QQ:2462331592..

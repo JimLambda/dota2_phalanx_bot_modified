@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
@@ -25,73 +25,96 @@ local tTalentTreeList = {
 
 
 local tAllAbilityBuildList = {
-						{1,3,3,2,3,6,3,1,1,1,6,2,2,2,6},
-						--{2,1,2,1,2,6,1,2,1,3,6,3,3,3,6},
+						{1,3,3,1,3,6,3,1,1,2,6,2,2,2,6},
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_blood_grenade",
 
-	"item_crystal_maiden_outfit",
-  	"item_hand_of_midas",
-	"item_aghanims_shard",
-  	"item_glimmer_cape",
-	"item_ultimate_scepter",
-	"item_refresher",
-	"item_octarine_core",
-	"item_ultimate_scepter_2",
-  	"item_assault",
-  	"item_travel_boots",
-	"item_arcane_blink",
-	"item_moon_shard",
-	"item_travel_boots_2",
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = {
-
-	"item_priest_outfit",
- 	"item_solar_crest",
-  	"item_spirit_vessel",
-	"item_aghanims_shard",
-	"item_mekansm",
-	"item_holy_locket",
-	"item_glimmer_cape",
-	"item_guardian_greaves",
-	"item_ultimate_scepter",
-	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
-
-}
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-
-	"item_ultimate_scepter",
+	"item_tranquil_boots",
 	"item_magic_wand",
-
-	"item_refresher",
-	"item_null_talisman",
-
-	"item_travel_boots",
-	"item_hand_of_midas",
-
+	"item_glimmer_cape",--
+	"item_aghanims_shard",
+	"item_force_staff",--
+	"item_solar_crest",--
+	"item_boots_of_bearing",--
 	"item_ultimate_scepter",
-	"item_solar_crest",
+	"item_refresher",--
+	"item_octarine_core",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_blood_grenade",
+
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_glimmer_cape",--
+	"item_aghanims_shard",
+	"item_force_staff",--
+	"item_aether_lens",--
+	"item_guardian_greaves",--
+	"item_ultimate_scepter",
+	"item_refresher",--
+	"item_octarine_core",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+
+	"item_tranquil_boots",
+	"item_magic_wand",
+	"item_glimmer_cape",--
+	"item_aghanims_shard",
+	"item_force_staff",--
+	"item_solar_crest",--
+	"item_boots_of_bearing",--
+	"item_ultimate_scepter",
+	"item_refresher",--
+	"item_octarine_core",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+Pos4SellList = {
+	"item_magic_wand",
+}
+
+Pos5SellList = {
+	"item_magic_wand",
+}
+
+X['sSellList'] = {}
+
+if sRole == "pos_4"
+then
+    X['sSellList'] = Pos4SellList
+else
+    X['sSellList'] = Pos5SellList
+end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_priest' }, {} end
 
@@ -100,7 +123,7 @@ nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHe
 X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 
 X['bDeafaultAbility'] = false
-X['bDeafaultItem'] = false
+X['bDeafaultItem'] = true
 
 function X.MinionThink( hMinionUnit )
 
@@ -170,7 +193,7 @@ local abilityRef = nil
 
 function X.SkillsComplement()
 
-  X.ConsiderCombo()
+
 
 
 	if X.ConsiderStop() == true
@@ -195,12 +218,7 @@ function X.SkillsComplement()
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 
 
 	castRFRDesire, castRFRLocation = X.ConsiderRFR()
@@ -212,7 +230,7 @@ function X.SkillsComplement()
 		bot:ActionQueue_UseAbilityOnLocation( abilityR, castRFRLocation + RandomVector( 50 ) )
 		bot:ActionQueue_UseAbility( abilityRef )
 		bot:ActionQueue_UseAbilityOnLocation( abilityR, castRFRLocation + RandomVector( 50 ) )
-		--bot:ActionImmediate_Chat( "听从吾之召唤!来自深渊的地狱火啊!出来吧!!!", true )
+		--bot:ActionImmediate_Chat( "Heed my call! Hellfire from the abyss! Come out!!!", true )
 		return
 
 	end
@@ -263,49 +281,6 @@ function X.SkillsComplement()
 	end
 
 
-end
-
-function X.ConsiderCombo()
-	if bot:IsAlive()
-		and bot:IsChanneling()
-		and not bot:IsInvisible()
-	then
-		local nEnemyTowers = bot:GetNearbyTowers( 880, true )
-
-		if nEnemyTowers[1] ~= nil then return end
-
-		local amulet = J.IsItemAvailable( 'item_shadow_amulet' )
-		if amulet~=nil and amulet:IsFullyCastable() and amuletTime < DotaTime()- 10
-		then
-			amuletTime = DotaTime()
-			bot:Action_UseAbilityOnEntity( amulet, bot )
-			return
-		end
-
-		if not bot:HasModifier( 'modifier_teleporting' )
-		then
-			local glimer = J.IsItemAvailable( 'item_glimmer_cape' )
-			if glimer ~= nil and glimer:IsFullyCastable()
-			then
-				bot:Action_UseAbilityOnEntity( glimer, bot )
-				return
-			end
-
-			local invissword = J.IsItemAvailable( 'item_invis_sword' )
-			if invissword ~= nil and invissword:IsFullyCastable()
-			then
-				bot:Action_UseAbility( invissword )
-				return
-			end
-
-			local silveredge = J.IsItemAvailable( 'item_silver_edge' )
-			if silveredge ~= nil and silveredge:IsFullyCastable()
-			then
-				bot:Action_UseAbility( silveredge )
-				return
-			end
-		end
-	end
 end
 
 function X.ConsiderStop()

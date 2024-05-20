@@ -89,7 +89,7 @@ function Think()
 
 	if bot:DistanceFromSecretShop() > 0
 	then
-		bot:Action_MoveToLocation(preferedShop + RandomVector(20))
+		bot:Action_MoveToLocation(preferedShop + RandomVector(20));
 		return;
 	end
 	

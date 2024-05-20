@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
@@ -24,72 +24,57 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{1,3,3,1,3,6,3,1,1,2,6,2,2,2,6},
+						{3,1,3,1,3,1,1,3,2,6,6,2,2,2,6},--pos3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local utilityItems = {"item_crimson_guard", "item_pipe", "item_heavens_halberd"}
+local sCrimsonPipeHalberd = utilityItems[RandomInt(1, #utilityItems)]
 
-tOutFitList['outfit_mid'] = {
- 
-  	"item_bristleback_outfit",
-  	"item_phylactery",
-  	"item_kaya_and_sange",
-  	"item_aghanims_shard",
-  	"item_angels_demise",
-  	"item_ultimate_scepter",
-  	"item_heart",
-  	"item_overwhelming_blink",
-  	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-  	"item_skadi",
-  	"item_moon_shard",
-  	"item_travel_boots_2",
-  
-}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = tOutFitList['outfit_mid']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_gauntlets",
+	"item_circlet",
 
-tOutFitList['outfit_priest'] = {
- 
-	"item_priest_outfit",
- 	"item_solar_crest",
-  	"item_spirit_vessel",
+	"item_bracer",
+	"item_phase_boots",
+	"item_soul_ring",
+	"item_magic_wand",
+	"item_echo_sabre",
 	"item_aghanims_shard",
-	"item_mekansm",
-	"item_holy_locket",
-	"item_glimmer_cape",
-	"item_guardian_greaves",
-	"item_ultimate_scepter",
-	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
-  
+	"item_harpoon",--
+	"item_blink",
+	sCrimsonPipeHalberd,--
+	"item_black_king_bar",--
+	"item_shivas_guard",--
+	"item_guardian_greaves",--
+	"item_overwhelming_blink",--
+	"item_moon_shard",
+	"item_ultimate_scepter_2",
 }
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_mid']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_mid']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_angels_demise",
 	"item_quelling_blade",
-
-	"item_ultimate_scepter",
-	"item_magic_wand",
-	
-	"item_heart",
 	"item_bracer",
-
-	"item_ultimate_scepter",
-	"item_solar_crest",
-
+	"item_soul_ring",
+	"item_magic_wand",
 }
 
 
@@ -171,12 +156,7 @@ function X.SkillsComplement()
 
 	--计算天赋可能带来的通用变化
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 
 	
 	castRDesire, castRTarget, sMotive = X.ConsiderR()
@@ -495,8 +475,8 @@ function X.ConsiderW()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nDuration = abilityW:GetSpecialValueInt( "duration" )
 	local nHealHealth = abilityW:GetSpecialValueInt( "hp_regen" ) * nDuration
-	--local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
-	--local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 )
+--	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
+--	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 )
 	local hCastTarget = nil
 	local sCastMotive = nil
 
@@ -525,7 +505,6 @@ function X.ConsiderW()
 		
 			--为被控制队友解状态
 			if J.IsDisabled( npcAlly )
-        and J.GetHP( npcAlly ) <= 0.5
 			then
 				hCastTarget = npcAlly
 				sCastMotive = 'W-解状态:'..J.Chat.GetNormName( hCastTarget )
@@ -546,9 +525,9 @@ function X.ConsiderW()
 			
 			--为准备打架的力量队友辅助
 			if J.IsGoingOnSomeone( npcAlly )
-				and #hEnemyList >= 3
+				and npcAlly:GetPrimaryAttribute() == ATTRIBUTE_STRENGTH
 			then
-				local allyTarget = npcAlly:GetAttackTarget()
+				local allyTarget = J.GetProperTarget( npcAlly )
 				if J.IsValidHero( allyTarget )
 					and npcAlly:IsFacingLocation( allyTarget:GetLocation(), 20 )
 					and J.IsInRange( npcAlly, allyTarget, npcAlly:GetAttackRange() + 60 )
@@ -560,9 +539,8 @@ function X.ConsiderW()
 			end
 			
 			--为残血队友buff
-			if J.GetHP( npcAlly ) < 0.3
-				and npcAlly:WasRecentlyDamagedByAnyHero( 5.0 )
-        and #hEnemyList >= 3
+			if J.GetHP( npcAlly ) < 0.5
+				and ( npcAlly:WasRecentlyDamagedByAnyHero( 5.0 ) or J.GetHP( npcAlly ) < 0.25 ) 
 				and not npcAlly:HasModifier( 'modifier_fountain_aura' )
 			then
 				hCastTarget = npcAlly
@@ -604,12 +582,12 @@ function X.ConsiderE()
 	for _, npcEnemy in pairs( nEnemysHerosInBonus )
 	do
 		if J.IsValid( npcEnemy )
-			and J.CanCastOnMagicImmune( npcEnemy )
+			and J.CanCastOnNonMagicImmune( npcEnemy )
 			and J.CanCastOnTargetAdvanced( npcEnemy )
 		then
 		
 			if GetUnitToUnitDistance( bot, npcEnemy ) <= nCastRange + 80
-				and ( J.CanKillTarget( npcEnemy, nDamage * 1.18, nDamageType ) or J.CanSlowWithPhylacteryOrKhanda() )
+				and J.CanKillTarget( npcEnemy, nDamage * 1.18, nDamageType )
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy
 			end
@@ -731,18 +709,11 @@ function X.ConsiderR()
 
 	if not abilityR:IsFullyCastable() then return 0 end
 
-	local nSkillLV = abilityR:GetLevel()
 	local nRadius = abilityR:GetSpecialValueInt( 'radius' )	
 	local nCastRange = nRadius
 	
 	if bot:HasScepter() then nCastRange = 1600 end
-	
-	local nCastPoint = abilityR:GetCastPoint()
-	local nManaCost = abilityR:GetManaCost()
-	local nDamage = 0
-	local nDamageType = DAMAGE_TYPE_MAGICAL
---	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
---	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 )
+
 	local hCastTarget = nil
 	local sCastMotive = nil
 
@@ -754,10 +725,10 @@ function X.ConsiderR()
 		if J.IsValidHero( botTarget )
 			and J.IsInRange( bot, botTarget, 500 )
 			and J.CanCastOnMagicImmune( botTarget )
+			and not J.IsSuspiciousIllusion(botTarget)
 			and not J.IsDisabled( botTarget )
 			and not botTarget:IsDisarmed()
 			and botTarget:GetAttackTarget() == bot
-      and not bot:HasModifier( "modifier_omninight_guardian_angel" )
 		then
 			hCastTarget = bot
 			sCastMotive = 'R-辅助攻击:'..J.Chat.GetNormName( botTarget )
@@ -772,11 +743,8 @@ function X.ConsiderR()
 		local npcAlly = GetTeamMember( i )
 		if npcAlly ~= nil
 			and npcAlly:IsAlive()
-      and not npcAlly:HasModifier( "modifier_omninight_guardian_angel" )
 			and ( bot:HasScepter() or J.IsInRange( bot, npcAlly, 700 ) )
 		then
-		
-			--团战时辅助进攻
 			if J.IsInTeamFight( npcAlly, 1300 )
 			then
 				local allyList = J.GetAlliesNearLoc( npcAlly:GetLocation(), nCastRange )
@@ -806,9 +774,6 @@ function X.ConsiderR()
 					end
 				end
 			end
-					
-			
-			--逃跑时辅助攻击
 			if J.IsRetreating( npcAlly )
 				and npcAlly:WasRecentlyDamagedByAnyHero( 5.0 )
 			then
@@ -820,18 +785,11 @@ function X.ConsiderR()
 					sCastMotive = 'R-逃跑时辅助攻击:'..J.Chat.GetNormName( hCastTarget )
 					return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive	
 				end
-			end		
-			
+			end
 		end
 	end
 
-
 	return BOT_ACTION_DESIRE_NONE
-
-
 end
 
-
 return X
--- dota2jmz@163.com QQ:2462331592
-

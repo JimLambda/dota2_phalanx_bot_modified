@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
@@ -24,55 +24,71 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{1,4,1,4,1,4,4,6,1,5,6,5,5,5,6},
+						{1,4,1,4,1,4,1,4,6,5,6,5,5,5,6},--pos1,2
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_greater_crit" or "item_satanic"
+local sRoleItemsBuyList = {}
 
-local tOutFitList = {}
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
 
-tOutFitList['outfit_carry'] = {
-
-	"item_ranged_carry_outfit",
-	"item_hand_of_midas",
-  	"item_desolator",
-	"item_silver_edge",
-	"item_black_king_bar",
-  	"item_butterfly",
+	"item_power_treads",
+	"item_magic_wand",
+	"item_dragon_lance",
+	"item_black_king_bar",--
+	"item_hurricane_pike",--
+	"item_butterfly",--
+	"item_aghanims_shard",
+	"item_greater_crit",--
+	"item_satanic",--
 	"item_travel_boots",
-	sRandomItem_1,
-	"item_aghanims_shard", 
 	"item_moon_shard",
-  	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
-
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_enchanted_mango",
+	"item_enchanted_mango",
+	
+	"item_bottle",
+	"item_power_treads",
+	"item_magic_wand",
+	"item_dragon_lance",
+	"item_black_king_bar",--
+	"item_hurricane_pike",--
+	"item_butterfly",--
+	"item_aghanims_shard",
+	"item_greater_crit",--
+	"item_satanic",--
+	"item_travel_boots",
+	"item_moon_shard",
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+}
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_silver_edge",
+	"item_bottle",
 	"item_magic_wand",
-  
-  	"item_black_king_bar",
-  	"item_wraith_band",
-
-	"item_travel_boots",
-	"item_hand_of_midas",
-
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
@@ -242,7 +258,7 @@ function X.ConsiderR()
 
 
 	if not abilityR:IsFullyCastable()
-		--or ( bot:WasRecentlyDamagedByAnyHero( 1.5 ) and not bot:HasModifier( "modifier_black_king_bar_immune" ) and nHP < 0.62 )
+		or ( bot:WasRecentlyDamagedByAnyHero( 1.5 ) and not bot:HasModifier( "modifier_black_king_bar_immune" ) and nHP < 0.62 )
 	then return 0 end
 
 

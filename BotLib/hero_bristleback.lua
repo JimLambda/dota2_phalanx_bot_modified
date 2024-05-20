@@ -14,67 +14,83 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
 						['t20'] = {10, 0},
-						['t15'] = {0, 10},
-						['t10'] = {0, 10},
+						['t15'] = {10, 0},
+						['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{2,3,1,2,2,6,2,3,3,3,6,1,1,1,6},
-						{2,3,2,3,2,6,2,1,3,3,6,1,1,1,6},
+						{2,3,2,1,2,6,2,3,3,3,6,1,1,1,6},--pos1,3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
---local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_black_king_bar" or "item_heavens_halberd"
+local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_black_king_bar" or "item_heavens_halberd"
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
-
-	"item_bristleback_outfit",
-	"item_blade_mail",
-  	"item_eternal_shroud",
-  	"item_aghanims_shard",
-  	"item_ultimate_scepter",
-  	"item_heart",
-	"item_bloodstone",
-	"item_ultimate_scepter_2",
-	"item_lotus_orb",
-	"item_travel_boots",
-	--sRandomItem_1,
-	"item_moon_shard",
-	"item_travel_boots_2",
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-
-	"item_eternal_shroud",
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_double_enchanted_mango",
 	"item_quelling_blade",
 
-	"item_ultimate_scepter",
+	"item_vanguard",
+	"item_arcane_boots",
 	"item_magic_wand",
+	"item_ultimate_scepter",
+	"item_bloodstone",--
+	"item_kaya_and_sange",--
+	"item_black_king_bar",--
+	"item_aghanims_shard",
+	"item_eternal_shroud",--
+	"item_travel_boots",
+	"item_assault",--
+	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+	"item_moon_shard",
+}
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_double_enchanted_mango",
+	"item_quelling_blade",
 
-	"item_heart",
-	"item_bracer",
+	"item_vanguard",
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_ultimate_scepter",
+	"item_bloodstone",--
+	"item_lotus_orb",--
+	"item_black_king_bar",--
+	"item_aghanims_shard",
+	"item_eternal_shroud",--
+	"item_travel_boots",
+	"item_assault",--
+	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+	"item_moon_shard",
+}
 
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+X['sSellList'] = {
+	"item_quelling_blade",
+	"item_vanguard",
+	"item_magic_wand",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_tank' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -126,14 +142,14 @@ modifier_bristleback_warpath_stack
 
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
-local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
+local Bristleback = bot:GetAbilityByName( "bristleback_bristleback" )
 
 
 local castQDesire, castQTarget
 local castWDesire
-local castEDesire, castELocation
 local castASDesire, castASTarget
+local BristlebackDesire, BristlebackLoc
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, botTarget
 
@@ -144,7 +160,7 @@ function X.SkillsComplement()
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
 
-	nKeepMana = 100
+	nKeepMana = 180
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
@@ -162,15 +178,21 @@ function X.SkillsComplement()
 
 		return
 	end
-	
-	
+
+	BristlebackDesire, BristlebackLoc = X.ConsiderBristleback()
+	if (BristlebackDesire > 0 and bot:HasScepter())
+	then
+		bot:ActionQueue_UseAbilityOnLocation( Bristleback, BristlebackLoc )
+		return
+	end
+
 	castQDesire, castQTarget = X.ConsiderQ()
 	if ( castQDesire > 0 )
 	then
 
 		J.SetQueuePtToINT( bot, true )
 
-			bot:ActionQueue_UseAbilityOnEntity( abilityQ, castQTarget )
+		bot:ActionQueue_UseAbilityOnEntity( abilityQ, castQTarget )
 		return
 	end
 
@@ -181,16 +203,6 @@ function X.SkillsComplement()
 		J.SetQueuePtToINT( bot, true )
 
 		bot:ActionQueue_UseAbility( abilityW )
-		return
-	end
-  
-  castEDesire, castELocation = X.ConsiderE()
-	if ( castEDesire > 0 )
-	then
-
-		J.SetQueuePtToINT( bot, true )
-
-		bot:ActionQueue_UseAbilityOnLocation( abilityE, castELocation )
 		return
 	end
 
@@ -204,22 +216,51 @@ function X.ConsiderQ()
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
+	local nRadius = abilityQ:GetSpecialValueInt( 'radius_scepter' )
 	local nCastRange = abilityQ:GetCastRange()
 	local nCastPoint = abilityQ:GetCastPoint()
 	local nManaCost = abilityQ:GetManaCost()
 
-	local nEnemyHeroes = bot:GetNearbyHeroes( nCastRange + 300, true, BOT_MODE_NONE )
+	local tableNearbyEnemyHeroes = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
+	local nEnemyHeroes = bot:GetNearbyHeroes( 800, true, BOT_MODE_NONE )
 
+	if J.IsRetreating( bot )
+	then
+		local npcEnemy = tableNearbyEnemyHeroes[1]
+		if J.IsValid( npcEnemy )
+		then
+			if bot:HasScepter()
+			then
+				return BOT_ACTION_DESIRE_LOW, npcEnemy
+			end
+
+			if J.CanCastOnNonMagicImmune( npcEnemy )
+				and J.CanCastOnTargetAdvanced( npcEnemy )
+				and ( bot:IsFacingLocation( npcEnemy:GetLocation(), 10 ) or #nEnemyHeroes <= 1 )
+				and ( bot:WasRecentlyDamagedByHero( npcEnemy, 2.0 ) or nLV >= 10 )
+			then
+				return BOT_ACTION_DESIRE_LOW, npcEnemy
+			end
+		end
+	end
 
 	if ( bot:GetActiveMode() == BOT_MODE_ROSHAN )
 	then
 		local npcTarget = bot:GetAttackTarget()
-		if ( J.IsRoshan( npcTarget ) 
-      and J.CanCastOnMagicImmune( npcTarget ) 
-      and J.IsInRange( npcTarget, bot, nCastRange )
-      and J.IsAllowedToSpam( bot, nManaCost ))
+		if ( J.IsRoshan( npcTarget ) and J.CanCastOnMagicImmune( npcTarget ) and J.IsInRange( npcTarget, bot, nCastRange ) )
 		then
 			return BOT_ACTION_DESIRE_LOW, npcTarget
+		end
+	end
+
+	if J.IsInTeamFight( bot, 1400 ) and bot:HasScepter()
+	then
+		if tableNearbyEnemyHeroes ~= nil
+			and #tableNearbyEnemyHeroes >= 1
+			and J.IsValidHero( tableNearbyEnemyHeroes[1] )
+			and J.CanCastOnNonMagicImmune( tableNearbyEnemyHeroes[1] )
+		then
+			return BOT_ACTION_DESIRE_HIGH, tableNearbyEnemyHeroes[1]
 		end
 	end
 
@@ -228,12 +269,27 @@ function X.ConsiderQ()
 		local npcTarget = J.GetProperTarget( bot )
 		if J.IsValidHero( npcTarget )
 			and J.CanCastOnNonMagicImmune( npcTarget )
-			and J.IsInRange( npcTarget, bot, nCastRange )
+			and J.IsInRange( npcTarget, bot, nRadius )
 			and J.CanCastOnTargetAdvanced( npcTarget )
-      and J.IsAllowedToSpam( bot, nManaCost )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcTarget
+			return BOT_ACTION_DESIRE_ABSOLUTE, npcTarget
 		end
+
+		if J.IsValid( npcTarget )
+			and #hEnemyList == 0
+			and J.IsAllowedToSpam( bot, nManaCost )
+			and J.CanCastOnNonMagicImmune( npcTarget )
+			and J.CanCastOnTargetAdvanced( npcTarget )
+			and J.IsInRange( npcTarget, bot, nRadius )
+			and not J.CanKillTarget( npcTarget, bot:GetAttackDamage() * 1.68, DAMAGE_TYPE_PHYSICAL )
+		then
+			local nCreeps = bot:GetNearbyCreeps( 800, true )
+			if #nCreeps >= 1
+			then
+				return BOT_ACTION_DESIRE_ABSOLUTE, npcTarget
+			end
+		end
+
 	end
 
 	return BOT_ACTION_DESIRE_NONE, 0
@@ -260,20 +316,17 @@ function X.ConsiderW()
 			if bot:WasRecentlyDamagedByHero( npcEnemy, 4.0 )
 				or npcEnemy:HasModifier( "modifier_bristleback_quill_spray" )
 			then
-				return BOT_ACTION_DESIRE_HIGH
+				return BOT_ACTION_DESIRE_MODERATE
 			end
 		end
 	end
 
-	if nLV >= 6
-    and (J.IsPushing( bot )
-		or J.IsDefending( bot ))
+	if J.IsPushing( bot )
+		or J.IsDefending( bot )
+		or ( J.IsGoingOnSomeone( bot ) and nLV >= 6 )
 	then
 		local tableNearbyEnemyCreeps = bot:GetNearbyLaneCreeps( nRadius, true )
-		if ( tableNearbyEnemyCreeps ~= nil 
-      and #tableNearbyEnemyCreeps >= 1 
-      and J.IsAllowedToSpam( bot, nManaCost ) ) 
-    then
+		if ( tableNearbyEnemyCreeps ~= nil and #tableNearbyEnemyCreeps >= 1 and J.IsAllowedToSpam( bot, nManaCost ) ) then
 			return BOT_ACTION_DESIRE_MODERATE
 		end
 	end
@@ -302,7 +355,7 @@ function X.ConsiderW()
 	then
 		if #tableNearbyEnemyHeroes >= 1
 		then
-			return BOT_ACTION_DESIRE_HIGH
+			return BOT_ACTION_DESIRE_LOW
 		end
 	end
 
@@ -311,9 +364,9 @@ function X.ConsiderW()
 		local npcTarget = J.GetProperTarget( bot )
 		if J.IsValidHero( npcTarget )
 			and J.CanCastOnMagicImmune( npcTarget )
-			and J.IsInRange( npcTarget, bot, nRadius - 100 )
+			and J.IsInRange( npcTarget, bot, nRadius-100 )
 		then
-			return BOT_ACTION_DESIRE_HIGH
+			return BOT_ACTION_DESIRE_MODERATE
 		end
 
 		if J.IsValidHero( npcTarget )
@@ -332,10 +385,7 @@ function X.ConsiderW()
 	if ( bot:GetActiveMode() == BOT_MODE_ROSHAN )
 	then
 		local npcTarget = bot:GetAttackTarget()
-		if J.IsRoshan( npcTarget ) 
-      and J.CanCastOnMagicImmune( npcTarget ) 
-      and J.IsInRange( bot, npcTarget, nRadius ) 
-      and J.IsAllowedToSpam( bot, nManaCost )
+		if ( J.IsRoshan( npcTarget ) and J.CanCastOnMagicImmune( npcTarget ) and J.IsInRange( bot, npcTarget, nRadius ) )
 		then
 			return BOT_ACTION_DESIRE_MODERATE
 		end
@@ -350,70 +400,6 @@ function X.ConsiderW()
 	end
 
 	return BOT_ACTION_DESIRE_NONE
-
-end
-
-function X.ConsiderE()
-  
-  if not bot:HasScepter()
-		or not abilityE:IsFullyCastable() 
-	then
-		return 0
-	end
-  
-  local nRadius = 250
-  local nDelay = abilityE:GetSpecialValueFloat( "activation_delay" )
-  local nInRangeEnemyList = J.GetAroundEnemyHeroList( nRadius + 100 )
-  
-  if J.IsGoingOnSomeone( bot )
-	then
-		if J.IsValidHero( botTarget )
-			and J.CanCastOnMagicImmune( botTarget )
-			and J.IsInRange( botTarget, bot, nRadius)
-		then
-      if J.IsDisabled( botTarget )
-        or botTarget:HasModifier( "modifier_bristleback_viscous_nasal_goo" )
-      then
-        return BOT_ACTION_DESIRE_HIGH, botTarget:GetLocation()
-      end
-		end
-  end
-  
-  if J.IsRetreating( bot )
-    and ( bot:WasRecentlyDamagedByAnyHero( 3.0 ) or bot:GetActiveModeDesire() > 0.7 )
-    and #nInRangeEnemyList >= 1
-    and nInRangeEnemyList[1] ~= nil
-  then
-    local hCastTraget = nInRangeEnemyList[1]
-    if J.IsValidHero( hCastTraget )
-      and J.IsInRange( bot, hCastTraget, nRadius )
-      and J.CanCastAbilityOnTarget( hCastTraget, true )
-    then
-      return BOT_ACTION_DESIRE_HIGH, hCastTraget:GetLocation()
-    end
-  end
-  
-  if J.IsPushing( bot )
-		or J.IsDefending( bot )
-	then
-		local locationAoE = bot:FindAoELocation( true, false, bot:GetLocation(), 1, 274, 0, 0 )
-		if ( locationAoE.count >= 2 )
-		then
-			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
-		end
-	end
-
-	if J.IsFarming( bot )
-	then
-    local nCreeps = bot:GetNearbyCreeps( nRadius, true )
-    if ( #nCreeps >= 2 )
-    then
-      local hCastTarget = nCreeps[1]
-      return BOT_ACTION_DESIRE_HIGH, hCastTarget:GetLocation()
-    end
-  end
-
-  return BOT_ACTION_DESIRE_NONE
 
 end
 
@@ -465,6 +451,50 @@ function X.ConsiderAS()
 
 	return BOT_ACTION_DESIRE_NONE, 0
 
+end
+
+function X.ConsiderBristleback()
+	if not Bristleback:IsTrained()
+	or not Bristleback:IsFullyCastable()
+	then
+		return BOT_ACTION_DESIRE_NONE, 0
+	end
+
+	if J.IsInTeamFight( bot, 1400 )
+	then
+		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, 700, 700, 2 )
+		if nAoeLoc ~= nil
+		then
+			return BOT_ACTION_DESIRE_HIGH, nAoeLoc
+		end
+	end
+
+	if J.IsGoingOnSomeone( bot )
+	then
+		local targetHero = J.GetProperTarget( bot )
+		if J.IsValidHero( targetHero )
+		and J.IsInRange( bot, targetHero, 700 )
+		and J.CanCastOnNonMagicImmune( targetHero )
+		then
+			return BOT_ACTION_DESIRE_HIGH, targetHero:GetLocation()
+		end
+	end
+
+	if J.IsRetreating( bot )
+	then
+		local nEnemyHeroes = bot:GetNearbyHeroes( 700, true, BOT_MODE_NONE )
+		if nEnemyHeroes ~= nil and #nEnemyHeroes > 0
+		then
+			local targetHero = nEnemyHeroes[1]
+			if J.IsValidHero( targetHero )
+			and J.CanCastOnNonMagicImmune( targetHero )
+			then
+				return BOT_ACTION_DESIRE_MODERATE, targetHero:GetLocation()
+			end
+		end
+	end
+
+	return BOT_ACTION_DESIRE_NONE, 0
 end
 
 return X

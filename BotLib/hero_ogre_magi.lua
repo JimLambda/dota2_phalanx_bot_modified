@@ -14,66 +14,106 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
-						['t20'] = {0, 10},
-						['t15'] = {10, 0},
-						['t10'] = {0, 10},
+						{--pos2
+							['t25'] = {10, 0},
+							['t20'] = {0, 10},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						},
+						{--pos3
+							['t25'] = {10, 0},
+							['t20'] = {10, 0},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						}
 }
 
 local tAllAbilityBuildList = {
-						{2,1,2,3,2,7,2,1,1,1,7,3,3,3,7},
+						{3,2,2,1,2,7,2,1,1,1,7,3,3,3,7},--pos2
+						{2,1,2,3,2,7,3,1,1,1,7,3,3,2,7},--pos3
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList
+local nTalentBuildList
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+if sRole == "pos_2"
+then
+    nAbilityBuildList   = tAllAbilityBuildList[1]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
+else
+    nAbilityBuildList   = tAllAbilityBuildList[2]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
+end
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_gauntlets",
+	"item_gauntlets",
 
-	"item_ogre_outfit",
+	"item_bottle",
+	"item_phase_boots",
+	"item_soul_ring",
+	"item_magic_wand",
 	"item_hand_of_midas",
-  	"item_kaya_and_sange",
-	"item_aghanims_shard",
+	"item_blade_mail",
+	"item_heart",--
+	"item_black_king_bar",--
+	"item_shivas_guard",--
 	"item_ultimate_scepter",
-  	"item_sheepstick",
-  	"item_heart",
-  	"item_ultimate_scepter_2",
-  	"item_octarine_core",
+	"item_octarine_core",--
 	"item_travel_boots",
-	"item_nullifier",
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
 	"item_travel_boots_2",
 	"item_moon_shard",
-
-
+	"item_aghanims_shard",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_gauntlets",
+	"item_gauntlets",
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+	"item_boots",
+	"item_hand_of_midas",
+	"item_magic_wand",
+	"item_aether_lens",--
+	"item_ultimate_scepter",
+	"item_crimson_guard",--
+	"item_lotus_orb",--
+	"item_travel_boots",
+	"item_shivas_guard",--
+	"item_ultimate_scepter_2",
+	"item_heart",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_aghanims_shard",
+}
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_kaya_and_sange",
-	"item_magic_wand",
-
-	"item_sheepstick",
-	"item_bracer",
-
-	"item_travel_boots",
+	"item_gauntlets",
 	"item_hand_of_midas",
-  
+	"item_magic_wand",
+	"item_bottle",
+	"item_soul_ring",
+	"item_hand_of_midas",
+	"item_blade_mail",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_OM' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -127,7 +167,7 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityD = bot:GetAbilityByName( sAbilityList[4] )
-local abilityAS = bot:GetAbilityByName( sAbilityList[5] )
+local FireShield = bot:GetAbilityByName( sAbilityList[5] )
 local talent2 = bot:GetAbilityByName( sTalentList[2] )
 local talent8 = bot:GetAbilityByName( sTalentList[8] )
 
@@ -135,7 +175,7 @@ local castQDesire, castQTarget
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castDDesire, castDTarget
-local castASDesire, castASTarget
+local FireShieldDesire, FireShieldTarget
 
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
@@ -161,13 +201,7 @@ function X.SkillsComplement()
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
-  
+	if aether ~= nil then aetherRange = 250 end
 --	if talent2:IsTrained() then aetherRange = aetherRange + talent2:GetSpecialValueInt( "value" ) end
 	if talent8:IsTrained() then talent8Damage = talent8Damage + talent8:GetSpecialValueInt( "value" ) end
 
@@ -216,14 +250,14 @@ function X.SkillsComplement()
 		return
 	end
 	
-	castASDesire, castASTarget, sMotive = X.ConsiderAS()
-	if ( castASDesire > 0 )
+	FireShieldDesire, FireShieldTarget, sMotive = X.ConsiderFireShield()
+	if ( FireShieldDesire > 0 )
 	then
 		J.SetReportMotive( bDebugMode, sMotive )
 
 		J.SetQueuePtToINT( bot, true )
 
-		bot:ActionQueue_UseAbilityOnEntity( abilityAS, castASTarget )
+		bot:ActionQueue_UseAbilityOnEntity( FireShield, FireShieldTarget )
 		return
 
 	end
@@ -253,7 +287,7 @@ function X.ConsiderQ()
 	--打断和击杀
 	for _, npcEnemy in pairs( nInBonusEnemyList )
 	do
-		if J.IsValidHero( npcEnemy )
+		if J.IsValid( npcEnemy )
 			and J.CanCastOnNonMagicImmune( npcEnemy )
 			and J.CanCastOnTargetAdvanced( npcEnemy )
 		then
@@ -280,7 +314,7 @@ function X.ConsiderQ()
 
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and not J.IsDisabled( npcEnemy )
@@ -308,7 +342,7 @@ function X.ConsiderQ()
 	then
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and not J.IsDisabled( npcEnemy )
@@ -321,7 +355,7 @@ function X.ConsiderQ()
 	end
 
 
-	--[[对线期间对线上小兵使用
+	--对线期间对线上小兵使用
 	if bot:GetActiveMode() == BOT_MODE_LANING
 		or ( nLV <= 7 and #hAllyList <= 2 and #hEnemyList == 0 )
 	then
@@ -357,7 +391,7 @@ function X.ConsiderQ()
 				end
 			end
 		end
-	end]]
+	end
 
 
 	--打架时先手
@@ -383,7 +417,7 @@ function X.ConsiderQ()
 	then
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and bot:WasRecentlyDamagedByHero( npcEnemy, 5.0 )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
@@ -395,7 +429,7 @@ function X.ConsiderQ()
 	end
 
 
-	--[[发育时对野怪输出
+	--发育时对野怪输出
 	if J.IsFarming( bot )
 		and nSkillLV >= 3
 		and J.IsAllowedToSpam( bot, nManaCost * 0.25 )
@@ -414,10 +448,10 @@ function X.ConsiderQ()
 		then
 			return BOT_ACTION_DESIRE_HIGH, targetCreep, 'Q打野'
 		end
-	end]]
+	end
 
 
-	--[[推进时对小兵用
+	--推进时对小兵用
 	if ( J.IsPushing( bot ) or J.IsDefending( bot ) or J.IsFarming( bot ) )
 		and J.IsAllowedToSpam( bot, nManaCost * 0.32 )
 		and ( bot:GetAttackDamage() < 200 or nMP > 0.8 )
@@ -437,7 +471,7 @@ function X.ConsiderQ()
 				return BOT_ACTION_DESIRE_HIGH, creep, 'Q带线'
 			end
 		end
-	end]]
+	end
 
 
 	--打肉的时候输出
@@ -462,7 +496,7 @@ function X.ConsiderQ()
 	then
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.IsInRange( bot, npcEnemy, 600 )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
@@ -497,7 +531,7 @@ function X.ConsiderW()
 	--击杀
 	for _, npcEnemy in pairs( nInBonusEnemyList )
 	do
-		if J.IsValidHero( npcEnemy )
+		if J.IsValid( npcEnemy )
 			and J.CanCastOnNonMagicImmune( npcEnemy )
 			and J.CanCastOnTargetAdvanced( npcEnemy )
 			and J.WillMagicKillTarget( bot, npcEnemy, nDamage, nDuration )
@@ -515,7 +549,7 @@ function X.ConsiderW()
 
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 			then
@@ -542,7 +576,7 @@ function X.ConsiderW()
 	then
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and bot:IsFacingLocation( npcEnemy:GetLocation(), 30 )
@@ -571,7 +605,7 @@ function X.ConsiderW()
 	then
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and bot:WasRecentlyDamagedByHero( npcEnemy, 5.0 )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
@@ -639,7 +673,7 @@ function X.ConsiderW()
 	then
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 			then
@@ -761,8 +795,7 @@ function X.ConsiderE()
 		local hTower = nInRangeTowerList[1]
 		if J.IsValidBuilding( hTower )
 			and not hTower:HasModifier( "modifier_ogre_magi_bloodlust" )
-			--and not J.IsWithoutTarget( hTower )
-      and J.IsDefending( bot )
+			and not J.IsWithoutTarget( hTower )
 			and #hEnemyList >= 1
 		then
 			return BOT_ACTION_DESIRE_HIGH, hTower, 'E守塔'
@@ -779,8 +812,7 @@ function X.ConsiderE()
 
 					--给攻城车
 					if J.IsKeyWordUnit( 'siege', creep )
-          and J.IsPushing( bot )
-						--and not J.IsWithoutTarget( creep )
+						and not J.IsWithoutTarget( creep )
 					then
 						local creepTarget = creep:GetAttackTarget()
 						if J.IsValidBuilding( creepTarget )
@@ -1028,37 +1060,38 @@ function X.ConsiderD()
 end
 
 
-function X.ConsiderAS()
+function X.ConsiderFireShield()
 
-	if not abilityAS:IsTrained()
-		or not abilityAS:IsFullyCastable() 
+	if not FireShield:IsTrained()
+	or not FireShield:IsFullyCastable()
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
 	local nRadius = 600
-	local nCastRange = abilityAS:GetCastRange()
-	local nCastPoint = abilityAS:GetCastPoint()
-	local nManaCost = abilityAS:GetManaCost()
+	local nCastRange = FireShield:GetCastRange() + aetherRange
+	local nCastPoint = FireShield:GetCastPoint()
+	local nManaCost = FireShield:GetManaCost()
 
 	for _, npcEnemy in pairs( hEnemyList )
-	do 
+	do
 		if J.IsValidHero( npcEnemy )
-			and J.CanCastOnNonMagicImmune( npcEnemy )
+		and J.CanCastOnNonMagicImmune( npcEnemy )
 		then
 			local enemyTarget = npcEnemy:GetAttackTarget()
+
 			if enemyTarget ~= nil
-				and J.IsInRange( bot, enemyTarget, nCastRange + 120 )
-				and not enemyTarget:HasModifier( 'modifier_fountain_glyph' )
-				and not enemyTarget:HasModifier( 'modifier_ogre_magi_smash_buff' )
+			and J.IsInRange( bot, enemyTarget, nCastRange )
+			and not enemyTarget:HasModifier( 'modifier_fountain_glyph' )
+			and not enemyTarget:HasModifier( 'modifier_ogre_magi_smash_buff' )
 			then
 				if enemyTarget:IsTower() and npcEnemy:IsBot()
 				then
 					return BOT_ACTION_DESIRE_HIGH, enemyTarget, "AS-守塔"
 				end
-				
+
 				if enemyTarget:IsHero()
-					and not enemyTarget:IsIllusion()
+				and not enemyTarget:IsIllusion()
 				then
 					return BOT_ACTION_DESIRE_HIGH, enemyTarget, "AS-保护队友:"..J.Chat.GetNormName(enemyTarget)
 				end

@@ -14,94 +14,65 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 10},
-						['t20'] = {10, 0},
+						['t25'] = {0, 10},
+						['t20'] = {0, 10},
 						['t15'] = {0, 10},
-						['t10'] = {0, 10},
+						['t10'] = {10, 0},
 }
 
-if RandomInt( 1, 9 ) < 4
-then
-	tTalentTreeList['t25'][1] = 0
-else
-	tTalentTreeList['t25'][2] = 0
-end
-
 local tAllAbilityBuildList = {
-						{2,3,2,1,2,6,2,1,1,1,6,3,3,3,6},
-						{2,3,2,1,2,6,2,3,3,3,6,1,1,1,6},
+						{2,3,2,3,1,6,1,1,1,2,2,3,6,3,6},--pos1,2
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_slippers",
+	"item_circlet",
 
-	"item_ranged_carry_outfit",
+	"item_wraith_band",
+	"item_wraith_band",
+	"item_power_treads",
+	"item_magic_wand",
+	
 	"item_mask_of_madness",
+	"item_dragon_lance",
+	"item_lesser_crit",
+	"item_hurricane_pike",--
 	"item_aghanims_shard",
-	"item_maelstrom",
-	"item_silver_edge",
-	"item_mjollnir",
-	"item_skadi",
-	"item_ultimate_scepter",
+	"item_greater_crit",--
+	"item_skadi",--
+	"item_butterfly",--
 	"item_travel_boots",
-	"item_ultimate_scepter_2",
-	"item_greater_crit",
-	--"item_broken_satanic",
-	"item_satanic",
 	"item_moon_shard",
-	"item_travel_boots_2",
-
+	"item_satanic",--
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
-
---[[if RandomInt( 1, 99 ) >= 88
-then
-	X['sBuyList'] = {
-					"item_ranged_carry_outfit",
-					"item_dragon_lance",
-					"item_hand_of_midas",
-					"item_aghanims_shard",
-					"item_maelstrom",
-					"item_hurricane_pike",
-					"item_ultimate_scepter",
-					"item_mjollnir",
-					"item_skadi",
-					"item_travel_boots",
-					"item_greater_crit",
-					"item_moon_shard",
-					"item_travel_boots_2",
-					"item_ultimate_scepter_2",
-					"item_monkey_king_bar",
-
-	}
-end]]
-
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_mjollnir",
-	"item_magic_wand",
-
-	"item_skadi",
 	"item_wraith_band",
-
+	"item_magic_wand",
+	"item_mask_of_madness",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mid' }, {} end
@@ -173,7 +144,7 @@ function X.SkillsComplement()
 
 
 	X.ConsiderTarget()
-	--J.ConsiderForMkbDisassembleMask( bot )
+	J.ConsiderForMkbDisassembleMask( bot )
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
@@ -476,7 +447,7 @@ function X.ConsiderR()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 
 	local nEnemysHerosCanSeen = GetUnitList( UNIT_LIST_ENEMY_HEROES )
-	local nEnemysHerosInAttackRange = bot:GetNearbyHeroes( nAttackRange + 50, true, BOT_MODE_NONE )
+	local nEnemysHerosInAttackRange = bot:GetNearbyHeroes( math.min(nAttackRange + 50, 1600), true, BOT_MODE_NONE )
 
 	local nTempTarget = nEnemysHerosInAttackRange[1]
 	local nAttackTarget = J.GetProperTarget( bot )

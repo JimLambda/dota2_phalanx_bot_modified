@@ -14,72 +14,61 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
-						['t20'] = {0, 10},
-						['t15'] = {0, 10},
-						['t10'] = {10, 0},
+						['t20'] = {10, 0},
+						['t15'] = {10, 0},
+						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{1,2,1,3,1,6,1,3,3,3,6,2,2,2,6},
-						{1,2,1,3,1,6,1,2,2,2,6,3,3,3,6},
-						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},
+						{1,2,1,3,1,6,2,2,2,1,6,3,3,3,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_blight_stone",
 
-	"item_phantom_assassin_outfit",
-	"item_bfury",
-	"item_desolator",
- 	"item_black_king_bar",
-  	"item_basher",
-	"item_satanic",
-  	"item_abyssal_blade",
-	"item_travel_boots",
-	"item_ultimate_scepter_2",
+	"item_orb_of_corrosion",
+	"item_magic_wand",
+	"item_power_treads",
+	"item_bfury",--
+	"item_black_king_bar",--
+	"item_desolator",--
 	"item_aghanims_shard",
+	"item_basher",
+	"item_satanic",--
+	"item_monkey_king_bar",--
+	"item_abyssal_blade",--
 	"item_moon_shard",
-	"item_travel_boots_2",
-	"item_nullifier",
-
-
+	"item_ultimate_scepter_2",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 
 X['sSellList'] = {
-
-	"item_desolator",
-	"item_magic_wand",
-
-	"item_black_king_bar",
-	"item_wraith_band",
-
-	"item_basher",
+	'item_magic_wand',
 	"item_orb_of_corrosion",
-  
-	"item_travel_boots_2",
-	"item_desolator",
-
-  
+	"item_power_treads",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_PA' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -216,11 +205,10 @@ function X.ConsiderQ()
 	local nCastPoint = abilityQ:GetCastPoint()
 	local nManaCost = abilityQ:GetManaCost()
 	local nSkillLV = abilityQ:GetLevel()
-	local nBonusPer = abilityQ:GetSpecialValueInt( "attack_factor_tooltip" ) / 100
-  local nBaseDamage = abilityQ:GetSpecialValueInt( "base_damage" )
-	local nDamage = nBaseDamage + (nAttackDamage * nBonusPer)
-	local nBonusDamage= 0 --8 * nBonusPer
-  
+	local nBonusPer = 0.1 + 0.15 * nSkillLV
+	local nDamage = 65 + nAttackDamage * nBonusPer
+	local nBonusDamage= 8 * nBonusPer
+
 	local nDamageType = DAMAGE_TYPE_PHYSICAL
 
 	local nAllies = bot:GetNearbyHeroes( 1200, false, BOT_MODE_NONE )
@@ -228,12 +216,13 @@ function X.ConsiderQ()
 	local nEnemysHerosInView = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
 	local nEnemysHerosInRange = bot:GetNearbyHeroes( nCastRange + 50, true, BOT_MODE_NONE )
 	local nEnemysHerosInBonus = bot:GetNearbyHeroes( nCastRange + 200, true, BOT_MODE_NONE )
-  
+
+
 	--击杀敌人
 	for _, npcEnemy in pairs( nEnemysHerosInBonus )
 	do
-		if J.IsValidHero( npcEnemy )
-			and J.CanCastOnMagicImmune( npcEnemy )
+		if J.IsValid( npcEnemy )
+			and J.CanCastOnNonMagicImmune( npcEnemy )
 			and J.CanCastOnTargetAdvanced( npcEnemy )
 			and GetUnitToUnitDistance( bot, npcEnemy ) <= nCastRange + 80
 			and ( J.CanKillTarget( npcEnemy, nDamage * 1.6, nDamageType )
@@ -272,7 +261,7 @@ function X.ConsiderQ()
 
 		for _, npcEnemy in pairs( nEnemysHerosInRange )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 			then
@@ -298,7 +287,7 @@ function X.ConsiderQ()
 	then
 		for _, npcEnemy in pairs( nEnemysHerosInRange )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and bot:WasRecentlyDamagedByHero( npcEnemy, 5.0 )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
@@ -372,7 +361,7 @@ function X.ConsiderQ()
 		--打断回复
 		for _, npcEnemy in pairs( nEnemysHerosInRange )
 		do
-			if J.IsValidHero( npcEnemy )
+			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and GetUnitToUnitDistance( bot, npcEnemy ) <= nCastRange + 80
 				and ( npcEnemy:HasModifier( "modifier_flask_healing" )
@@ -443,12 +432,12 @@ function X.ConsiderQ()
 		end
 
 		--补刀非狂战范围内的兵
-		local keyword = "melee"
+		local keyWord = "melee"
 		for _, creep in pairs( nLaneCreeps )
 		do
 			if J.IsValid( creep )
 				and not creep:HasModifier( "modifier_fountain_glyph" )
-				and J.IsKeyWordUnit( keyword, creep )
+				and J.IsKeyWordUnit( keyWord, creep )
 				and GetUnitToUnitDistance( creep, bot ) > 350
 				and not bot:IsFacingLocation( creep:GetLocation(), 50 )
 			then
@@ -483,8 +472,8 @@ function X.ConsiderQ()
 	then
 		for _, npcEnemy in pairs( nEnemysHerosInRange )
 		do
-			if J.IsValidHero( npcEnemy )
-				and J.CanCastOnMagicImmune( npcEnemy )
+			if J.IsValid( npcEnemy )
+				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and not J.IsDisabled( npcEnemy )
 				and bot:IsFacingLocation( npcEnemy:GetLocation(), 80 )
@@ -493,7 +482,8 @@ function X.ConsiderQ()
 			end
 		end
 	end
-  
+
+
 	return 0
 
 end
@@ -706,16 +696,6 @@ function X.ConsiderE()
 		or bot:DistanceFromFountain() < 600
 	then
 		return BOT_ACTION_DESIRE_NONE, 0
-	end
-
-	local nManaCost = abilityE:GetManaCost()
-
-	if bot:HasScepter() 
-		and #nEnemyTowers == 0 
-		and #hEnemyList == 0 
-		and J.IsAllowedToSpam( bot, nManaCost )
-	then
-		return BOT_ACTION_DESIRE_HIGH
 	end
 
 	--撤退逃跑

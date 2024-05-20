@@ -14,104 +14,117 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {10, 0},
-						['t15'] = {10, 0},
-						['t10'] = {0, 10},
+						{--pos2
+							['t25'] = {10, 0},
+							['t20'] = {10, 0},
+							['t15'] = {0, 10},
+							['t10'] = {10, 0},
+						},
+						{--pos3
+							['t25'] = {10, 0},
+							['t20'] = {10, 0},
+							['t15'] = {0, 10},
+							['t10'] = {10, 0},
+						}
 }
 
 local tAllAbilityBuildList = {
-						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},
+						{1,3,1,3,1,6,1,3,3,2,6,2,2,2,6},--pos2
+						{1,3,3,1,3,6,3,2,1,1,6,2,2,2,6},--pos3
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList
+local nTalentBuildList
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+if sRole == "pos_2"
+then
+    nAbilityBuildList   = tAllAbilityBuildList[1]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
+else
+    nAbilityBuildList   = tAllAbilityBuildList[2]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
+end
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+local sPipeHalberd = RandomInt( 1, 2 ) == 1 and "item_heavens_halberd" or "item_pipe"
 
-	"item_intel_ranged_carry_outfit",
-  	"item_witch_blade",
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_circlet",
+
+	"item_bottle",
+	"item_boots",
+	"item_ring_of_basilius",
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_shivas_guard",--
+	"item_cyclone",
+	"item_eternal_shroud",--
+	"item_black_king_bar",--
 	"item_aghanims_shard",
-  	"item_yasha_and_kaya",
-	"item_ultimate_scepter",
-	"item_black_king_bar",
-	"item_devastator",
-	"item_octarine_core",
-  	"item_travel_boots",
+	"item_kaya_and_sange",--
+	"item_octarine_core",--
+	"item_refresher",--
 	"item_ultimate_scepter_2",
-	"item_sheepstick",
 	"item_moon_shard",
-  	"item_travel_boots_2",
-
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_circlet",
 
-tOutFitList['outfit_mage'] = {
-
-	'item_intel_ranged_carry_outfit',
-	"item_phylactery",
-	"item_yasha_and_kaya",
-	"item_glimmer_cape",
-  	"item_aghanims_shard",
-	"item_angels_demise",
-	"item_ultimate_scepter",
-	"item_wind_waker",
-  	"item_travel_boots",
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-	"item_octarine_core",
-	"item_travel_boots_2",
-
-}
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_mage']
-
-tOutFitList['outfit_tank'] = {
-
-	"item_intel_ranged_carry_outfit",
-	"item_kaya_and_sange",
-	"item_eternal_shroud",
+	"item_boots",
+	"item_ring_of_basilius",
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_shivas_guard",--
+	"item_cyclone",
+	"item_eternal_shroud",--
+	"item_black_king_bar",--
 	"item_aghanims_shard",
-  	"item_heart",
-	"item_ultimate_scepter",
-	"item_octarine_core",
+	sPipeHalberd,--
+	"item_guardian_greaves",--
+	"item_refresher",--
 	"item_ultimate_scepter_2",
-	"item_assault",
-	"item_travel_boots_2",
-  	"item_moon_shard",
-
+	"item_moon_shard",
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-X['sSellList'] = {
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-	"item_ultimate_scepter",
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+Pos2SellList = {
+	"item_circlet",
+	"item_bottle",
 	"item_magic_wand",
-
-	"item_devastator",
-	"item_null_talisman",
-
-	"item_angels_demise",
-	"item_magic_wand",
-
-	"item_ultimate_scepter",
-	"item_null_talisman",
-
-	"item_heart",
-	"item_magic_wand",
-
-	"item_ultimate_scepter",
-	"item_null_talisman",
-
+	"item_cyclone",
 }
+
+Pos3SellList = {
+	"item_circlet",
+	"item_magic_wand",
+}
+
+X['sSellList'] = {}
+
+if sRole == "pos_2"
+then
+    X['sSellList'] = Pos2SellList
+else
+    X['sSellList'] = Pos3SellList
+end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_priest' }, {} end
 
@@ -120,7 +133,7 @@ nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHe
 X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 
 X['bDeafaultAbility'] = true
-X['bDeafaultItem'] = false
+X['bDeafaultItem'] = true
 
 function X.MinionThink( hMinionUnit )
 
@@ -169,6 +182,8 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
+local talent4 = bot:GetAbilityByName( sTalentList[4] )
+
 
 local castQDesire, castQLocation
 local castWDesire, castWLocation
@@ -178,6 +193,7 @@ local castRDesire
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
+local talentDamage = 0
 
 
 function X.SkillsComplement()
@@ -187,6 +203,7 @@ function X.SkillsComplement()
 
 	nKeepMana = 400
 	aetherRange = 0
+	talentDamage = 0
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
@@ -194,14 +211,10 @@ function X.SkillsComplement()
 	hEnemyList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
-  
+
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
+--	if talent4:IsTrained() then aetherRange = aetherRange + talent4:GetSpecialValueInt( "value" ) end
 
 	castWDesire, castWLocation, sMotive = X.ConsiderW()
 	if ( castWDesire > 0 )
@@ -514,7 +527,7 @@ function X.ConsiderE()
 	local nCastRange = abilityE:GetCastRange() + aetherRange + 99
 	local nCastPoint = abilityE:GetCastPoint()
 	local nManaCost = abilityE:GetManaCost()
-	local nDamage = abilityE:GetSpecialValueInt( "damage" )
+	local nDamage = abilityE:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
 

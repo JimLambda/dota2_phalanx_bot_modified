@@ -14,73 +14,66 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
+						['t25'] = {10, 0},
 						['t20'] = {0, 10},
 						['t15'] = {0, 10},
 						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{3,2,1,1,1,6,1,2,2,2,6,3,3,3,6},
+						{3,2,1,1,1,6,1,2,2,2,6,3,3,3,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local sRandomItem_1 = RandomInt( 1, 9 ) > 5 and "item_abyssal_blade" or "item_nullifier"
+local sRoleItemsBuyList = {}
 
-local tOutFitList = {}
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_slippers",
+	"item_circlet",
 
-tOutFitList['outfit_carry'] = {
-
-	"item_phantom_assassin_outfit",
-	"item_hand_of_midas",
+	"item_wraith_band",
+	"item_power_treads",
+	"item_magic_wand",
 	"item_diffusal_blade",
-	"item_black_king_bar",
-	"item_aghanims_shard",
-	"item_skadi",
+	"item_echo_sabre",
 	"item_ultimate_scepter",
-  	"item_disperser",
-	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-	sRandomItem_1,
-	"item_moon_shard",
-	"item_travel_boots_2",
-	"item_butterfly",
-
+	"item_aghanims_shard",
+	"item_black_king_bar",--
+	"item_skadi",--
+	"item_basher",
+	"item_disperser",--
+	"item_abyssal_blade",--
+	"item_ultimate_scepter_2",
+	"item_bloodthorn",--
+	"item_nullifier",--
+	"item_moon_shard"
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_hand_of_midas",
 	"item_quelling_blade",
-
-	"item_diffusal_blade",
-	"item_magic_wand",
-
-	"item_black_king_bar",
 	"item_wraith_band",
-
-	"item_skadi",
-	"item_orb_of_corrosion",
-
-	"item_travel_boots_2",
-	"item_hand_of_midas",
-
+	"item_power_treads",
+	"item_magic_wand",
+	"item_echo_sabre",
 }
 
 
@@ -197,14 +190,14 @@ function X.SkillsComplement()
 		return
 	end
 
-	castASDesire, castASLoc, sMotive = X.ConsiderAS()
+	castASDesire, castASTarget, sMotive = X.ConsiderAS()
 	if castASDesire > 0
 	then
 		J.SetReportMotive( bDebugMode, sMotive )
 
 		J.SetQueuePtToINT( bot, true )
 
-		bot:ActionQueue_UseAbilityOnLocation( abilityAS, castASLoc )
+		bot:ActionQueue_UseAbilityOnLocation( abilityAS, castASTarget )
 		return
 	end
 
@@ -353,7 +346,7 @@ end
 function X.ConsiderW()
 
 
-	if not abilityW:IsFullyCastable() or bot:IsRooted() then return 0 end
+	if not abilityW:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityW:GetLevel()
 	local nCastRange = abilityW:GetSpecialValueInt( 'pounce_distance' )
@@ -429,6 +422,7 @@ function X.ConsiderAS()
 	if not abilityAS:IsTrained() 
 		or not abilityAS:IsFullyCastable() 
 		or bot:HasModifier( "modifier_slark_shadow_dance" )
+		or nHP > 0.85
 	then return 0 end
 
 	local nSkillLV = abilityAS:GetLevel()
@@ -442,61 +436,45 @@ function X.ConsiderAS()
 	local nInBonusEnemyList = J.GetAroundEnemyHeroList( 800 )
 	local hCastTarget = nil
 	local sCastMotive = nil
-  local nAllys =  bot:GetNearbyHeroes( nCastRange + 200, false, BOT_MODE_NONE )
-  local nEnemys = bot:GetNearbyHeroes( nCastRange + 300, true, BOT_MODE_NONE )
 
-	local save = nil
-  if not J.IsRetreating( bot ) then
-    for _, ally in pairs( nAllys ) do
-        if J.IsValidHero( ally ) then
-            if ally:GetHealth() / ally:GetMaxHealth() < 0.3
-                and (ally:IsRooted()
-                or ally:IsStunned()
-                or ally:IsHexed()
-                or ally:IsNightmared()
-                or J.IsTaunted( ally )) then
-                save = ally
-                break
-            end
-        end
-    end
-  end
+	--攻击敌人时
+	if J.IsGoingOnSomeone( bot )
+	then
+		if J.IsValidHero( botTarget )
+			and J.IsInRange( botTarget, bot, 200 )
+			and J.CanCastOnMagicImmune( botTarget )	
+			and bot:GetAttackTarget() == botTarget
+			and not J.IsRunning( botTarget )
+		then			
+			hCastTarget = J.GetFaceTowardDistanceLocation( bot, 100 )
+			sCastMotive = 'AS-攻击'..J.Chat.GetNormName( botTarget )
+			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
+		end
+	end
+	
+	
+	--撤退时保护自己
+	if J.IsRetreating( bot )
+		and J.IsRunning( bot )
+		and bot:IsFacingLocation( GetAncient(GetTeam()):GetLocation(), 15 )
+	then
+		for _, npcEnemy in pairs( nInBonusEnemyList )
+		do
+			if J.IsValid( npcEnemy )
+				and J.CanCastOnMagicImmune( npcEnemy )
+				and npcEnemy:GetAttackTarget() == bot
+				and bot:WasRecentlyDamagedByHero( npcEnemy )
+			then
+				hCastTarget = J.GetFaceTowardDistanceLocation( bot, 300 )
+				sCastMotive = 'AS-隐藏'
+				return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
+			end
+		end
+	end
 
-  if save ~= nil then
-    return BOT_ACTION_DESIRE_HIGH, save:GetLocation()
-  end
-  
-  if #nEnemys >= 3 then
-    for _, ally in pairs( nAllys ) do
-        if J.IsValidHero( ally ) 
-            and ally:IsChanneling() then
-          return BOT_ACTION_DESIRE_HIGH, ally:GetLocation()
-        end
-    end
-  end
-  
-  local allycount = 0
-  local lowesthealth = 99999
-  local lowestally = nil
-  
-  if not J.IsRetreating( bot ) then
-    for _, ally in pairs( nAllys ) do
-      if J.IsValidHero( ally ) then
-        if ally:GetHealth() / ally:GetMaxHealth() < 0.4 then
-          allycount = allycount +1
-            if ally:GetHealth() < lowesthealth then
-              lowesthealth = ally:GetHealth()
-              lowestally = ally
-            end
-        end
-      end
-    end
-    if allycount >=2 and lowestally ~= nil then
-      return BOT_ACTION_DESIRE_HIGH, lowestally:GetLocation()
-    end
-  end
-          
 	return BOT_ACTION_DESIRE_NONE
+
+
 end
 
 
@@ -587,7 +565,7 @@ function X.IsEnemyCastAbility()
 
 	for _, npcEnemy in pairs( enemyList )
 	do
-		if npcEnemy ~= nil and npcEnemy:IsAlive() and J.IsValidHero( npcEnemy )
+		if npcEnemy ~= nil and npcEnemy:IsAlive()
 			and ( npcEnemy:IsCastingAbility() or npcEnemy:IsUsingAbility() )
 			and npcEnemy:IsFacingLocation( bot:GetLocation(), 30 )
 		then

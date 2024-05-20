@@ -177,7 +177,6 @@ function Site.GetXUnitsTowardsLocation( hUnit, vLocation, nDistance )
 end
 
 
-
 function Site.GetNearestWatchTower( bot )
 
 	if GetUnitToUnitDistance( bot, nWatchTower_1 ) < GetUnitToUnitDistance( bot, nWatchTower_2 )
@@ -392,7 +391,7 @@ function Site.IsLocationHaveTrueSight( vLocation )
 	for _, ward in pairs( WardList )
 	do
 		if Site.IsSentry( ward )
-			and GetUnitToLocationDistance( ward, wardLoc ) <= trueSightRad
+			and GetUnitToLocationDistance( ward, vLocation ) <= trueSightRad
 		then
 			return true
 		end
@@ -487,55 +486,12 @@ function Site.HasArmorReduction( nUnit )
 
 end
 
-
-local tFarmerList = {
-	["npc_dota_hero_nevermore"] = true,
-	["npc_dota_hero_medusa"] = true,
-	["npc_dota_hero_razor"] = true,
-	["npc_dota_hero_luna"] = true,
-	["npc_dota_hero_sven"] = true,
-	["npc_dota_hero_antimage"] = true,
-	["npc_dota_hero_phantom_assassin"] = true,
-	["npc_dota_hero_phantom_lancer"] = true,
-	["npc_dota_hero_naga_siren"] = true,
-	["npc_dota_hero_templar_assassin"] = true,
-}
-function Site.IsSpecialFarmer( bot )
-
-	local botName = bot:GetUnitName()
-
-	return tFarmerList[botName] == true
-
+function Site.IsSpecialFarmer(bot)
+	return Site.GetPosition(bot) == 1
 end
 
-
-local tFarmHeroList = {
-	["npc_dota_hero_nevermore"] = true,
-	["npc_dota_hero_drow_ranger"] = true,
-	["npc_dota_hero_luna"] = true,
-	["npc_dota_hero_sven"] = true,
-	["npc_dota_hero_axe"] = true,
-	["npc_dota_hero_antimage"] = true,
-	["npc_dota_hero_arc_warden"] = true,
-	["npc_dota_hero_bloodseeker"] = true,
-	["npc_dota_hero_medusa"] = true,
-	["npc_dota_hero_razor"] = true,
-	["npc_dota_hero_phantom_assassin"] = true,
-	["npc_dota_hero_phantom_lancer"] = true,
-	["npc_dota_hero_naga_siren"] = true,
-	["npc_dota_hero_templar_assassin"] = true,
-	["npc_dota_hero_huskar"] = true,
-	["npc_dota_hero_clinkz"] = true,
-	["npc_dota_hero_juggernaut"] = true,
-	["npc_dota_hero_tidehunter"] = true,
-	["npc_dota_hero_slark"] = true,
-}
 function Site.IsShouldFarmHero( bot )
-
-	local botName = bot:GetUnitName()
-
-	return tFarmHeroList[botName] == true
-
+	return Site.GetPosition(bot) <= 3
 end
 
 
@@ -919,7 +875,7 @@ function Site.IsModeSuitableToFarm( bot )
 	local botLevel = bot:GetLevel()
 	local botName = bot:GetUnitName()
 
-	if  botLevel <= 9
+	if  botLevel <= 8
 	    and ( mode == BOT_MODE_PUSH_TOWER_TOP
 		or mode == BOT_MODE_PUSH_TOWER_MID
 		or mode == BOT_MODE_PUSH_TOWER_BOT
@@ -933,7 +889,7 @@ function Site.IsModeSuitableToFarm( bot )
 	end
 
 	if Site.IsSpecialFarmer( bot )
-		and botLevel >= 5
+		and botLevel >= 8
 		and botLevel <= 24
 		and Site.IsSuitableFarmMode( mode )
 		and mode ~= BOT_MODE_ROSHAN
@@ -953,7 +909,7 @@ function Site.IsModeSuitableToFarm( bot )
 	   and mode ~= BOT_MODE_ASSEMBLE
 	   and mode ~= BOT_MODE_TEAM_ROAM
 	   and mode ~= BOT_MODE_ROSHAN
-	   and botLevel >= 5
+	   and botLevel >= 8
 	then
 		return true
 	end
@@ -963,15 +919,17 @@ function Site.IsModeSuitableToFarm( bot )
 end
 
 
+local wellFarmGoldAmount = 20000
+local doneFarmGoldAmount = 26000
 
 function Site.IsTimeToFarm( bot )
 
-	if DotaTime() < 5 * 60 or DotaTime() > 90 * 60 then return false end
+	if Site.IsInLaningPhase() or DotaTime() > 90 * 60 then return false end
 
-	local botName = bot:GetUnitName()
 	local botNetWorth = bot:GetNetWorth()
 
-	--防止单独无用的推进
+
+	--防止单独无用的推进，宁可去打钱
 	if bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_BOT
 		or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_MID
 		or bot:GetActiveMode() == BOT_MODE_PUSH_TOWER_TOP
@@ -979,8 +937,7 @@ function Site.IsTimeToFarm( bot )
 		local enemyAncient = GetAncient( GetOpposingTeam() )
 		local allyList = bot:GetNearbyHeroes( 1400, false, BOT_MODE_NONE )
 		local enemyAncientDistance = GetUnitToUnitDistance( bot, enemyAncient )
-		if  enemyAncientDistance < 2800
-		    and enemyAncientDistance > 1400
+		if enemyAncientDistance < 3000
 			and bot:GetActiveModeDesire() < BOT_MODE_DESIRE_HIGH
 			and #allyList <= 1
 		then
@@ -989,8 +946,7 @@ function Site.IsTimeToFarm( bot )
 
 		if Site.IsShouldFarmHero( bot )
 		then
-			if  bot:GetActiveModeDesire() < BOT_MODE_DESIRE_MODERATE
-				and enemyAncientDistance > 1600
+			if  bot:GetActiveModeDesire() < BOT_MODE_DESIRE_VERYHIGH
 				and enemyAncientDistance < 5600
 				and #allyList <= 1
 			then
@@ -999,782 +955,25 @@ function Site.IsTimeToFarm( bot )
 		end
 	end
 
-	if Site.ConsiderIsTimeToFarm[botName] ~= nil
-	   and Site.ConsiderIsTimeToFarm[botName]() == true
-	then
-		return true
-	end
-
-	return false
-
-end
-
------------------------------------------------------------
-Site.ConsiderIsTimeToFarm = {}
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_antimage"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-	   and ( bot:GetLevel() < 25 or botNetWorth < 23000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-	   and botNetWorth < 18000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_satanic" )
-		and botNetWorth < 28000
-	then
-		if Site.GetAroundAllyCount( bot, 1200 ) <= 2
-		then
-			return true
+	-- no desite for farming if it's already well farmed
+	if botNetWorth >= 30000 then return false end
+	if Site.IsModeTurbo() then -- 900 = 15min
+		if (DotaTime() <= 900 and botNetWorth >= wellFarmGoldAmount)
+		or (DotaTime() >= 900 and botNetWorth >= doneFarmGoldAmount) then
+			return false
+		end
+	else -- 1200 = 20min
+		if DotaTime() <= 1200 and botNetWorth >= wellFarmGoldAmount
+		or (DotaTime() >= 1200 and botNetWorth >= doneFarmGoldAmount)then
+			return false
 		end
 	end
 
-	return false
+	return true
 
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_arc_warden"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 15 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 22000 )
-	then
-		return true
-	end	
-	
-	if Site.IsHaveItem( bot, "item_gloves" )
-		and not Site.IsHaveItem( bot, "item_hand_of_midas" )
-		and bot:GetGold() > 800
-	then
-		return true
-	end
-
-	if Site.IsHaveItem( bot, "item_yasha" )
-		and not Site.IsHaveItem( bot, "item_manta" )
-		and bot:GetGold() > 1000
-	then
-		return true
-	end
-
-	if Site.IsHaveItem( bot, "item_hand_of_midas" )
-		and Site.GetAroundAllyCount( bot, 1200 ) <= 3
-		and botNetWorth <= 26000
-	then
-		return true
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_axe"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 7 * 60
-	   and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_echo_sabre" )
-		and botNetWorth < 12000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_heart" )
-		and botNetWorth < 21000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_bloodseeker"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 22000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-		and botNetWorth < 16000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_abyssal_blade" )
-		and botNetWorth < 26000
-	then
-		if Site.GetAroundAllyCount( bot, 1200 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_bristleback"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	local botKills = GetHeroKills( bot:GetPlayerID() )
-	local botDeaths = GetHeroDeaths( bot:GetPlayerID() )
-	local allyCount = Site.GetAroundAllyCount( bot, 1200 )
-
-	if botKills >= botDeaths + 4
-	   and botDeaths <= 3
-	then
-		return false
-	end
-
-	if bot:GetLevel() >= 10
-		and allyCount <= 2
-		and botNetWorth < 15000
-	then
-		return true
-	end
-
-	if bot:GetLevel() >= 20
-	   and allyCount <= 1
-	   and botNetWorth < 21000
-	then
-		return true
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_chaos_knight"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_clinkz"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_dragon_knight"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if not Site.IsHaveItem( bot, "item_assault" )
-	   and botNetWorth < 22000
-	then
-		local allyCount = Site.GetAroundAllyCount( bot, 1200 )
-		if bot:GetAttackRange() > 300
-			and allyCount <= 2
-		then
-			return true
-		end
-
-		if bot:GetMana() > 450
-			and bot:GetCurrentVisionRange() < 1000
-			and allyCount < 2
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_drow_ranger"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if bot:GetLevel() >= 6
-	   and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if Site.IsHaveItem( bot, "item_mask_of_madness" )
-		and botNetWorth < 9999
-	then
-		return true
-	end
-
-	if Site.IsHaveItem( bot, "item_blade_of_alacrity" )
-		and not Site.IsHaveItem( bot, "item_ultimate_scepter" )
-	then
-		return true
-	end
-
-	if  Site.IsHaveItem( bot, "item_shadow_amulet" )
-		and not Site.IsHaveItem( bot, "item_invis_sword" )
-		and bot:GetGold() > 400
-	then
-		return true
-	end
-
-	if Site.IsHaveItem( bot, "item_yasha" )
-		and not Site.IsHaveItem( bot, "item_manta" )
-		and bot:GetGold() > 1000
-	then
-		return true
-	end
-
-	if Site.IsHaveItem( bot, "item_ultimate_scepter" )
-		and botNetWorth < 23000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 2
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_huskar"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_hurricane_pike" )
-		and botNetWorth < 18000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-		and botNetWorth < 26000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) < 2
-		then
-			return true
-		end
-	end
-
-	if bot:GetLevel() > 20
-	   and botNetWorth < 23333
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_juggernaut"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-		and botNetWorth < 20000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 2
-		then
-			return true
-		end
-	end
-
-	if not Site.IsHaveItem( bot, "item_satanic" )
-		and botNetWorth < 24000
-	then
-		if Site.GetAroundAllyCount( bot, 1000 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_kunkka"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_luna"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_huskar"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_mirana"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_medusa"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-		and botNetWorth < 16000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_satanic" )
-		and botNetWorth < 28000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_nevermore"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 22000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_skadi" )
-		and botNetWorth < 16000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_sphere" )
-		and botNetWorth < 28000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 2
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_omniknight"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_ogre_magi"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_phantom_assassin"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_desolator" )
-		and botNetWorth < 16000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-		and botNetWorth < 24000
-	then
-		if Site.GetAroundAllyCount( bot, 1000 ) <= 2
-		then
-			return true
-		end
-	end
-
-	if not Site.IsHaveItem( bot, "item_satanic" )
-		and botNetWorth < 26000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 23000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_skadi" )
-		and botNetWorth < 18000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_sphere" )
-		and botNetWorth < 22000
-	then
-		if Site.GetAroundAllyCount( bot, 1300 ) <= 3
-		then
-			return true
-		end
-	end
-
-	if not Site.IsHaveItem( bot, "item_heart" )
-		and botNetWorth < 26000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_naga_siren"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_phantom_lancer"]()
-
-end
-
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_razor"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 7 * 60
-	   and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-		and botNetWorth < 15000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_satanic" )
-		and botNetWorth < 25000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_sand_king"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_slardar"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_legion_commander"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 7 * 60
-	   and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_echo_sabre" )
-		and botNetWorth < 12000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_heart" )
-		and botNetWorth < 21000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_slark"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_invis_sword" )
-		and botNetWorth < 18000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_silver_edge" )
-		and botNetWorth < 21000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 2
-		then
-			return true
-		end
-	end
-
-	if not Site.IsHaveItem( bot, "item_abyssal_blade" )
-		and botNetWorth < 25000
-	then
-		if Site.GetAroundAllyCount( bot, 1300 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_skeleton_king"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_bristleback"]()
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_sven"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_satanic" )
-		and botNetWorth < 22000
-	then
-		if Site.GetAroundAllyCount( bot, 1000 ) <= 2
-		then
-			return true
-		end
-	end
-
-	if not Site.IsHaveItem( bot, "item_greater_crit" )
-		and botNetWorth < 26000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_sniper"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if bot:GetLevel() >= 10
-		and not Site.IsHaveItem( bot, "item_monkey_king_bar" )
-		and botNetWorth < 22000
-	then
-		local botKills = GetHeroKills( bot:GetPlayerID() )
-		local botDeaths = GetHeroDeaths( bot:GetPlayerID() )
-		if botKills - 3 <=  botDeaths
-			and botDeaths > 2
-			and Site.GetAroundAllyCount( bot, 1200 ) <= 2
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_templar_assassin"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if DotaTime() > 9 * 60
-		and ( bot:GetLevel() < 25 or botNetWorth < 20000 )
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_black_king_bar" )
-		and botNetWorth < 16000
-	then
-		return true
-	end
-
-	if not Site.IsHaveItem( bot, "item_hurricane_pike" )
-		and botNetWorth < 20000
-	then
-		if Site.GetAroundAllyCount( bot, 1300 ) <= 3
-		then
-			return true
-		end
-	end
-
-	if not Site.IsHaveItem( bot, "item_satanic" )
-		and botNetWorth < 26000
-	then
-		if Site.GetAroundAllyCount( bot, 1100 ) <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_tidehunter"] = function()
-
-	return Site.ConsiderIsTimeToFarm["npc_dota_hero_sven"]()
-
-end
-
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_viper"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-	if bot:GetLevel() >= 10
-		and not Site.IsHaveItem( bot, "item_mjollnir" )
-		and botNetWorth < 20000
-	then
-		local botKills = GetHeroKills( bot:GetPlayerID() )
-		local botDeaths = GetHeroDeaths( bot:GetPlayerID() )
-		local allyCount = Site.GetAroundAllyCount( bot, 1300 )
-		if botKills - 4 <=  botDeaths
-			and botDeaths > 2
-			and allyCount < 3
-		then
-			return true
-		end
-
-		if bot:GetMana() > 650
-			and bot:GetCurrentVisionRange() < 1000
-			and allyCount <= 1
-		then
-			return true
-		end
-	end
-
-	return false
-
-end
-
-Site.ConsiderIsTimeToFarm["npc_dota_hero_new"] = function()
-
-	local bot = GetBot()
-	local botNetWorth = bot:GetNetWorth()
-
-
-
-	return false
 end
 
 ------------------------------------------------------------------
-
 
 --根据地点来刷新阵营
 function Site.UpdateAvailableCamp( bot, preferedCamp, availableCampList )
@@ -1847,6 +1046,33 @@ function Site.GetAroundAllyCount( bot, nRadius )
 
 	return nCount
 
+end
+
+function Site.GetPosition(bot)
+	if bot.assignedRole ~= nil then
+		return bot.assignedRole
+	end
+	return 1
+end
+
+function Site.IsInLaningPhase()
+	return (Site.IsModeTurbo() and DotaTime() < 8 * 60) or DotaTime() < 12 * 60
+end
+
+function Site.IsModeTurbo()
+	for _, u in pairs(GetUnitList(UNIT_LIST_ALLIES))
+	do
+		if  u ~= nil
+		and u:GetUnitName() == 'npc_dota_courier'
+		then
+			if u:GetCurrentMovementSpeed() == 1100
+			then
+				return true
+			end
+		end
+	end
+
+    return false
 end
 
 return Site

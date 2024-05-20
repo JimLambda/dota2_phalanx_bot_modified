@@ -14,85 +14,66 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {0, 10},
-						['t20'] = {0, 10},
-						['t15'] = {0, 10},
+						['t20'] = {10, 0},
+						['t15'] = {10, 0},
 						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{1,3,2,2,2,6,2,1,1,1,6,3,3,3,6},
-						{1,3,2,1,1,6,1,3,3,3,6,2,2,2,6},
-						{3,1,2,3,3,6,3,2,2,2,6,1,1,1,6},
+						{1,2,3,3,3,6,3,2,2,2,6,1,1,1,6},--pos1,3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_gauntlets",
+	"item_circlet",
 
-	"item_bristleback_outfit",
+	"item_bracer",
+	"item_boots",
+	"item_magic_wand",
+	"item_power_treads",
 	"item_armlet",
-	"item_diffusal_blade",
+	"item_echo_sabre",
+	"item_black_king_bar",--
+	"item_heart",--
 	"item_aghanims_shard",
-	"item_manta",
-  	"item_black_king_bar",
-  	"item_disperser",
-	"item_heart",
+	"item_bloodthorn",--
+	"item_assault",--
 	"item_travel_boots",
-	"item_satanic",
+	"item_nullifier",--
+	"item_travel_boots_2",--
 	"item_moon_shard",
-	"item_travel_boots_2",
-
-
+	"item_ultimate_scepter_2",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
---[[{
-
-	"item_tank_outfit",
-	"item_aghanims_shard",
-	"item_crimson_guard",
-	"item_armlet",
-	"item_heavens_halberd",
-	"item_assault",
-	"item_travel_boots",
-	"item_manta",
-	"item_heart",
-	"item_moon_shard",
-	"item_travel_boots_2",
-
-}]]
-
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_diffusal_blade",
 	"item_quelling_blade",
-
-	"item_manta",
-	"item_magic_wand",
-
-	"item_disperser",
 	"item_bracer",
-
-	"item_travel_boots",
+	"item_magic_wand",
 	"item_armlet",
-	
+	"item_echo_sabre",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_tank' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -102,7 +83,7 @@ nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHe
 X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 
 
-X['bDeafaultAbility'] = false
+X['bDeafaultAbility'] = true
 X['bDeafaultItem'] = false
 
 function X.MinionThink( hMinionUnit )
@@ -161,7 +142,7 @@ function X.SkillsComplement()
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
-	nKeepMana = 200
+	nKeepMana = 240
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	nLV = bot:GetLevel()
@@ -212,7 +193,6 @@ function X.ConsiderQ()
 	if not abilityQ:IsFullyCastable() then return BOT_ACTION_DESIRE_NONE end
 
 	local nCastRange = abilityQ:GetCastRange()
-  local nManaCost = abilityQ:GetManaCost()
 	local nCastPoint = abilityQ:GetCastPoint()
 	local nSkillLV = abilityQ:GetLevel()
 	local nDamage = 30 + nSkillLV * 30 + 120 * 0.38
@@ -273,8 +253,7 @@ function X.ConsiderQ()
 			end
 		end
 
-		if ( npcMostDangerousEnemy ~= nil 
-      and J.IsAllowedToSpam( bot, nManaCost ))
+		if ( npcMostDangerousEnemy ~= nil )
 		then
 			return BOT_ACTION_DESIRE_HIGH, npcMostDangerousEnemy
 		end
@@ -289,7 +268,6 @@ function X.ConsiderQ()
 			and J.CanCastOnNonMagicImmune( target )
 			and J.CanCastOnTargetAdvanced( target )
 			and J.IsInRange( target, bot, nCastRange )
-      and J.IsAllowedToSpam( bot, nManaCost )
 			and not J.IsDisabled( target )
 			and not target:IsDisarmed()
 		then
@@ -322,7 +300,6 @@ function X.ConsiderQ()
 		if target ~= nil and target:IsAlive()
 			and J.GetHP( target ) > 0.2
 			and not J.IsDisabled( target )
-      and J.IsAllowedToSpam( bot, nManaCost )
 			and not target:IsDisarmed()
 		then
 			return BOT_ACTION_DESIRE_LOW, target
@@ -338,7 +315,6 @@ function X.ConsiderW()
 	if not abilityW:IsFullyCastable() or bot:IsRooted() then return BOT_ACTION_DESIRE_NONE end
 
 	local nCastRange = abilityW:GetCastRange()
-  local nManaCost = abilityW:GetManaCost()
 	local nCastPoint = abilityW:GetCastPoint()
 	local nSkillLV = abilityW:GetLevel()
 	local nDamage = 0
@@ -355,7 +331,6 @@ function X.ConsiderW()
 			and ( not J.IsInRange( bot, target, 200 ) or not target:HasModifier( 'modifier_chaos_knight_reality_rift' ) )
 			and J.CanCastOnNonMagicImmune( target )
 			and J.CanCastOnTargetAdvanced( target )
-      and J.IsAllowedToSpam( bot, nManaCost )
 			and not J.IsDisabled( target )
 		then
 			return BOT_ACTION_DESIRE_HIGH, target
@@ -394,7 +369,6 @@ function X.ConsiderW()
 				and not creep:HasModifier( "modifier_fountain_glyph" )
 				and J.IsKeyWordUnit( "ranged", creep )
 				and GetUnitToUnitDistance( bot, creep ) >= 350
-        and J.IsAllowedToSpam( bot, nManaCost )
 			then
 				return BOT_ACTION_DESIRE_LOW, creep
 			end
@@ -408,7 +382,6 @@ function X.ConsiderW()
 		if target ~= nil
 			and not J.IsDisabled( target )
 			and not target:IsDisarmed()
-      and J.IsAllowedToSpam( bot, nManaCost )
 		then
 			return BOT_ACTION_DESIRE_LOW, target
 		end
@@ -428,7 +401,6 @@ function X.ConsiderR()
 	local nNearbyEnemyBarracks = bot:GetNearbyBarracks( 400, true )
 	local nNearbyAlliedCreeps = bot:GetNearbyLaneCreeps( 1000, false )
 	local nCastRange = abilityW:IsFullyCastable() and 1200 or 900
-  local nManaCost = abilityR:GetManaCost()
 
 	-- if #nNearbyAllyHeroes + #nNearbyEnemyHeroes >= 3
 		-- and  #hEnemyHeroList - #nNearbyAllyHeroes <= 2

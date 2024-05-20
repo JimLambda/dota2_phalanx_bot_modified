@@ -14,68 +14,66 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {0, 10},
-						['t15'] = {10, 0},
+						['t25'] = {0, 10},
+						['t20'] = {10, 0},
+						['t15'] = {0, 10},
 						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{3,1,3,2,3,6,3,1,1,1,6,2,2,2,6},
-						{3,1,3,2,3,6,3,2,2,2,6,1,1,1,6},
-						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},
+						{3,1,2,3,3,6,3,2,2,2,6,1,1,1,6},--pos3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sLotusHalberd = RandomInt( 1, 2 ) == 1 and "item_lotus_orb" or "item_heavens_halberd"
 
-tOutFitList['outfit_carry'] = {
+local sRoleItemsBuyList = {}
 
-	"item_bristleback_outfit",
-	"item_vladmir",
-  	"item_eternal_shroud",
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_gauntlets",
+	"item_gauntlets",
+
+	"item_boots",
+	"item_soul_ring",
+	"item_magic_wand",
+	"item_phase_boots",
+	"item_vladmir",--
+	"item_blink",
 	"item_aghanims_shard",
-  	"item_desolator",
-  	"item_greater_crit",
-  	"item_assault",
-  	"item_travel_boots",
-  	"item_moon_shard",
- 	"item_satanic",
+	"item_pipe",--
+	"item_shivas_guard",--
+	sLotusHalberd,--
+	"item_ultimate_scepter",
+	"item_refresher",--
+	"item_overwhelming_blink",--
 	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
-
+	"item_moon_shard",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_eternal_shroud",
 	"item_quelling_blade",
-
-	"item_desolator",
+	"item_phase_boots",
+	"item_soul_ring",
 	"item_magic_wand",
-
-	"item_greater_crit",
-	"item_bracer",
-
-	"item_satanic",
-	"item_vladmir",
-
 }
 
 
@@ -90,9 +88,8 @@ X['bDeafaultItem'] = false
 
 function X.MinionThink( hMinionUnit )
 
-	if Minion.IsValidUnit( hMinionUnit ) 
-    and hMinionUnit:GetUnitName() ~= "npc_dota_unit_tidehunter_anchor"
-	then 
+	if Minion.IsValidUnit( hMinionUnit )
+	then
 		Minion.IllusionThink( hMinionUnit )
 	end
 
@@ -130,7 +127,7 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
-local abilityAS = bot:GetAbilityByName( sAbilityList[4] )
+local DeadInTheWater = bot:GetAbilityByName( 'tidehunter_dead_in_the_water' )
 local talent3 = bot:GetAbilityByName( sTalentList[3] )
 
 
@@ -138,7 +135,7 @@ local castQDesire, castQTarget
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castRDesire, castRTarget
-local castASDesire, castASTarget
+local DeadInTheWaterDesire, AnchorTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
 local aetherRange = 0
@@ -160,12 +157,7 @@ function X.SkillsComplement()
 
 	--计算天赋可能带来的通用变化
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 
 	
 	castRDesire, sMotive = X.ConsiderR()
@@ -188,6 +180,7 @@ function X.SkillsComplement()
 		J.SetQueuePtToINT( bot, true )
 		
 		if bot:HasScepter()
+		and castQTarget ~= nil
 		then
 			bot:ActionQueue_UseAbilityOnLocation( abilityQ, castQTarget:GetLocation() )
 		else
@@ -207,18 +200,16 @@ function X.SkillsComplement()
 		bot:Action_UseAbility( abilityE )
 		return
 	end
-  
-  castASDesire, castASTarget, sMotive = X.ConsiderAS()
-	if castASDesire > 0
+
+	DeadInTheWaterDesire, AnchorTarget = X.ConsiderDeadInTheWater()
+	if DeadInTheWaterDesire > 0
 	then
 		J.SetReportMotive( bDebugMode, sMotive )
-
 		J.SetQueuePtToINT( bot, true )
-    
-			bot:ActionQueue_UseAbilityOnEntity( abilityAS, castASTarget )
+		bot:ActionQueue_UseAbilityOnEntity(DeadInTheWater, AnchorTarget)
 		return
 	end
-  
+
 end
 
 
@@ -683,66 +674,65 @@ function X.ConsiderR()
 
 end
 
+function X.ConsiderDeadInTheWater()
+	if not DeadInTheWater:IsTrained()
+	or not DeadInTheWater:IsFullyCastable()
+	then
+		return BOT_ACTION_DESIRE_NONE, nil
+	end
 
-function X.ConsiderAS()
-  if not abilityAS:IsTrained()
-		or not abilityAS:IsFullyCastable() 
-	then
-		return BOT_ACTION_DESIRE_NONE, 0
-	end
-  
-  local nCastRange = abilityAS:GetCastRange() + aetherRange
-  local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
-  local nInRangeEnemyListBonus = J.GetAroundEnemyHeroList( nCastRange + 600 )
-  local hCastTarget = nil
-  
-  for _, enemy in pairs(nInRangeEnemyListBonus) do
-		if (enemy:HasModifier( "modifier_teleporting" )
-      and J.IsValidHero( enemy )
-			and J.IsInRange( enemy, bot, nCastRange + 600 )
-			and J.CanCastOnNonMagicImmune( enemy )			
-			and J.CanCastOnTargetAdvanced( enemy ))
-		then
-			return BOT_ACTION_DESIRE_HIGH, enemy
-		end
-	end
-  
-  --打架先手
-	if J.IsGoingOnSomeone( bot )
-	then
-		if J.IsValidHero( botTarget )
-			and J.IsInRange( botTarget, bot, nCastRange )
-			and J.CanCastOnNonMagicImmune( botTarget )			
-			and J.CanCastOnTargetAdvanced( botTarget )
-		then			
-			hCastTarget = botTarget
+	local nCastRange = DeadInTheWater:GetCastRange()
+	local nInRangeEnmyList = bot:GetNearbyHeroes(nCastRange, true, BOT_MODE_NONE)
 
-			return BOT_ACTION_DESIRE_HIGH, hCastTarget
-		end
-	end
-	
-	
-	--撤退时保护自己
-	if J.IsRetreating( bot )
-		and bot:WasRecentlyDamagedByAnyHero( 5.0 )
+	if J.IsRetreating(bot)
 	then
-		for _, npcEnemy in pairs( nInRangeEnemyList )
+		for _, npcEnemy in pairs(nInRangeEnmyList)
 		do
-			if J.IsValid( npcEnemy )
-				and J.CanCastOnNonMagicImmune( npcEnemy )
-				and J.CanCastOnTargetAdvanced( npcEnemy )
-				and not J.IsDisabled( npcEnemy )
-				and not npcEnemy:IsDisarmed()
+			if J.IsValid(npcEnemy)
+			and J.IsMoving(npcEnemy)
+			and J.IsInRange(npcEnemy, bot, nCastRange)
+			and bot:WasRecentlyDamagedByHero(npcEnemy, 4.0)
+			and J.CanCastOnNonMagicImmune(npcEnemy)
+			and IsWithoutSpellShield(npcEnemy)
+			and not J.IsDisabled(npcEnemy)
 			then
-				hCastTarget = npcEnemy
-				return BOT_ACTION_DESIRE_HIGH, hCastTarget
+				return BOT_ACTION_DESIRE_HIGH, npcEnemy
 			end
 		end
 	end
-  
-  return BOT_ACTION_DESIRE_NONE
+
+	if J.IsGoingOnSomeone(bot)
+	then
+		if J.IsValidHero(botTarget)
+		and J.IsMoving(botTarget)
+		and J.IsInRange(botTarget, bot, nCastRange)
+		and J.CanCastOnNonMagicImmune(botTarget)
+		and IsWithoutSpellShield(botTarget)
+		and not J.IsDisabled(botTarget)
+		then
+			return BOT_ACTION_DESIRE_HIGH, botTarget
+		end
+	end
+
+	local npcEnemy = nInRangeEnmyList[1]
+	if J.IsValidHero(npcEnemy)
+	and J.IsMoving(npcEnemy)
+	and J.IsInRange(bot, npcEnemy, nCastRange - 100)
+	and J.CanCastOnNonMagicImmune(npcEnemy)
+	and IsWithoutSpellShield(npcEnemy)
+	and not J.IsDisabled(npcEnemy)
+	and J.IsRunning(npcEnemy)
+	then
+		return BOT_ACTION_DESIRE_HIGH, npcEnemy
+	end
+
+	return BOT_ACTION_DESIRE_NONE, nil
+end
+
+function IsWithoutSpellShield(npcEnemy)
+	return not npcEnemy:HasModifier("modifier_item_sphere_target")
+			and not npcEnemy:HasModifier("modifier_antimage_spell_shield")
+			and not npcEnemy:HasModifier("modifier_item_lotus_orb_active")
 end
 
 return X
--- dota2jmz@163.com QQ:2462331592..
-

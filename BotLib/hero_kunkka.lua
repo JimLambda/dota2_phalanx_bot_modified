@@ -14,88 +14,106 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {10, 0},
-						['t15'] = {10, 0},
-						['t10'] = {0, 10},
+						{--pos2
+							['t25'] = {0, 10},
+							['t20'] = {0, 10},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						},
+						{--pos3
+							['t25'] = {0, 10},
+							['t20'] = {0, 10},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						},
 }
 
 local tAllAbilityBuildList = {
-						{2,1,2,3,2,6,2,3,3,3,6,1,1,1,6},
+						{2,1,2,3,2,6,2,3,3,3,1,6,1,1,6},--pos2
+						{2,1,2,3,2,6,2,3,3,3,6,1,1,1,6},--pos3
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList
+local nTalentBuildList
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+if sRole == "pos_2"
+then
+    nAbilityBuildList   = tAllAbilityBuildList[1]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
+else
+    nAbilityBuildList   = tAllAbilityBuildList[2]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
+end
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_gauntlets",
+	"item_circlet",
 
-	"item_sven_outfit",
-	"item_falcon_blade",
-  	"item_bfury",
-	"item_black_king_bar",
-	"item_greater_crit",
-  	"item_assault",
-	"item_heart",
-	"item_travel_boots",
-	"item_ultimate_scepter_2",
-	"item_moon_shard",
-	"item_travel_boots_2",
-  	"item_aghanims_shard",
-
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = {
-
-	"item_tank_outfit",
-	"item_crimson_guard",
-	"item_heavens_halberd",
-	"item_ultimate_scepter", 
-  	"item_heart",
-	"item_assault",
-	"item_travel_boots",
-	"item_ultimate_scepter_2",
-	"item_lotus_orb",
-	"item_moon_shard",
-	"item_travel_boots_2",
+	"item_bottle",
+	"item_bracer",
+	"item_phase_boots",
+	"item_magic_wand",
+	"item_blade_mail",
+	"item_ultimate_scepter",
 	"item_aghanims_shard",
-
+	"item_black_king_bar",--
+	"item_shivas_guard",--
+	"item_octarine_core",--
+	"item_travel_boots",
+	"item_heart",--
+	"item_refresher",--
+	"item_ultimate_scepter_2",
+	"item_travel_boots_2",--
+	"item_moon_shard"
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+sRoleItemsBuyList['pos_3'] = {
+
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_double_gauntlets",
+
+	"item_double_bracer",
+	"item_phase_boots",
+	"item_magic_wand",
+	"item_blade_mail",
+	"item_ultimate_scepter",
+	"item_aghanims_shard",
+	"item_black_king_bar",--
+	"item_shivas_guard",--
+	"item_refresher",--
+	"item_sheepstick",--
+	"item_travel_boots",
+	"item_heart",--
+	"item_travel_boots_2",--
+
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_black_king_bar",
-	"item_magic_wand",
-	
-	"item_greater_crit",
-	"item_bracer",
-  
-	"item_assault",
-	"item_falcon_blade",
-
-	"item_heavens_halberd",
 	"item_quelling_blade",
-
-	"item_ultimate_scepter",
-	"item_magic_wand",
-
-	"item_heart",
+	"item_bottle",
 	"item_bracer",
-
+	"item_magic_wand",
+	"item_blade_mail",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_tank' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -487,11 +505,13 @@ function X.ConsiderD()
 	if J.IsRetreating( bot ) or J.IsInTeamFight( bot, 1200 )
 	then
 		local nEnemyHeroList = J.GetEnemyList( bot, 1100 )
-		if #nEnemyHeroList >= 3
-			or ( #nEnemyHeroList >= 2 and nHP <= 0.5 )
-			or ( #nEnemyHeroList >= 1 and nHP <= 0.4 and bot:WasRecentlyDamagedByHero( 3.0 ) )
-		then
-			return BOT_ACTION_DESIRE_HIGH
+		for _, enemy in pairs(nEnemyHeroList) do
+			if #nEnemyHeroList >= 3
+				or ( #nEnemyHeroList >= 2 and nHP <= 0.5 )
+				or ( #nEnemyHeroList >= 1 and nHP <= 0.4 and bot:WasRecentlyDamagedByHero( enemy, 3.0 ) )
+			then
+				return BOT_ACTION_DESIRE_HIGH
+			end
 		end
 	end
 
@@ -751,6 +771,7 @@ function X.ConsiderAS()
 		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, nCastRange, nRadius, 2 )
 		if nAoeLoc ~= nil
 		then
+			local loc = bot:GetLocation() + (bot:GetLocation() - nAoeLoc)
 			return BOT_ACTION_DESIRE_HIGH, nAoeLoc
 		end		
 	end
@@ -763,7 +784,8 @@ function X.ConsiderAS()
 			and J.IsInRange( bot, targetHero, 400 )
 			and J.CanCastOnNonMagicImmune( targetHero )
 		then
-			return BOT_ACTION_DESIRE_HIGH, targetHero:GetLocation()
+			local loc = bot:GetLocation() + (bot:GetLocation() - targetHero:GetLocation())
+			return BOT_ACTION_DESIRE_HIGH, loc
 		end
 	end
 

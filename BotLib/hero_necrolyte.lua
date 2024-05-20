@@ -14,82 +14,103 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
-						['t20'] = {10, 0},
-						['t15'] = {10, 0},
-						['t10'] = {10, 0},
+						{--pos2
+							['t25'] = {0, 10},
+							['t20'] = {10, 0},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						},
+						{--pos3
+							['t25'] = {0, 10},
+							['t20'] = {10, 0},
+							['t15'] = {0, 10},
+							['t10'] = {0, 10},
+						},
 }
 
 local tAllAbilityBuildList = {
-						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},
+						{1,3,1,3,1,6,1,2,3,3,6,2,2,2,6},--pos2
+						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},--pos3
 }
 
-local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
+local nAbilityBuildList
+local nTalentBuildList
 
-local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
+if sRole == "pos_2"
+then
+    nAbilityBuildList   = tAllAbilityBuildList[1]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[1])
+else
+    nAbilityBuildList   = tAllAbilityBuildList[2]
+    nTalentBuildList    = J.Skill.GetTalentBuild(tTalentTreeList[2])
+end
 
-local tOutFitList = {}
+local sHalberdPipe = RandomInt( 1, 2 ) == 1 and "item_heavens_halberd" or "item_pipe"
 
-tOutFitList['outfit_carry'] = {
+local sRoleItemsBuyList = {}
 
-	"item_intel_ranged_carry_outfit",
-	"item_hand_of_midas",
-	"item_kaya_and_sange",
-  	"item_eternal_shroud",
-	"item_aghanims_shard",	
-	"item_radiance",
-	"item_ultimate_scepter",
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_circlet",
+	"item_circlet",
+
+	"item_bracer",
+	"item_boots",
+	"item_bracer",
+	"item_magic_wand",
 	"item_travel_boots",
-	"item_heart",
-	"item_ultimate_scepter_2",
-	"item_octarine_core",
-  	"item_travel_boots_2",
-	"item_moon_shard",
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = {
-
-	"item_priest_outfit",
- 	"item_solar_crest",
-  	"item_spirit_vessel",
 	"item_aghanims_shard",
-	"item_mekansm",
-	"item_holy_locket",
-	"item_glimmer_cape",
-	"item_guardian_greaves",
+	"item_heart",--
 	"item_ultimate_scepter",
-	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
-	
+	"item_kaya_and_sange",--
+	"item_shivas_guard",--
+	"item_octarine_core",--
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+	"item_wind_waker",--
+	"item_moon_shard",
 }
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_faerie_fire",
+	"item_circlet",
+	"item_circlet",
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+	"item_bracer",
+	"item_boots",
+	"item_bracer",
+	"item_magic_wand",
+	"item_travel_boots",
+	"item_aghanims_shard",
+	"item_heart",--
+	"item_ultimate_scepter",
+	sHalberdPipe,--
+	"item_shivas_guard",--
+	"item_lotus_orb",--
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+	"item_wind_waker",--
+	"item_moon_shard",
+}
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-	
-  	"item_eternal_shroud",
-  	"item_magic_wand",
-
-	"item_radiance",
-	"item_null_talisman",
-
-	"item_travel_boots",
-	"item_hand_of_midas",
-
-	"item_ultimate_scepter",
-	"item_solar_crest",
-
+	"item_bracer",
+	"item_magic_wand",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_priest' }, {} end
@@ -100,7 +121,7 @@ X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalent
 
 
 X['bDeafaultAbility'] = false
-X['bDeafaultItem'] = false
+X['bDeafaultItem'] = true
 
 function X.MinionThink( hMinionUnit )
 
@@ -154,7 +175,6 @@ local castRDesire, castRTarget
 local castASDesire, castASTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
-local aetherRange = 0
 
 function X.SkillsComplement()
 
@@ -163,19 +183,10 @@ function X.SkillsComplement()
 
 
 	nKeepMana = 400
-  aetherRange = 0
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
 	hEnemyHeroList = bot:GetNearbyHeroes( 1600, true, BOT_MODE_NONE )
-
-  local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
 
 
 	castRDesire, castRTarget = X.ConsiderR()
@@ -424,7 +435,7 @@ function X.ConsiderR()
 		return BOT_ACTION_DESIRE_NONE, 0
 	end
 
-	local nCastRange = abilityR:GetCastRange() + aetherRange
+	local nCastRange = abilityR:GetCastRange()
 	local nDamagePerHealth = abilityR:GetSpecialValueFloat( "damage_per_health" )
 
 	if J.IsGoingOnSomeone( bot )
@@ -498,8 +509,6 @@ end
 
 function X.GetEstDamage( bot, npcTarget, nDamagePerHealth )
 
-  if not J.IsValidHero( npcTarget ) then return 0 end
-  
 	local targetMaxHealth = npcTarget:GetMaxHealth()
 
 	if npcTarget:GetHealth()/ targetMaxHealth > 0.75
@@ -563,7 +572,7 @@ function X.ConsiderAS()
 	end
 
 	local nRadius = 500
-	local nCastRange = abilityAS:GetCastRange() + aetherRange
+	local nCastRange = abilityAS:GetCastRange()
 	local nCastPoint = abilityAS:GetCastPoint()
 	local nManaCost = abilityAS:GetManaCost()
 

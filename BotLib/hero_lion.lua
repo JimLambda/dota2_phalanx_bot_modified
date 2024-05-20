@@ -14,60 +14,89 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
-						['t20'] = {0, 10},
+						['t20'] = {10, 0},
 						['t15'] = {10, 0},
-						['t10'] = {10, 0},
+						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{1,2,3,1,1,6,1,3,3,3,6,2,2,2,6},
+						{1,3,3,2,3,6,3,1,1,1,6,2,2,2,6},
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_mage'] = {
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_blood_grenade",
 
-	"item_mage_outfit",
-  	"item_aether_lens",
-  	"item_aghanims_shard",
-	"item_glimmer_cape",
-	"item_boots_of_bearing",
-	"item_ultimate_scepter",
-	"item_ethereal_blade",
-	"item_octarine_core",
-	"item_arcane_blink",
-  	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
-
-}
-
-tOutFitList['outfit_carry'] = tOutFitList['outfit_mage']
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_mage']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_mage']
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_mage']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-  
-	"item_ethereal_blade",
+	"item_tranquil_boots",
 	"item_magic_wand",
-
-	"item_octarine_core",
-	"item_null_talisman",
-
+	"item_aghanims_shard",
+	"item_aether_lens",--
+	"item_glimmer_cape",--
+	"item_ultimate_scepter",
+	"item_boots_of_bearing",--
+	"item_force_staff",--
+	"item_aeon_disk",--
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
+	"item_blood_grenade",
+
+	"item_arcane_boots",
+	"item_magic_wand",
+	"item_aghanims_shard",
+	"item_aether_lens",--
+	"item_glimmer_cape",--
+	"item_guardian_greaves",--
+	"item_force_staff",--
+	"item_ultimate_scepter",
+	"item_aeon_disk",--
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_4']
+
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_4']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+Pos4SellList = {
+	"item_magic_wand",
+}
+
+Pos5SellList = {
+	"item_magic_wand",
+}
+
+X['sSellList'] = {}
+
+if sRole == "pos_4"
+then
+    X['sSellList'] = Pos4SellList
+else
+    X['sSellList'] = Pos5SellList
+end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_mage' }, {} end
 
@@ -76,7 +105,7 @@ nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHe
 X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 
 X['bDeafaultAbility'] = false
-X['bDeafaultItem'] = false
+X['bDeafaultItem'] = true
 
 function X.MinionThink( hMinionUnit )
 
@@ -154,12 +183,9 @@ function X.SkillsComplement()
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
+--	if talent4:IsTrained() then aetherRange = aetherRange + talent4:GetSpecialValueInt( "value" ) end
+	
 
 	castEDesire, castETarget, sMotive = X.ConsiderE()
 	if ( castEDesire > 0 )
@@ -281,8 +307,7 @@ function X.ConsiderQ()
 	do
 		if J.IsValidHero( npcEnemy )
 			and J.CanCastOnNonMagicImmune( npcEnemy )
-			and ( J.WillMagicKillTarget( bot, npcEnemy, nDamage, 5.0 )
-        or npcEnemy:IsChanneling() )
+			and J.WillMagicKillTarget( bot, npcEnemy, nDamage, 5.0 )
 		then
 			nTargetLocation = npcEnemy:GetLocation()
 			return BOT_ACTION_DESIRE_HIGH, nTargetLocation, 'Q-击杀'..J.Chat.GetNormName( npcEnemy )
@@ -383,7 +408,7 @@ function X.ConsiderQ()
 			if locationAoEHurt.count >= 3
 			then
 				nTargetLocation = locationAoEHurt.targetloc
-				return BOT_ACTION_DESIRE_LOW, nTargetLocation, "Q-推线"..locationAoEHurt.count
+				return BOT_ACTION_DESIRE_HIGH, nTargetLocation, "Q-推线"..locationAoEHurt.count
 			end
 		end
 	end
@@ -638,7 +663,8 @@ function X.ConsiderE()
 	if #hEnemyList == 0 and #nEnemyTowers == 0
 		and not J.IsRetreating( bot )
 		and not bot:WasRecentlyDamagedByAnyHero( 2.0 )
-		and	nLostMana > nManaDrain
+		and ( nLostMana > nManaDrain + bot:GetManaRegen() * nDuration + 50
+				or nLostMana > 500 )
 	then
 		local nEnemyCreepList = bot:GetNearbyCreeps( 1600, true )
 		for _, nCreep in pairs( nEnemyCreepList )
@@ -692,12 +718,13 @@ function X.ConsiderE()
 		for _, npcEnemy in pairs( hEnemyList )
 		do
 			if J.IsValidHero( npcEnemy )
-				and J.IsInRange( bot, npcEnemy, nCastRange - 100 )
+				and J.IsInRange( bot, npcEnemy, nCastRange )
 				and not npcEnemy:HasModifier( "modifier_lion_finger_of_death" )
 				and npcEnemy:GetMana() > 200
 				and J.CanCastOnMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and not J.IsDisabled( npcEnemy )
+				and ( not J.IsValidHero( botTarget ) or not X.MayKillTarget( botTarget ) )
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy, 'E-团战吸篮:'..J.Chat.GetNormName( npcEnemy )
 			end
@@ -711,7 +738,7 @@ function X.ConsiderE()
 		if J.IsValidHero( botTarget )
 			and not botTarget:HasModifier( "modifier_lion_finger_of_death" )
 			and botTarget:GetMana() > 200
-			and J.IsInRange( bot, botTarget, nCastRange - 100 )
+			and J.IsInRange( bot, botTarget, nCastRange )
 			and J.CanCastOnNonMagicImmune( botTarget )
 			and J.CanCastOnTargetAdvanced( botTarget )
 			and not J.IsDisabled( botTarget )
@@ -720,8 +747,11 @@ function X.ConsiderE()
 			return BOT_ACTION_DESIRE_HIGH, botTarget, 'E-抽篮:'..J.Chat.GetNormName( botTarget )
 		end
 	end
-  
+
+
 	return BOT_ACTION_DESIRE_NONE
+
+
 end
 
 
@@ -737,10 +767,11 @@ function X.ConsiderR()
 	local nCastPoint = abilityR:GetCastPoint()
 	local nManaCost = abilityR:GetManaCost()
 	local nDamageBonus = X.GetAbilityRDamageBonus()
-	local nRawDamage = abilityR:GetSpecialValueInt( 'damage' )
+	local nRawDamage = 475 + 125 * nSkillLV
 	if bot:HasScepter()
 	then
 		nRadius = abilityR:GetSpecialValueInt( 'splash_radius_scepter' )
+		nRawDamage = 575 + 125 * nSkillLV
 	end
 
 	local nDamage = nRawDamage + nDamageBonus

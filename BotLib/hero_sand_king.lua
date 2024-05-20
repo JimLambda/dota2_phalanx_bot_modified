@@ -14,64 +14,68 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
+						['t25'] = {10, 0},
 						['t20'] = {0, 10},
-						['t15'] = {10, 0},
+						['t15'] = {0, 10},
 						['t10'] = {10, 0},
 }
 
 local tAllAbilityBuildList = {
-						{1,2,1,3,1,6,1,2,2,2,6,3,3,3,6},
-						{1,2,1,3,1,6,1,3,3,3,6,2,2,2,6},
+						{1,3,2,2,2,6,2,1,1,1,6,3,3,3,6},--pos3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
+local sCrimsonPipe = RandomInt( 1, 2 ) == 1 and "item_crimson_guard" or "item_pipe"
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_tank'] = {
-
-	"item_tank_outfit",
-	"item_crimson_guard",
-	"item_aghanims_shard",
-	"item_shivas_guard",
-	"item_ethereal_blade",
-	"item_heart",
-	"item_ultimate_scepter_2",
-	"item_overwhelming_blink",
-	"item_travel_boots_2",
-
-}
-
-
-tOutFitList['outfit_carry'] = tOutFitList['outfit_tank']
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_tank']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_tank']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_tank']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-
-	"item_shivas_guard",
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_circlet",
+	"item_circlet",
 	"item_quelling_blade",
 
-	"item_ethereal_blade",
-	"item_magic_wand",
-
-	"item_heart",
 	"item_bracer",
+	"item_boots",
+	"item_veil_of_discord",
+	"item_magic_wand",
+	"item_blink",
+	"item_cyclone",
+	"item_shivas_guard",--
+	"item_travel_boots",
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_black_king_bar",--
+	sCrimsonPipe,--
+	"item_overwhelming_blink",--
+	"item_ultimate_scepter_2",
+	"item_wind_waker",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+}
 
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+X['sSellList'] = {
+	"item_circlet",
+	"item_quelling_blade",
+	"item_bracer",
+	"item_magic_wand",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_tank' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -80,7 +84,7 @@ nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHe
 
 X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 
-X['bDeafaultAbility'] = false
+X['bDeafaultAbility'] = true
 X['bDeafaultItem'] = false
 
 function X.MinionThink( hMinionUnit )
@@ -152,12 +156,7 @@ function X.SkillsComplement()
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 
 	castQDesire, castQTarget, sMotive = X.ConsiderQ()
 	if ( castQDesire > 0 )

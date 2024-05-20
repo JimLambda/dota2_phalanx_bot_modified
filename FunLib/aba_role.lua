@@ -1,12 +1,3 @@
-----------------------------------------------------------------------------------------------------
---- The Creation Come From: BOT EXPERIMENT Credit:FURIOUSPUPPY
---- BOT EXPERIMENT Author: Arizona Fauzie
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=837040016
---- Refactor: 决明子 Email: dota2jmz@163.com 微博@Dota2_决明子
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1573671599
---- Link:http://steamcommunity.com/sharedfiles/filedetails/?id=1627071163
-----------------------------------------------------------------------------------------------------
-
 local X = {}
 
 local sBotVersion = "New"
@@ -18,6 +9,14 @@ function X.GetBotVersion()
 end
 
 ----------------------------------------------------------------------------------------------------
+
+-- The index in the list is the pick order, value is the role. by default #1 pick is mid, #2 is pos3, #3 is pos1, #4 is pos 5, #5 is pos 4.
+-- X.roleAssignment = { 2, 3, 1, 5, 4 }
+X.roleAssignment = {
+	TEAM_RADIANT = { 1, 2, 3, 4, 5 },
+	TEAM_DIRE = { 1, 2, 3, 4, 5 }
+}
+
 
 -- ["carry"] will become more useful later in the game if they gain a significant gold advantage.
 -- ["durable"] has the ability to last longer in teamfights.
@@ -31,14 +30,14 @@ end
 
 X["hero_roles"] = {
 	["npc_dota_hero_abaddon"] = {
-		['carry'] = 2,
+		['carry'] = 1,
 		['disabler'] = 0,
 		['durable'] = 2,
 		['escape'] = 0,
 		['initiator'] = 0,
 		['jungler'] = 0,
 		['nuker'] = 0,
-		['support'] = 0,
+		['support'] = 2,
 		['pusher'] = 0
 	},
 
@@ -1494,6 +1493,30 @@ X["hero_roles"] = {
 		['pusher'] = 0
 	},
 
+	["npc_dota_hero_muerta"] = {
+		['carry'] = 3,
+		['disabler'] = 1,
+		['durable'] = 0,
+		['escape'] = 0,
+		['initiator'] = 0,
+		['jungler'] = 0,
+		['nuker'] = 0,
+		['support'] = 1,
+		['pusher'] = 0
+	},
+
+	["npc_dota_hero_primal_beast"] = {
+		['carry'] = 0,
+		['disabler'] = 1,
+		['durable'] = 3,
+		['escape'] = 0,
+		['initiator'] = 3,
+		['jungler'] = 0,
+		['nuker'] = 1,
+		['support'] = 0,
+		['pusher'] = 0
+	},
+
 }
 
 X["bottle"] = {
@@ -1621,7 +1644,7 @@ function X.IsRemovedFromSupportPoll( hero )
 end
 
 X['off'] = {
-	'npc_dota_hero_abaddon',
+	-- 'npc_dota_hero_abaddon',
 	'npc_dota_hero_abyssal_underlord',
 	'npc_dota_hero_axe',
 	'npc_dota_hero_batrider',
@@ -1630,50 +1653,68 @@ X['off'] = {
 	'npc_dota_hero_bristleback',
 	'npc_dota_hero_centaur',
 	'npc_dota_hero_dark_seer',
+	'npc_dota_hero_dawnbreaker',
 	'npc_dota_hero_doom_bringer',
-	'npc_dota_hero_enchantress',
+	-- 'npc_dota_hero_enchantress',
+	'npc_dota_hero_enigma',
 	'npc_dota_hero_furion',
 	'npc_dota_hero_legion_commander',
+	'npc_dota_hero_leshrac',
+	'npc_dota_hero_lycan',
 	'npc_dota_hero_magnataur',
+	'npc_dota_hero_marci',
+	"npc_dota_hero_mars",
 	'npc_dota_hero_night_stalker',
 	'npc_dota_hero_omniknight',
 	'npc_dota_hero_pangolier',
-	'npc_dota_hero_rattletrap',
+	'npc_dota_hero_primal_beast',
+	'npc_dota_hero_pudge',
+	--'npc_dota_hero_rattletrap',
 	'npc_dota_hero_sand_king',
 	'npc_dota_hero_shredder',
 	'npc_dota_hero_slardar',
 	'npc_dota_hero_spirit_breaker',
 	'npc_dota_hero_tidehunter',
-	'npc_dota_hero_tusk',
-	'npc_dota_hero_venomancer',
+	'npc_dota_hero_visage',
+	-- 'npc_dota_hero_tusk',
+	-- 'npc_dota_hero_venomancer',
 	'npc_dota_hero_windrunner',
+
 }
 
 X['mid'] = {
-	'npc_dota_hero_alchemist',
+	--'npc_dota_hero_alchemist',
 	'npc_dota_hero_arc_warden',
+	'npc_dota_hero_batrider',
 	'npc_dota_hero_bloodseeker',
 	'npc_dota_hero_broodmother',
 	'npc_dota_hero_clinkz',
 	'npc_dota_hero_death_prophet',
+	'npc_dota_hero_doom_bringer',
 	'npc_dota_hero_dragon_knight',
 	'npc_dota_hero_ember_spirit',
 	'npc_dota_hero_huskar',
 	'npc_dota_hero_invoker',
+	'npc_dota_hero_keeper_of_the_light',
 	'npc_dota_hero_kunkka',
 	'npc_dota_hero_leshrac',
 	'npc_dota_hero_lina',
 	'npc_dota_hero_lone_druid',
-	'npc_dota_hero_medusa',
+	--'npc_dota_hero_medusa',
 	'npc_dota_hero_meepo',
 	'npc_dota_hero_mirana',
+	'npc_dota_hero_monkey_king',
 	'npc_dota_hero_morphling',
 	'npc_dota_hero_necrolyte',
 	'npc_dota_hero_nevermore',
 	'npc_dota_hero_obsidian_destroyer',
+	'npc_dota_hero_pangolier',
+	'npc_dota_hero_primal_beast',
 	'npc_dota_hero_puck',
+	'npc_dota_hero_pudge',
 	'npc_dota_hero_pugna',
 	'npc_dota_hero_queenofpain',
+	'npc_dota_hero_snapfire',
 	'npc_dota_hero_sniper',
 	'npc_dota_hero_storm_spirit',
 	'npc_dota_hero_templar_assassin',
@@ -1682,27 +1723,33 @@ X['mid'] = {
 	'npc_dota_hero_viper',
 	'npc_dota_hero_zuus',
 	"npc_dota_hero_razor",
-	'npc_dota_hero_weaver',
+	-- 'npc_dota_hero_weaver',
+	'npc_dota_hero_windrunner',
 }
 
 X['safe'] = {
 	'npc_dota_hero_antimage',
 	'npc_dota_hero_chaos_knight',
-	"npc_dota_hero_mars",
+	--"npc_dota_hero_mars",
+	'npc_dota_hero_clinkz',
 	'npc_dota_hero_drow_ranger',
 	'npc_dota_hero_faceless_void',
+	'npc_dota_hero_furion',
 	'npc_dota_hero_gyrocopter',
 	'npc_dota_hero_juggernaut',
 	'npc_dota_hero_life_stealer',
 	'npc_dota_hero_luna',
-	'npc_dota_hero_lycan',
+	-- 'npc_dota_hero_lycan',
+	'npc_dota_hero_meepo',
 	'npc_dota_hero_monkey_king',
+	'npc_dota_hero_morphling',
+	'npc_dota_hero_muerta',
 	'npc_dota_hero_naga_siren',
 	'npc_dota_hero_phantom_assassin',
 	'npc_dota_hero_phantom_lancer',
 	'npc_dota_hero_razor',
 	'npc_dota_hero_riki',
-	'npc_dota_hero_bounty_hunter',
+	--'npc_dota_hero_bounty_hunter',
 	'npc_dota_hero_skeleton_king',
 	'npc_dota_hero_slark',
 	'npc_dota_hero_spectre',
@@ -1711,15 +1758,16 @@ X['safe'] = {
 	'npc_dota_hero_troll_warlord',
 	'npc_dota_hero_ursa',
 	'npc_dota_hero_shredder',
-	'npc_dota_hero_axe',
+	--'npc_dota_hero_axe',
 	'npc_dota_hero_weaver',
-	'npc_dota_hero_ogre_magi',
-	'npc_dota_hero_omniknight',
+	--'npc_dota_hero_ogre_magi',
+	--'npc_dota_hero_omniknight',
 	'npc_dota_hero_marci',
-
+	'npc_dota_hero_windrunner',
 }
 
 X['supp'] = {
+	'npc_dota_hero_abaddon',
 	'npc_dota_hero_ancient_apparition',
 	'npc_dota_hero_bane',
 --	'npc_dota_hero_bounty_hunter',
@@ -1728,20 +1776,23 @@ X['supp'] = {
 	'npc_dota_hero_dark_willow',
 	'npc_dota_hero_dazzle',
 	'npc_dota_hero_disruptor',
-	'npc_dota_hero_earth_spirit',
+	-- 'npc_dota_hero_earth_spirit',
 	'npc_dota_hero_earthshaker',
 	'npc_dota_hero_elder_titan',
-	'npc_dota_hero_enigma',
+	'npc_dota_hero_enchantress',
+	-- 'npc_dota_hero_enigma',
 	'npc_dota_hero_grimstroke',
+	'npc_dota_hero_hoodwink',
 	'npc_dota_hero_jakiro',
-	'npc_dota_hero_keeper_of_the_light',
+	-- 'npc_dota_hero_keeper_of_the_light',
 	'npc_dota_hero_lich',
-	'npc_dota_hero_lina',
+	-- 'npc_dota_hero_lina',
 	'npc_dota_hero_lion',
 	'npc_dota_hero_nyx_assassin',
 	'npc_dota_hero_oracle',
 	'npc_dota_hero_phoenix',
-	'npc_dota_hero_pudge',
+	-- 'npc_dota_hero_pudge',
+	'npc_dota_hero_rattletrap',
 	'npc_dota_hero_rubick',
 	'npc_dota_hero_shadow_demon',
 	'npc_dota_hero_shadow_shaman',
@@ -1749,19 +1800,20 @@ X['supp'] = {
 	'npc_dota_hero_skywrath_mage',
 	'npc_dota_hero_techies',
 	'npc_dota_hero_treant',
+	'npc_dota_hero_tusk',
 	'npc_dota_hero_undying',
 	'npc_dota_hero_vengefulspirit',
-	'npc_dota_hero_visage',
+	-- 'npc_dota_hero_visage',
 	'npc_dota_hero_warlock',
 	'npc_dota_hero_winter_wyvern',
 	'npc_dota_hero_wisp',
-	'npc_dota_hero_necrolyte',
+	-- 'npc_dota_hero_necrolyte',
 	'npc_dota_hero_witch_doctor',
-	'npc_dota_hero_zuus',
+	-- 'npc_dota_hero_zuus',
 	'npc_dota_hero_pugna',
-	'npc_dota_hero_queenofpain',
-	'npc_dota_hero_death_prophet',
-	'npc_dota_hero_windrunner',
+	--'npc_dota_hero_queenofpain',
+	-- 'npc_dota_hero_death_prophet',
+	-- 'npc_dota_hero_windrunner',
 	'npc_dota_hero_venomancer',
 
 }
@@ -2114,7 +2166,7 @@ function X.SetUserKey( sString )
 end
 
 
-X["sUserName"] = "Tips mode"
+X["sUserName"] = "锦囊模式"
 function X.GetUserName()
 	return X["sUserName"]
 end
@@ -2125,44 +2177,33 @@ function X.IsABAHero()
 	local botName = bot:GetUnitName()
 	local sABAHeroIndex = {
 	
-    ["npc_dota_hero_abaddon"] = true,
 		["npc_dota_hero_antimage"] = true,
 		["npc_dota_hero_arc_warden"] = true,
-    ["npc_dota_hero_axe"] = true, 
 		["npc_dota_hero_bane"] = true, 
 		["npc_dota_hero_bloodseeker"] = true,
 		["npc_dota_hero_bounty_hunter"] = true,
 		["npc_dota_hero_bristleback"] = true, 
 		["npc_dota_hero_chaos_knight"] = true, 
-		["npc_dota_hero_clinkz"] = true, 
 		["npc_dota_hero_crystal_maiden"] = true,
 		["npc_dota_hero_dazzle"] = true,
 		["npc_dota_hero_death_prophet"] = true, 		
 		["npc_dota_hero_dragon_knight"] = true,
 		["npc_dota_hero_drow_ranger"] = true,
-		["npc_dota_hero_earthshaker"] = true,
-    ["npc_dota_hero_gyrocopter"] = true,
 		["npc_dota_hero_huskar"] = true,
 		["npc_dota_hero_jakiro"] = true,
-    ["npc_dota_hero_juggernaut"] = true, 
 		["npc_dota_hero_kunkka"] = true,
-    ["npc_dota_hero_legion_commander"] = true, 
 		["npc_dota_hero_lich"] = true,
 		["npc_dota_hero_lina"] = true,
 		["npc_dota_hero_lion"] = true,
 		["npc_dota_hero_luna"] = true,
 		["npc_dota_hero_medusa"] = true,
-    ["npc_dota_hero_mirana"] = true,
-    ["npc_dota_hero_naga_siren"] = true, 	
 		["npc_dota_hero_necrolyte"] = true,
 		["npc_dota_hero_nevermore"] = true,
 		["npc_dota_hero_ogre_magi"] = true,
-    ["npc_dota_hero_omniknight"] = true,
 		["npc_dota_hero_oracle"] = true,
 		["npc_dota_hero_phantom_assassin"] = true,
 		["npc_dota_hero_phantom_lancer"] = true,
 		["npc_dota_hero_pugna"] = true,
-    ["npc_dota_hero_queenofpain"] = true,
 		["npc_dota_hero_razor"] = true,
 		["npc_dota_hero_riki"] = true,
 		["npc_dota_hero_sand_king"] = true,
@@ -2170,21 +2211,97 @@ function X.IsABAHero()
 		["npc_dota_hero_silencer"] = true,
 		["npc_dota_hero_skeleton_king"] = true,
 		["npc_dota_hero_skywrath_mage"] = true,
-    ["npc_dota_hero_slardar"] = true, 
-    ["npc_dota_hero_slark"] = true,
-	["npc_dota_hero_spirit_breaker"] = true,
 		["npc_dota_hero_sniper"] = true,
 		["npc_dota_hero_sven"] = true,
 		["npc_dota_hero_templar_assassin"] = true,
-    ["npc_dota_hero_tidehunter"] = true,
-	["npc_dota_hero_tiny"] = true,
-    ["npc_dota_hero_vengefulspirit"] = true,
 		["npc_dota_hero_viper"] = true,
-		["npc_dota_hero_warlock"] = true,
-    ["npc_dota_hero_windrunner"] = true,
-		["npc_dota_hero_witch_doctor"] = true,
-    ["npc_dota_hero_zuus"] = true,
-		
+		["npc_dota_hero_warlock"] = true,		  		  
+		["npc_dota_hero_witch_doctor"] = true,	
+		["npc_dota_hero_juggernaut"] = true, 
+		["npc_dota_hero_slark"] = true, 
+		["npc_dota_hero_axe"] = true, 
+		["npc_dota_hero_slardar"] = true, 
+		["npc_dota_hero_legion_commander"] = true, 
+		["npc_dota_hero_tidehunter"] = true, 		
+		["npc_dota_hero_omniknight"] = true, 		
+		["npc_dota_hero_naga_siren"] = true, 		
+		["npc_dota_hero_mirana"] = true, 		
+		["npc_dota_hero_queenofpain"] = true, 		
+		["npc_dota_hero_zuus"] = true, 		
+
+		-- NEW ADDED HEROES --
+		["npc_dota_hero_abyssal_underlord"] = true,
+		["npc_dota_hero_alchemist"] = true,
+		["npc_dota_hero_abaddon"] = true,
+		["npc_dota_hero_ancient_apparition"] = true,
+		["npc_dota_hero_batrider"] = true,
+		["npc_dota_hero_beastmaster"] = true,
+		["npc_dota_hero_brewmaster"] = true,
+		["npc_dota_hero_broodmother"] = true,
+		["npc_dota_hero_centaur"] = true,
+		["npc_dota_hero_chen"] = true,
+		["npc_dota_hero_clinkz"] = true,
+		["npc_dota_hero_dark_seer"] = true,
+		["npc_dota_hero_dark_willow"] = true,
+		["npc_dota_hero_dawnbreaker"] = true,
+		["npc_dota_hero_disruptor"] = true,
+		["npc_dota_hero_doom_bringer"] = true,
+		["npc_dota_hero_earth_spirit"] = true,
+		["npc_dota_hero_earthshaker"] = true,
+		["npc_dota_hero_elder_titan"] = true,
+		["npc_dota_hero_ember_spirit"] = true,
+		["npc_dota_hero_enchantress"] = true,
+		["npc_dota_hero_enigma"] = true,
+		["npc_dota_hero_faceless_void"] = true,
+		["npc_dota_hero_furion"] = true,
+		["npc_dota_hero_grimstroke"] = true,
+		["npc_dota_hero_gyrocopter"] = true,
+		["npc_dota_hero_hoodwink"] = true,
+		["npc_dota_hero_invoker"] = true,
+		["npc_dota_hero_keeper_of_the_light"] = true,
+		["npc_dota_hero_leshrac"] = true,
+		["npc_dota_hero_life_stealer"] = true,
+		["npc_dota_hero_lone_druid"] = true,
+		["npc_dota_hero_lycan"] = true,
+		["npc_dota_hero_magnataur"] = true,
+		["npc_dota_hero_marci"] = true,
+		["npc_dota_hero_mars"] = true,
+		["npc_dota_hero_meepo"] = true,
+		["npc_dota_hero_monkey_king"] = true,
+		["npc_dota_hero_morphling"] = true,
+		["npc_dota_hero_muerta"] = true,
+		["npc_dota_hero_night_stalker"] = true,
+		["npc_dota_hero_nyx_assassin"] = true,
+		["npc_dota_hero_obsidian_destroyer"] = true,
+		["npc_dota_hero_pangolier"] = true,
+		["npc_dota_hero_phoenix"] = true,
+		["npc_dota_hero_primal_beast"] = true,
+		["npc_dota_hero_puck"] = true,
+		["npc_dota_hero_pudge"] = true,
+		["npc_dota_hero_rattletrap"] = true,
+		["npc_dota_hero_rubick"] = true,
+		["npc_dota_hero_shadow_demon"] = true,
+		["npc_dota_hero_shredder"] = true,
+		["npc_dota_hero_snapfire"] = true,
+		["npc_dota_hero_spectre"] = true,
+		["npc_dota_hero_spirit_breaker"] = true,
+		["npc_dota_hero_storm_spirit"] = true,
+		["npc_dota_hero_techies"] = true,
+		["npc_dota_hero_terrorblade"] = true,
+		["npc_dota_hero_tinker"] = true,
+		["npc_dota_hero_tiny"] = true,
+		["npc_dota_hero_treant"] = true,
+		["npc_dota_hero_troll_warlord"] = true,
+		["npc_dota_hero_tusk"] = true,
+		["npc_dota_hero_undying"] = true,
+		["npc_dota_hero_ursa"] = true,
+		["npc_dota_hero_vengefulspirit"] = true,
+		["npc_dota_hero_venomancer"] = true,
+		["npc_dota_hero_visage"] = true,
+		["npc_dota_hero_void_spirit"] = true,
+		["npc_dota_hero_weaver"] = true,
+		["npc_dota_hero_windrunner"] = true,
+		["npc_dota_hero_winter_wyvern"] = true,
 	}
 
 	return sABAHeroIndex[botName] == true
@@ -2382,6 +2499,24 @@ function X.IsUserSetSup( bot )
 end
 
 
+-- returns 1, 2, 3, 4, or 5 as the position of the hero in the team
+function X.GetPosition(bot)
+	local role = bot.assignedRole
+	if role == nil or GetGameState() == GAME_STATE_PRE_GAME then
+		local heroID = GetTeamPlayers(GetTeam())
+		for i, v in pairs(heroID) do
+			if GetSelectedHeroName(v) == bot:GetUnitName() then
+				local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+				role = X.roleAssignment[team][i]
+			end
+		end
+	end
+	bot.assignedRole = role
+	if role == nil then
+		print("[ERROR] Failed to match bot role for bot: "..bot:GetUnitName())
+	end
+	return role
+end
 
 function X.IsPvNMode()
 

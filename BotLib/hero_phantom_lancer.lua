@@ -14,71 +14,66 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
-						['t20'] = {10, 0},
-						['t15'] = {10, 0},
-						['t10'] = {0, 10},
+							['t25'] = {10, 0},
+							['t20'] = {10, 0},
+							['t15'] = {10, 0},
+							['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{1,3,2,3,3,6,3,1,1,1,6,2,2,2,6},
-						{1,2,1,3,1,6,1,3,3,3,6,2,2,2,6},
-						{1,2,1,3,3,6,3,3,1,1,6,2,2,2,6},
+							{1,3,2,3,3,6,3,1,1,1,6,2,2,2,6},--pos1
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local sRandomItem_1 = RandomInt( 1, 9 ) > 4 and "item_nullifier" or "item_bloodthorn"
+-- local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_satanic" or "item_butterfly"
+local sAbyssalBloodthorn = RandomInt( 1, 2 ) == 1 and "item_abyssal_blade" or "item_bloodthorn"
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_slippers",
+	"item_circlet",
 
-	"item_melee_carry_outfit",
-	"item_hand_of_midas",
+	"item_wraith_band",
+	"item_power_treads",
+	"item_magic_wand",
 	"item_ultimate_scepter",
-	"item_angels_demise",
-	"item_manta",
-  	"item_aghanims_shard",
- 	"item_heart",
-  	"item_ultimate_scepter_2",
-  	"item_disperser",
-   	"item_travel_boots",
-	sRandomItem_1,
+	"item_diffusal_blade",
+	"item_manta",--
+	"item_heart",--
+	"item_skadi",--
+	"item_disperser",--
+	"item_ultimate_scepter_2",
+	"item_butterfly",--
+	sAbyssalBloodthorn,--
 	"item_moon_shard",
-	"item_travel_boots_2",
-
+	"item_aghanims_shard",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_ultimate_scepter",
 	"item_quelling_blade",
-
-	"item_angels_demise",
-	"item_magic_wand",
-
-	"item_manta",
 	"item_wraith_band",
-
-	"item_travel_boots",
-	"item_hand_of_midas",
-
+	"item_power_treads",
+	"item_magic_wand",
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_PL' }, {"item_power_treads", 'item_quelling_blade'} end
@@ -159,7 +154,7 @@ function X.SkillsComplement()
 	then return end
 
 
-	nKeepMana = 250
+	nKeepMana = 400
 	talent4Damage = 0
 	aetherRange = 0
 	nLV = bot:GetLevel()
@@ -174,12 +169,7 @@ function X.SkillsComplement()
 --	if talent4:IsTrained() then talent4Damage = talent4:GetSpecialValueInt( "value" ) end
 	if talent5:IsTrained() then boostRange = boostRange + talent5:GetSpecialValueInt( "value" ) end
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 
 
 	castQDesire, castQTarget, sMotive = X.ConsiderQ()
@@ -220,19 +210,27 @@ end
 
 function X.ConsiderR()
 
-	if not abilityR:IsTrained() 
-    or not abilityR:IsFullyCastable()
-    or not bot:HasScepter()
-  then 
-      return 0 
-  end
+	if not abilityR:IsFullyCastable()
+		or not bot:HasScepter()
+		or true
+	then
+		return BOT_ACTION_DESIRE_NONE
+	end
 
-	if J.IsRetreating( bot )
-		and bot:WasRecentlyDamagedByAnyHero( 3.0 )
-		and ( #hEnemyList >= 1 or nHP < 0.2 )
-		and bot:DistanceFromFountain() > 800
+	if J.IsRetreating(bot)
+	and J.GetHP(bot) < 0.4
 	then
 		return BOT_ACTION_DESIRE_HIGH
+	end
+
+	if J.IsGoingOnSomeone( bot )
+	then
+		if J.IsValidHero( botTarget )
+		and J.IsInRange( bot, botTarget, 1200 )
+		and not J.IsInRange( bot, botTarget, 650 )
+		then
+			return BOT_ACTION_DESIRE_HIGH
+		end
 	end
 
 	return BOT_ACTION_DESIRE_NONE
@@ -267,7 +265,7 @@ function X.ConsiderQ()
 			if J.IsValidHero( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
-				and ( J.WillMagicKillTarget( bot, npcEnemy, nDamage, nCastPoint ) or J.CanSlowWithPhylacteryOrKhanda() )
+				and J.WillMagicKillTarget( bot, npcEnemy, nDamage, nCastPoint )
 			then
 				return BOT_ACTION_DESIRE_HIGH, npcEnemy, "Q击杀"..J.Chat.GetNormName( npcEnemy )
 			end
@@ -287,7 +285,6 @@ function X.ConsiderQ()
 				and J.IsKeyWordUnit( "ranged", creep )
 				and not J.IsAllysTarget( creep )
 				and not J.IsInRange( bot, creep, 300 )
-        and J.IsAllowedToSpam( bot, nManaCost )
 			then
 				local nDelay = nCastPoint + GetUnitToUnitDistance( bot, creep )/1000
 				if J.WillKillTarget( creep, nDamage, nDamageType, nDelay * 0.95 )
@@ -317,7 +314,7 @@ function X.ConsiderQ()
 
 	--打钱
 	if J.IsFarming( bot ) and nLV > 5
-		and J.IsAllowedToSpam( bot, nManaCost )
+		and J.IsAllowedToSpam( bot, 30 )
 	then
 		if J.IsValid( botTarget )
 			and J.IsInRange( bot, botTarget, nCastRange )
@@ -337,7 +334,6 @@ function X.ConsiderQ()
 			and J.CanCastOnNonMagicImmune( botTarget )
 			and J.CanCastOnTargetAdvanced( botTarget )
 			and J.IsInRange( botTarget, bot, nCastRange + 50 )
-      and J.IsAllowedToSpam( bot, nManaCost )
 		then
 			return BOT_ACTION_DESIRE_HIGH, botTarget, 'Q进攻'..J.Chat.GetNormName( botTarget )
 		end
@@ -345,16 +341,18 @@ function X.ConsiderQ()
 		--团战
 		if J.IsInTeamFight( bot, 900 ) and nLV > 5
 		then
-			local lowestenemy = J.GetLeastHpUnit( nInRangeEnemyList )
-      if J.IsValidHero( lowestenemy )
-        and J.CanCastOnNonMagicImmune( lowestenemy )
-        and J.CanCastOnTargetAdvanced( lowestenemy )
-        and J.IsInRange( bot, lowestenemy, nCastRange )
-      then
-        return BOT_ACTION_DESIRE_HIGH, lowestenemy, 'Q团战'..J.Chat.GetNormName( lowestenemy )
+			for _, npcEnemy in pairs( nInRangeEnemyList )
+			do
+				if J.IsValidHero( npcEnemy )
+					and J.CanCastOnNonMagicImmune( npcEnemy )
+					and J.CanCastOnTargetAdvanced( npcEnemy )
+				then
+					return BOT_ACTION_DESIRE_HIGH, npcEnemy, 'Q团战'..J.Chat.GetNormName( npcEnemy )
+				end
 			end
 		end
-  end
+	end
+
 
 	--推线
 	if ( J.IsPushing( bot ) or J.IsDefending( bot ) or J.IsFarming( bot ) )
@@ -449,7 +447,6 @@ function X.ConsiderW()
 			and not J.IsDisabled( botTarget )
 			and ( X.IsEnemyCastAbility() or nHP < 0.2 )
 			and ( nSkillLV >= 3 or nMP > 0.6 or nHP < 0.4 or J.GetHP( botTarget ) < 0.4 or DotaTime() > 9 * 60 )
-      and J.IsAllowedToSpam( bot, nManaCost )
 		then
 
 			--迷惑目标
@@ -468,7 +465,7 @@ function X.ConsiderW()
 					vBestCastLoc = vFirstLoc
 				end
 			end
-			if vBestCastLoc ~= nil and J.IsAllowedToSpam( bot, nManaCost )
+			if vBestCastLoc ~= nil
 			then
 				return BOT_ACTION_DESIRE_HIGH, vBestCastLoc, 'W迷惑'..J.Chat.GetNormName( botTarget )
 			end
@@ -480,7 +477,6 @@ function X.ConsiderW()
 				and J.IsInRange( bot, botTarget, boostRange + 1000 )
 				and bot:IsFacingLocation( botTarget:GetLocation(), 30 )
 				and botTarget:IsFacingLocation( J.GetEnemyFountain(), 30 )
-        and J.IsAllowedToSpam( bot, nManaCost )
 			then
 				return BOT_ACTION_DESIRE_HIGH, vSecondLoc, 'W追击'..J.Chat.GetNormName( botTarget )
 			end
@@ -491,7 +487,7 @@ function X.ConsiderW()
 	--打钱和推线
 	if ( J.IsPushing( bot ) or J.IsDefending( bot ) or J.IsFarming( bot ) )
 		and #hAllyList <= 2 and nLV >= 9
-		and J.IsAllowedToSpam( bot, nManaCost )
+		and J.IsAllowedToSpam( bot, 100 )
 	then
 		if J.IsValid( botTarget )
 			and not J.IsInRange( bot, botTarget, boostRange + 300 )

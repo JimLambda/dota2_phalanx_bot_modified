@@ -14,7 +14,7 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
@@ -24,67 +24,101 @@ local tTalentTreeList = {
 }
 
 local tAllAbilityBuildList = {
-						{2,1,3,1,1,6,1,3,3,3,6,2,2,2,6},
+						{1,3,3,1,3,6,3,1,1,2,6,2,2,2,6},
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_4'] = {
+	"item_tango",
+	"item_tango",
+	"item_enchanted_mango",
+	"item_double_branches",
+	"item_blood_grenade",
 
-	"item_crystal_maiden_outfit",
-	"item_aether_lens",
-  	"item_glimmer_cape",
-	"item_ultimate_scepter",
+	"item_tranquil_boots",
+	"item_magic_wand",
 	"item_aghanims_shard",
-	"item_ethereal_blade",
-	"item_force_staff",
-	"item_octarine_core",
+	"item_glimmer_cape",--
+	"item_solar_crest",--
+	"item_ultimate_scepter",
+	"item_boots_of_bearing",--
+	"item_cyclone",
+	"item_refresher",--
+	"item_black_king_bar",--
+	"item_wind_waker",--
 	"item_ultimate_scepter_2",
-	"item_sheepstick",
-  	"item_travel_boots_2",
-
+	"item_moon_shard",
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = {
+	"item_tango",
+	"item_tango",
+	"item_enchanted_mango",
+	"item_double_branches",
+	"item_blood_grenade",
 
-tOutFitList['outfit_priest'] = {
-
-	"item_priest_outfit",
- 	"item_solar_crest",
-  	"item_spirit_vessel",
+	"item_arcane_boots",
+	"item_magic_wand",
 	"item_aghanims_shard",
-	"item_mekansm",
-	"item_holy_locket",
-	"item_glimmer_cape",
-	"item_guardian_greaves",
+	"item_glimmer_cape",--
+	"item_force_staff",--
 	"item_ultimate_scepter",
-	"item_travel_boots",
-  	"item_ultimate_scepter_2",
-	"item_travel_boots_2",
+	"item_guardian_greaves",--
+	"item_cyclone",
+	"item_refresher",--
+	"item_black_king_bar",--
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
 }
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_tango",
+	"item_double_branches",
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-
-	"item_ethereal_blade",
-  	"item_magic_wand",
-
-	"item_force_staff",
-	"item_null_talisman",
-
-  	"item_ultimate_scepter",
-	"item_solar_crest",
-
+	"item_tranquil_boots",
+	"item_magic_wand",
+	"item_aghanims_shard",
+	"item_glimmer_cape",--
+	"item_solar_crest",--
+	"item_ultimate_scepter",
+	"item_boots_of_bearing",--
+	"item_cyclone",
+	"item_refresher",--
+	"item_black_king_bar",--
+	"item_wind_waker",--
+	"item_ultimate_scepter_2",
+	"item_moon_shard",
 }
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+Pos4SellList = {
+	"item_magic_wand",
+}
+
+Pos5SellList = {
+	"item_magic_wand",
+}
+
+X['sSellList'] = {}
+
+if sRole == "pos_4"
+then
+    X['sSellList'] = Pos4SellList
+else
+    X['sSellList'] = Pos5SellList
+end
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_priest' }, {} end
 
@@ -92,8 +126,8 @@ nAbilityBuildList, nTalentBuildList, X['sBuyList'], X['sSellList'] = J.SetUserHe
 
 X['sSkillList'] = J.Skill.GetSkillList( sAbilityList, nAbilityBuildList, sTalentList, nTalentBuildList )
 
-X['bDeafaultAbility'] = false
-X['bDeafaultItem'] = false
+X['bDeafaultAbility'] = true
+X['bDeafaultItem'] = true
 
 function X.MinionThink( hMinionUnit )
 
@@ -147,7 +181,7 @@ local castQDesire, castQTarget
 local castWDesire
 local castEDesire, castELocation
 local castRDesire, castRLocation
-local castASDesire
+local castASDesire, castASTarget
 
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
@@ -174,12 +208,7 @@ function X.SkillsComplement()
 
 
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 
 	
 	castASDesire, sMotive = X.ConsiderAS()
@@ -387,39 +416,68 @@ function X.ConsiderQ()
 	--推线时
 	if ( J.IsPushing( bot ) or J.IsDefending( bot ) or J.IsFarming( bot ) )
 		and J.IsAllowedToSpam( bot, 30 )
+		and nSkillLV >= 2
 		and #hEnemyList == 0
-		and #hAllyList == 0
+		and #hAllyList <= 2
 	then
-		local nEnemyCreeps = bot:GetNearbyCreeps( 999, true )
-    	if #nEnemyCreeps >= 3
-    	then
-    		local hTarget = nEnemyCreeps[1]
-			if J.IsValid( hTarget )
-				and not hTarget:HasModifier( "modifier_fountain_glyph" )
-				and J.IsInRange( hTarget, bot, nCastRange + 300 )
-        		and J.GetAroundTargetEnemyUnitCount( hTarget, nRadius * 2 ) >= 2
+		local nEnemyCreeps = bot:GetNearbyLaneCreeps( 999, true )
+		local nAllyCreeps = bot:GetNearbyLaneCreeps( 888, false )
+
+		for _, creep in pairs( nEnemyCreeps )
+		do
+			if J.IsValid( creep )
+				and not creep:HasModifier( "modifier_fountain_glyph" )
+				and J.IsInRange( creep, bot, nCastRange + 300 )
 			then
-        		return BOT_ACTION_DESIRE_HIGH, hTarget
-    		end
-    	end
+
+				if #nAllyCreeps == 0
+					and J.GetAroundTargetEnemyUnitCount( creep, nRadius * 2 ) >= 3
+				then
+					return BOT_ACTION_DESIRE_HIGH, creep, "Q-PushAoe"
+				end
+
+				if J.IsKeyWordUnit( 'ranged', creep )
+					and ( J.WillKillTarget( creep, nDamage, nDamageType, nCastPoint )
+							or ( #nEnemyCreeps >= 7 and J.GetAroundTargetEnemyUnitCount( creep, nRadius * 2 ) >= 3 ) )
+				then
+					return BOT_ACTION_DESIRE_HIGH, creep, "Q-PushRanged"
+				end
+
+				if J.IsKeyWordUnit( 'melee', creep )
+					and J.WillKillTarget( creep, nDamage, nDamageType, nCastPoint )
+					and ( J.GetAroundTargetEnemyUnitCount( creep, nRadius * 2 ) >= 2 or nMP > 0.8 )
+				then
+					return BOT_ACTION_DESIRE_HIGH, creep, "Q-PushMelee"
+				end
+
+			end
+		end
+
 	end
+
 
 	--打野时
 	if J.IsFarming( bot ) and nSkillLV >= 3
 		and J.IsAllowedToSpam( bot, nManaCost )
 		and #hEnemyList == 0
-		and #hAllyList == 0
+		and #hAllyList <= 2
+		and not ( J.IsPushing( bot ) or J.IsDefending( bot ) )
 	then
 		local nNeutralCreeps = bot:GetNearbyNeutralCreeps( nCastRange + 400 )
 		if #nNeutralCreeps >= 2
 		then
-			local hTarget = nNeutralCreeps[1]
-      		if J.IsValid( hTarget )
-        		and J.IsInRange( bot, hTarget, nCastRange )
-        		and J.GetAroundTargetEnemyUnitCount( hTarget, nRadius * 2 ) >= 2
-      		then
-        		return BOT_ACTION_DESIRE_HIGH, hTarget, "Q-Farm:"..( #nNeutralCreeps )
-     		 end
+			for _, creep in pairs( nNeutralCreeps )
+			do
+				if J.IsValid( creep )
+					and J.IsInRange( bot, creep, nCastRange )
+					and bot:IsFacingLocation( creep:GetLocation(), 30 )
+					and creep:GetHealth() >= 600
+					and creep:GetMagicResist() < 0.3
+					and J.GetAroundTargetEnemyUnitCount( creep, nRadius * 2 ) >= 2
+				then
+					return BOT_ACTION_DESIRE_HIGH, creep, "Q-Farm:"..( #nNeutralCreeps )
+				end
+			end
 		end
 	end
 
@@ -445,22 +503,19 @@ function X.ConsiderW()
 	local nRadius = abilityW:GetSpecialValueInt( 'radius' )
 	local nInRangeAllyList = J.GetAlliesNearLoc( bot:GetLocation(), nRadius )
 
-	if not X.IsHealingAlly()
-    and not X.IsHealingItself()
+	if abilityW:GetToggleState()
 	then
-		if abilityW:GetToggleState()
-		then
-			return BOT_ACTION_DESIRE_HIGH
-		end
-	else
-		if not abilityW:GetToggleState()
-		then
-			return BOT_ACTION_DESIRE_HIGH
-    end
+		return 0
 	end
-    
+
+	if not abilityW:GetToggleState()
+	then
+		return 0
+	end
+
 	return BOT_ACTION_DESIRE_NONE
-		
+
+
 end
 
 
@@ -481,10 +536,10 @@ function X.ConsiderE()
 
 	if J.IsInTeamFight( bot, 1200 )
 	then
-		local locationAoE = bot:FindAoELocation( true, true, bot:GetLocation(), nCastRange, nRadius, 0, 0 )
-		if ( locationAoE.count >= 2 )
+		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, nCastRange, nRadius, 2 )
+		if nAoeLoc ~= nil
 		then
-			return BOT_ACTION_DESIRE_HIGH, locationAoE.targetloc
+			return BOT_ACTION_DESIRE_HIGH, nAoeLoc, 'E-Fight'
 		end
 	end
 
@@ -492,7 +547,7 @@ function X.ConsiderE()
 	if J.IsGoingOnSomeone( bot )
 	then
 		if J.IsValidHero( botTarget )
-			and J.IsInRange( bot, botTarget, nCastRange )
+			and J.IsInRange( bot, botTarget, nCastRange + 99 )
 			and J.CanCastOnNonMagicImmune( botTarget )
 		then
 			local nTargetLocation = J.GetCastLocation( bot, botTarget, nCastRange, nRadius )
@@ -594,7 +649,6 @@ function X.ConsiderAS()
 	
 	if #tableNearbyEnemyHeroes >= 1
 		and J.IsStunProjectileIncoming( bot, 600 )
-    and nHP <= 0.3
 	then
 		return BOT_ACTION_DESIRE_HIGH, "AS-躲眩晕弹道"
 	end
@@ -649,50 +703,6 @@ function X.ConsiderAS()
 
 end
 
-function X.IsHealingAlly()
-  
-  local nRadius = abilityW:GetSpecialValueInt( 'radius' )
-	local nInRangeAllyList = J.GetAlliesNearLoc( bot:GetLocation(), nRadius )
-  local hHealAlly = nil
-  
-  for _, npcAlly in pairs( nInRangeAllyList )
-  do
-    if J.IsValidHero( npcAlly )
-      and J.GetHP( npcAlly ) < 0.9
-      and J.IsInRange( bot, npcAlly, nRadius )
-      and not npcAlly:HasModifier( "modifier_ice_blast" ) 
-      and not npcAlly:HasModifier( "modifier_doom_bringer_doom" )
-    then
-      hHealAlly = npcAlly
-    end
-  end
-  
-  if hHealAlly ~= nil
-    and J.GetHP( hHealAlly ) < 0.9
-    and J.IsInRange( bot, hHealAlly, nRadius )
-    and not hHealAlly:HasModifier( "modifier_ice_blast" ) 
-    and not hHealAlly:HasModifier( "modifier_doom_bringer_doom" )
-    and abilityW:IsFullyCastable()
-    and bot:GetMana() > 250
-  then
-    return true
-  end
-  
-  return false
-end
-
-function X.IsHealingItself()
-  
-  if nHP < 0.9
-    and not bot:HasModifier( "modifier_ice_blast" )
-    and abilityW:IsFullyCastable()
-    and bot:GetMana() > 250
-  then
-    return true
-  end
-  
-  return false
-end
 
 return X
 -- dota2jmz@163.com QQ:2462331592..

@@ -14,101 +14,87 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {0, 10},
-						['t20'] = {0, 10},
-						['t15'] = {0, 10},
-						['t10'] = {0, 10},
+							['t25'] = {0, 10},
+							['t20'] = {10, 0},
+							['t15'] = {10, 0},
+							['t10'] = {10, 0},
 }
 
 
 local tAllAbilityBuildList = {
-						{1,3,1,2,1,6,1,2,2,2,6,3,3,3,6},
-						{1,3,1,2,1,6,1,3,2,2,6,2,3,3,6},
-						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},
+							{2,1,2,3,2,6,2,3,3,3,6,1,1,1,6},--pos1,3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_1'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_gauntlets",
+	"item_gauntlets",
+	"item_quelling_blade",
 
-	"item_sven_outfit",
-	"item_aghanims_shard",
-  	"item_armlet",
-  	"item_desolator",
+	"item_phase_boots",
+	"item_magic_wand",
+	"item_armlet",
+	"item_radiance",--
 	"item_blink",
-	"item_black_king_bar",
-  	"item_assault",
-	"item_travel_boots",
-	"item_overwhelming_blink",
-  	"item_nullifier",
-	"item_moon_shard",
-	"item_travel_boots_2",
-	"item_ultimate_scepter_2",
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = {
-
-	"item_tank_outfit",
-	"item_orb_of_corrosion",
-	"item_hand_of_midas",
-	"item_radiance",
 	"item_aghanims_shard",
-	"item_silver_edge",
-	"item_abyssal_blade",
-	"item_nullifier",
-	"item_travel_boots",
-	"item_octarine_core",
-	"item_moon_shard",
-	"item_travel_boots_2",
+	"item_assault",--
+	"item_ultimate_scepter",
+	"item_overwhelming_blink",--
 	"item_ultimate_scepter_2",
-
+	"item_abyssal_blade",--
+	"item_travel_boots",
+	"item_refresher",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
 }
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_quelling_blade",
+	"item_gauntlets",
+	"item_magic_stick",
+	"item_branches",
+
+	"item_bracer",
+	"item_magic_wand",
+	"item_phase_boots",
+	"item_radiance",--
+	"item_blink",
+	"item_ultimate_scepter",
+	"item_assault",--
+	"item_aghanims_shard",
+	"item_overwhelming_blink",--
+	"item_refresher",--
+	"item_ultimate_scepter_2",
+	"item_nullifier",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+}
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_desolator",
+	"item_gauntlets",
 	"item_quelling_blade",
-
-	"item_blink",
 	"item_magic_wand",
-
-	"item_black_king_bar",
-	"item_bracer",
-
-	"item_overwhelming_blink",
 	"item_armlet",
-
-	"item_hand_of_midas",
-	"item_quelling_blade",
-
-	"item_radiance",
-	"item_magic_wand",
-
-	"item_silver_edge",
 	"item_bracer",
-
-	"item_abyssal_blade",
-	"item_orb_of_corrosion",
-
-	"item_travel_boots",
-	"item_hand_of_midas",
-  
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_tank' }, {"item_heavens_halberd", 'item_quelling_blade'} end
@@ -173,7 +159,6 @@ local talent6 = bot:GetAbilityByName( sTalentList[6] )
 local castQDesire, castQTarget
 local castWDesire
 local castEDesire
-local castRDesire, castRTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyHeroList
 
@@ -183,7 +168,7 @@ function X.SkillsComplement()
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
 
-	nKeepMana = abilityR:GetManaCost()
+	nKeepMana = 160
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana()/bot:GetMaxMana()
 	nHP = bot:GetHealth()/bot:GetMaxHealth()
@@ -211,40 +196,7 @@ function X.SkillsComplement()
 
 	end
 
-	castRDesire, castRTarget = X.ConsiderR()
-	if castRDesire > 0
-	then
-		bot:ActionQueue_UseAbilityOnEntity( abilityR, castRTarget )
-		return
-	end
-
 end
-
-function X.ConsiderR()
-
-	if not abilityR:IsFullyCastable()
-	then
-		return 0
-	end
-
-	local nRadius = abilityR:GetSpecialValueInt("slow_radius")
-	local nManaCost = abilityR:GetSpecialValueInt("AbilityManaCost")
-	local nEnemysHerosInView = bot:GetNearbyHeroes( nRadius, true, BOT_MODE_NONE )
-
-	if nManaCost == 0 then return 0 end
-
-	if J.IsRetreating( bot )
-		and #nEnemysHerosInView >= 1
-		and bot:WasRecentlyDamagedByAnyHero( 1.0 )
-		and J.GetHP( bot ) <= 0.15
-		and bot:GetMana() <= nManaCost + 50
-	then
-		return BOT_ACTION_DESIRE_HIGH, bot
-	end
-	
-	return BOT_ACTION_DESIRE_NONE
-end
-
 
 function X.ConsiderQ()
 

@@ -14,65 +14,61 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
-						['t20'] = {0, 10},
-						['t15'] = {10, 0},
-						['t10'] = {10, 0},
+						['t20'] = {10, 0},
+						['t15'] = {0, 10},
+						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{2,1,2,3,2,6,2,1,1,1,6,3,3,3,6},
+						{1,3,2,2,3,6,3,3,2,2,1,6,1,1,6},--pos2
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
+sRoleItemsBuyList['pos_2'] = {
+	"item_tango",
+	"item_faerie_fire",
+	"item_gauntlets",
+	"item_gauntlets",
+	"item_gauntlets",
 
-	"item_huskar_outfit",
+	"item_boots",
 	"item_armlet",
-	"item_lifesteal",
-	"item_heavens_halberd",
-	"item_aghanims_shard",
- 	"item_ultimate_scepter",
-	"item_black_king_bar",
-	"item_satanic",
-	"item_ultimate_scepter_2",
-	"item_heart",
+	"item_black_king_bar",--
+	"item_sange",
+	"item_ultimate_scepter",
+	"item_heavens_halberd",--
 	"item_travel_boots",
-	"item_nullifier",
+	"item_satanic",--
+	"item_aghanims_shard",
+	"item_assault",--
+	"item_travel_boots_2",--
+	"item_ultimate_scepter_2",
+	"item_sheepstick",--
 	"item_moon_shard",
-	"item_travel_boots_2",
-
 }
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_1']
 
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_1']
 
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-	"item_heavens_halberd",
-	"item_magic_wand",
-
-  	"item_ultimate_scepter",
-	"item_bracer",
-
-	"item_travel_boots",
+	"item_gauntlets",
 	"item_armlet",
-
 }
 
 if J.Role.IsPvNMode() or J.Role.IsAllShadow() then X['sBuyList'], X['sSellList'] = { 'PvN_huskar' }, {} end
@@ -475,7 +471,7 @@ function X.ConsiderW()
 					and creep:GetHealth() < nAttackDamage * 2.8
 					and not J.IsAllysTarget( creep )
 				then
-					local nAttackProDelayTime = J.GetAttackProDelayTime( bot, creep ) * 1.12 + 0.05
+					local nAttackProDelayTime = J.GetAttackProDelayTime( bot, nCreep ) * 1.12 + 0.05
 					local nAD = nAttackDamage * 1.0
 					if J.WillKillTarget( creep, nAD, DAMAGE_TYPE_PHYSICAL, nAttackProDelayTime )
 					then
@@ -625,26 +621,19 @@ function X.ConsiderR()
 	if not abilityR:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityR:GetLevel()
-	local nCastRange = abilityR:GetCastRange() + aetherRange
+	local nCastRange = abilityR:GetCastRange() + talent6Range + aetherRange
 	local nCastPoint = abilityR:GetCastPoint()
 	local nManaCost = abilityR:GetManaCost()
 	local nDamage = abilityR:GetAbilityDamage()
 	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nInRangeEnemyList = bot:GetNearbyHeroes( nCastRange, true, BOT_MODE_NONE )
 
-  for _, enemy in pairs( nInRangeEnemyList )
-	do
-		if enemy:IsChanneling() 
-      and bot:HasScepter() then
-			return BOT_ACTION_DESIRE_HIGH, enemy
-		end
-	end
-  
+
 	--打架
 	if J.IsGoingOnSomeone( bot )
 	then
 		if J.IsValidHero( botTarget )
-			and J.CanCastOnMagicImmune( botTarget )
+			and J.CanCastOnNonMagicImmune( botTarget )
 			and ( J.IsInRange( bot, botTarget, nCastRange + 88 )
 				  or J.IsInRange( bot, botTarget, bot:GetAttackRange() + 99 ) )
 		then

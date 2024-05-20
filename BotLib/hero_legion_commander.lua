@@ -14,66 +14,64 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
 						['t25'] = {10, 0},
 						['t20'] = {10, 0},
-						['t15'] = {0, 10},
+						['t15'] = {10, 0},
 						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{1,3,2,1,2,6,1,1,2,2,6,3,3,3,6},
-						{1,3,1,2,1,6,1,2,2,2,6,3,3,3,6},
+						{1,3,1,2,1,6,1,3,3,3,6,2,2,2,6},--pos3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local sRandomItem_1 = RandomInt( 1, 9 ) > 6 and "item_satanic" or "item_heart"
+local utilityItems = {"item_crimson_guard", "item_pipe", "item_heavens_halberd"}
+local sCrimsonPipeHalberd = utilityItems[RandomInt(1, #utilityItems)]
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
 
-tOutFitList['outfit_carry'] = {
-
-	"item_sven_outfit",
-	"item_blade_mail",
-	"item_silver_edge",
-	"item_aghanims_shard",
-	"item_black_king_bar",
-  	"item_greater_crit",
-	"item_ultimate_scepter",
-	"item_travel_boots",
-	"item_ultimate_scepter_2",
-  	"item_heart",
-	"item_moon_shard",
-	"item_travel_boots_2",
-
-}
-
-tOutFitList['outfit_mid'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_priest'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_carry']
-
-tOutFitList['outfit_tank'] = tOutFitList['outfit_carry']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
-
-X['sSellList'] = {
-
-	"item_silver_edge",
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
 	"item_quelling_blade",
 
-	"item_black_king_bar",
-	"item_magic_wand",
-	
-	"item_greater_crit",
 	"item_bracer",
-  
+	"item_phase_boots",
+	"item_magic_wand",
+	"item_blade_mail",
+	"item_blink",
+	"item_black_king_bar",--
+	sCrimsonPipeHalberd,--
+	"item_assault",--
+	"item_greater_crit",--
+	"item_overwhelming_blink",--
+	"item_travel_boots_2",--
+	"item_moon_shard",
+	"item_aghanims_shard",
+	"item_ultimate_scepter_2",
+}
+
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+
+X['sBuyList'] = sRoleItemsBuyList[sRole]
+
+X['sSellList'] = {
+	"item_quelling_blade",
+	"item_bracer",
+	"item_magic_wand",
+	"item_blade_mail",
 }
 
 
@@ -128,10 +126,10 @@ local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
 local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
-local talent4 = bot:GetAbilityByName( sTalentList[4] )
+local talent2 = bot:GetAbilityByName( sTalentList[2] )
 local talent5 = bot:GetAbilityByName( sTalentList[5] )
 
-local castQDesire
+local castQDesire, castQTarget
 local castWDesire, castWTarget
 local castEDesire, castETarget
 local castRDesire, castRTarget
@@ -144,7 +142,7 @@ function X.SkillsComplement()
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
-	nKeepMana = 200
+	nKeepMana = 400
 	aetherRange = 0
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana() / bot:GetMaxMana()
@@ -156,12 +154,7 @@ function X.SkillsComplement()
 
 	--计算天赋可能带来的通用变化
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 250 end
 
 	
 	castRDesire, castRTarget, sMotive = X.ConsiderR()
@@ -172,7 +165,7 @@ function X.SkillsComplement()
 		--J.SetQueuePtToINT( bot, true )
 		
 		--释放强攻给自己
-		if abilityW:IsTrained()
+		if abilityW:IsTrained() and false
 			and abilityW:IsFullyCastable()
 			and bot:GetMana() > abilityW:GetManaCost() + abilityR:GetManaCost()
 		then
@@ -194,18 +187,11 @@ function X.SkillsComplement()
 		end
 
 		bot:Action_UseAbilityOnEntity( abilityR, castRTarget )
-    
-    if abilityQ:IsTrained()
-			and abilityQ:IsFullyCastable()
-		then
-				bot:Action_UseAbility( abilityQ )
-		end
-    
 		return
 	end
 	
 
-	castQDesire, sMotive = X.ConsiderQ()
+	castQDesire, castQTarget, sMotive = X.ConsiderQ()
 	if castQDesire > 0
 	then
 		J.SetReportMotive( bDebugMode, sMotive )
@@ -244,18 +230,14 @@ function X.ConsiderQ()
 	if not abilityQ:IsFullyCastable() then return 0 end
 
 	local nSkillLV = abilityQ:GetLevel()
-	local nCastRange = 0
-	local nRadius = abilityQ:GetSpecialValueFloat( "radius" )
+	local nCastRange = 600
+	local nRadius = 600
 	local nCastPoint = abilityQ:GetCastPoint()
 	local nManaCost = abilityQ:GetManaCost()
-  local nInRangeEnemyList = J.GetAroundEnemyHeroList( nRadius )
-  local MultiplierForHero = abilityQ:GetSpecialValueFloat( "damage_per_hero" )
-  local nInRangeCreepList = bot:GetNearbyLaneCreeps( nRadius, true )
-  local MultiplierForCreep = abilityQ:GetSpecialValueInt( "damage_per_unit" )
-	local nBaseDamage = abilityQ:GetSpecialValueInt( "damage" )
-  local nDamage = nBaseDamage + ( #nInRangeEnemyList * MultiplierForHero ) + ( #nInRangeCreepList * MultiplierForCreep )
+	local nDamage = abilityQ:GetSpecialValueInt( 'damage' ) * 2
 	local nDamageType = DAMAGE_TYPE_MAGICAL
-	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nRadius + 200 )
+	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
+	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 )
 	local hCastTarget = nil
 	local sCastMotive = nil
 	
@@ -264,20 +246,19 @@ function X.ConsiderQ()
 	do
 		if J.IsValidHero( npcEnemy )
 			and J.CanCastOnNonMagicImmune( npcEnemy )
-			and ( J.WillMagicKillTarget( bot, npcEnemy, nDamage, nCastPoint )
-            or npcEnemy:HasModifier( "modifier_legion_commander_duel" ) )
+			and J.WillMagicKillTarget( bot, npcEnemy, nDamage, nCastPoint )
 		then
-			--hCastTarget = npcEnemy:GetLocation()
-			return BOT_ACTION_DESIRE_HIGH
+			hCastTarget = npcEnemy:GetLocation()
+			return BOT_ACTION_DESIRE_HIGH, hCastTarget, 'Q-击杀'..J.Chat.GetNormName( npcEnemy )
 		end
 	end
 
 	--消耗
-	local nCanHurtEnemyAoE = bot:FindAoELocation( true, true, bot:GetLocation(), nRadius, 590, 0, 0 )
+	local nCanHurtEnemyAoE = bot:FindAoELocation( true, true, bot:GetLocation(), 10, 590, 0, 0 )
 	if nCanHurtEnemyAoE.count >= 3
 	then
-		--hCastTarget = nCanHurtEnemyAoE.targetloc
-		return BOT_ACTION_DESIRE_HIGH
+		hCastTarget = nCanHurtEnemyAoE.targetloc
+		return BOT_ACTION_DESIRE_HIGH, hCastTarget, 'Q-消耗'
 	end
 
 
@@ -285,11 +266,11 @@ function X.ConsiderQ()
 	if J.IsLaning( bot )
 	then
 		--对线消耗
-		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, nRadius, 450, 2 )
+		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, 50, 450, 2 )
 		if nAoeLoc ~= nil and nMP > 0.38
 		then
-			--hCastTarget = nAoeLoc
-			return BOT_ACTION_DESIRE_HIGH
+			hCastTarget = nAoeLoc
+			return BOT_ACTION_DESIRE_HIGH, hCastTarget, 'Q-对线消耗'
 		end
 	end
 
@@ -297,11 +278,11 @@ function X.ConsiderQ()
 	--团战
 	if J.IsInTeamFight( bot, 1200 )
 	then
-		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, nRadius, 499, 2 )
+		local nAoeLoc = J.GetAoeEnemyHeroLocation( bot, 49, 499, 2 )
 		if nAoeLoc ~= nil
 		then
-			--hCastTarget = nAoeLoc
-			return BOT_ACTION_DESIRE_HIGH
+			hCastTarget = nAoeLoc
+			return BOT_ACTION_DESIRE_ABSOLUTE, hCastTarget, 'Q-团战'
 		end
 	end
 
@@ -311,16 +292,15 @@ function X.ConsiderQ()
 	then
 		if J.IsValidHero( botTarget )
 			and J.CanCastOnNonMagicImmune( botTarget )
-      and J.IsSuspiciousIllusion( botTarget )
-			and J.IsInRange( botTarget, bot, nRadius - 100 )
+			and J.IsInRange( botTarget, bot, nCastRange -80 )
 		then
 			if nSkillLV >= 2 or nMP > 0.68 or J.GetHP( botTarget ) < 0.38
 			then
-				--[[hCastTarget = J.GetCastLocation( bot, botTarget, 10, 490 )
+				hCastTarget = J.GetCastLocation( bot, botTarget, 10, 490 )
 				if hCastTarget ~= nil
-				then]]
-					return BOT_ACTION_DESIRE_HIGH
-				--end
+				then
+					return BOT_ACTION_DESIRE_HIGH, hCastTarget, 'Q-攻击'..J.Chat.GetNormName( botTarget )
+				end
 			end
 		end
 	end
@@ -335,11 +315,10 @@ function X.ConsiderQ()
 			if J.IsValid( npcEnemy )
 				and bot:WasRecentlyDamagedByHero( npcEnemy, 5.0 )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
-        and J.IsInRange( botTarget, bot, nRadius - 400 )
 				--and bot:IsFacingLocation( npcEnemy:GetLocation(), 40 )
 			then
-				--hCastTarget = npcEnemy:GetLocation()
-				return BOT_ACTION_DESIRE_HIGH
+				hCastTarget = npcEnemy:GetLocation()
+				return BOT_ACTION_DESIRE_HIGH, hCastTarget, 'Q-撤退'..J.Chat.GetNormName( npcEnemy )
 			end
 		end
 	end
@@ -352,15 +331,15 @@ function X.ConsiderQ()
 	then
 		if J.IsValid( botTarget )
 			and botTarget:GetTeam() == TEAM_NEUTRAL
-			and J.IsInRange( bot, botTarget, nRadius )
+			and J.IsInRange( bot, botTarget, 1000 )
 			and ( botTarget:GetMagicResist() < 0.4 or nMP > 0.9 )
 		then
 			local nShouldHurtCount = nMP > 0.55 and 3 or 4
-			local locationAoE = bot:FindAoELocation( true, false, bot:GetLocation(), nRadius, 400, 0, 0 )
+			local locationAoE = bot:FindAoELocation( true, false, bot:GetLocation(), 40, 400, 0, 0 )
 			if ( locationAoE.count >= nShouldHurtCount )
 			then
-				--hCastTarget = locationAoE.targetloc
-				return BOT_ACTION_DESIRE_HIGH
+				hCastTarget = locationAoE.targetloc
+				return BOT_ACTION_DESIRE_HIGH, hCastTarget, "Q-打钱"..locationAoE.count
 			end
 		end
 	end
@@ -372,22 +351,25 @@ function X.ConsiderQ()
 		and nSkillLV >= 2 and DotaTime() > 6 * 60
 		and #hAllyList <= 3 and #hEnemyList == 0
 	then
-		local laneCreepList = bot:GetNearbyLaneCreeps( nRadius, true )
+		local laneCreepList = bot:GetNearbyLaneCreeps( 1400, true )
 		if #laneCreepList >= 4
 			and J.IsValid( laneCreepList[1] )
 			and not laneCreepList[1]:HasModifier( "modifier_fountain_glyph" )
 		then
 
-			local locationAoEHurt = bot:FindAoELocation( true, false, bot:GetLocation(), nRadius, 400, 0, 0 )
+			local locationAoEHurt = bot:FindAoELocation( true, false, bot:GetLocation(), 30, 400, 0, 0 )
 			if locationAoEHurt.count >= 4 
 			then
-				--hCastTarget = locationAoEHurt.targetloc
-				return BOT_ACTION_DESIRE_HIGH
+				hCastTarget = locationAoEHurt.targetloc
+				return BOT_ACTION_DESIRE_HIGH, hCastTarget, "Q-带线"..locationAoEHurt.count
 			end
 		end
 	end
-  
+
+
 	return BOT_ACTION_DESIRE_NONE
+
+
 end
 
 
@@ -506,6 +488,8 @@ function X.ConsiderR()
 	if J.IsGoingOnSomeone( bot )
 	then
 		if J.IsValidHero( botTarget )
+			and botTarget:CanBeSeen()
+			and not botTarget:IsMagicImmune()
 			and not botTarget:IsInvulnerable()
 			and not J.IsSuspiciousIllusion( botTarget )
 			and not J.HasForbiddenModifier( botTarget )
@@ -536,15 +520,18 @@ function X.ConsiderR()
 		
 		--打断施法
 		if npcEnemy:IsChanneling()
+			and not npcEnemy:IsMagicImmune()
 			and npcEnemy:IsBot()
 		then
 			hCastTarget = npcEnemy
 			sCastMotive = 'R-打断'..J.Chat.GetNormName( hCastTarget )
-			return BOT_ACTION_DESIRE_MODERATE, hCastTarget, sCastMotive		
+			return BOT_ACTION_DESIRE_ABSOLUTE, hCastTarget, sCastMotive		
 		end
 		
 		--保守的决斗
 		if J.IsValidHero( npcEnemy )
+			and npcEnemy:CanBeSeen()
+			and not npcEnemy:IsMagicImmune()
 			and not npcEnemy:IsInvulnerable()
 			and not J.IsSuspiciousIllusion( npcEnemy )
 			and not J.HasForbiddenModifier( npcEnemy )

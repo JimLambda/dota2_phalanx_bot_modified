@@ -14,83 +14,64 @@ local J = require( GetScriptDirectory()..'/FunLib/jmz_func' )
 local Minion = dofile( GetScriptDirectory()..'/FunLib/aba_minion' )
 local sTalentList = J.Skill.GetTalentList( bot )
 local sAbilityList = J.Skill.GetAbilityList( bot )
-local sOutfitType = J.Item.GetOutfitType( bot )
+local sRole = J.Item.GetRoleItemsBuyList( bot )
 
 local tTalentTreeList = {
-						['t25'] = {10, 0},
+						['t25'] = {0, 10},
 						['t20'] = {0, 10},
 						['t15'] = {10, 0},
-						['t10'] = {10, 0},
+						['t10'] = {0, 10},
 }
 
 local tAllAbilityBuildList = {
-						{2,3,2,1,3,6,3,3,2,2,6,1,1,1,6},
+						{2,3,3,1,3,6,3,1,1,1,6,2,2,2,6},--pos3
 }
 
 local nAbilityBuildList = J.Skill.GetRandomBuild( tAllAbilityBuildList )
 
 local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
-local tOutFitList = {}
+local sRoleItemsBuyList = {}
+sRoleItemsBuyList['pos_3'] = {
+	"item_tango",
+	"item_double_branches",
+	"item_quelling_blade",
+	"item_ring_of_protection",
 
-tOutFitList['outfit_tank'] = {
-
-	"item_tank_outfit",
-  	"item_phylactery",
+	"item_vanguard",
+	"item_boots",
 	"item_blink",
-	"item_aghanims_shard",
+	"item_magic_wand",
 	"item_blade_mail",
-	"item_black_king_bar",
-  	"item_angels_demise",
-	"item_heart",
+	"item_black_king_bar",--
 	"item_travel_boots",
-  	"item_overwhelming_blink",
+	"item_shivas_guard",--
+	"item_aghanims_shard",
+	"item_overwhelming_blink",--
+	"item_heart",--
+	"item_refresher",--
+	"item_travel_boots_2",--
 	"item_ultimate_scepter_2",
 	"item_moon_shard",
-	"item_travel_boots_2",
-
 }
 
-tOutFitList['outfit_carry'] = tOutFitList['outfit_tank']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
 
---[[{
+sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_3']
 
-	"item_sven_outfit",
-	"item_blade_mail",
-	"item_black_king_bar",
-	"item_aghanims_shard",
-	"item_blink",
-	"item_ultimate_scepter",
-	"item_travel_boots",
-	"item_overwhelming_blink",	
-	"item_abyssal_blade",
-	"item_ultimate_scepter_2",
-	"item_heart",
-	"item_moon_shard",
-	"item_travel_boots_2",
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
 
-}]]
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
 
-tOutFitList['outfit_mid'] = tOutFitList['outfit_tank']
 
-tOutFitList['outfit_priest'] = tOutFitList['outfit_tank']
-
-tOutFitList['outfit_mage'] = tOutFitList['outfit_tank']
-
-X['sBuyList'] = tOutFitList[sOutfitType]
+X['sBuyList'] = sRoleItemsBuyList[sRole]
 
 X['sSellList'] = {
-
-
-	"item_blink",
 	"item_quelling_blade",
-
-	"item_blade_mail",
+	"item_ring_of_protection",
+	"item_vanguard",
 	"item_magic_wand",
-
-	"item_angels_demise",
-	"item_bracer",
-
+	"item_blade_mail",
 }
 
 
@@ -143,10 +124,14 @@ modifier_axe_culling_blade_boost
 
 local abilityQ = bot:GetAbilityByName( sAbilityList[1] )
 local abilityW = bot:GetAbilityByName( sAbilityList[2] )
+local abilityE = bot:GetAbilityByName( sAbilityList[3] )
 local abilityR = bot:GetAbilityByName( sAbilityList[6] )
+local talent7 = bot:GetAbilityByName( sTalentList[7] )
+local talent5 = bot:GetAbilityByName( sTalentList[5] )
 
-local castQDesire
+local castQDesire, castQTarget
 local castWDesire, castWTarget
+local castEDesire, castETarget
 local castRDesire, castRTarget
 
 local nKeepMana, nMP, nHP, nLV, hEnemyList, hAllyList, botTarget, sMotive
@@ -157,7 +142,7 @@ function X.SkillsComplement()
 
 	if J.CanNotUseAbility( bot ) or bot:IsInvisible() then return end
 
-	nKeepMana = 150
+	nKeepMana = 400
 	aetherRange = 0
 	nLV = bot:GetLevel()
 	nMP = bot:GetMana() / bot:GetMaxMana()
@@ -167,13 +152,9 @@ function X.SkillsComplement()
 	hAllyList = J.GetAlliesNearLoc( bot:GetLocation(), 1600 )
 
 
+	--计算天赋可能带来的通用变化
 	local aether = J.IsItemAvailable( "item_aether_lens" )
-  local ether = J.IsItemAvailable( "item_ethereal_blade" )
-	if aether ~= nil then 
-    aetherRange = 225 
-  elseif ether ~= nil then
-    aetherRange = 250
-  end
+	if aether ~= nil then aetherRange = 225 end
 	
 	castRDesire, castRTarget, sMotive = X.ConsiderR()
 	if castRDesire > 0
@@ -192,9 +173,9 @@ function X.SkillsComplement()
 	then
 		J.SetReportMotive( bDebugMode, sMotive )
 
-		--J.SetQueuePtToINT( bot, true )
+		J.SetQueuePtToINT( bot, true )
 
-		bot:Action_UseAbility( abilityQ )
+		bot:ActionQueue_UseAbility( abilityQ )
 		return
 	end
 
@@ -213,6 +194,7 @@ function X.SkillsComplement()
 
 end
 
+
 function X.ConsiderQ()
 
 
@@ -220,27 +202,25 @@ function X.ConsiderQ()
 
 	local nSkillLV = abilityQ:GetLevel()
 	
-	local nRadius = abilityQ:GetSpecialValueInt( "radius" )
+	local nRadius = abilityQ:GetSpecialValueInt( 'radius' )
+	if talent7:IsTrained() then nRadius = nRadius + talent7:GetSpecialValueInt( 'value' ) end
+	
 	local nCastRange = nRadius
 	
 	local nCastPoint = abilityQ:GetCastPoint()
 	local nManaCost = abilityQ:GetManaCost()
-	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nRadius )
-  local nInRangeCreepList = bot:GetNearbyCreeps( nRadius, true )
+	local nDamage = 0
+	local nDamageType = DAMAGE_TYPE_MAGICAL
+	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nRadius - 50 )
+--	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nRadius + 200 )
 	local hCastTarget = nil
 	local sCastMotive = nil
 	
-  if #nInRangeEnemyList >= 2 
-    or (#nInRangeEnemyList >= 1
-    and #nInRangeCreepList >= 3 ) 
-  then
-    return BOT_ACTION_DESIRE_HIGH
-  end
-  
 	--打断敌人施法
 	for _, npcEnemy in pairs( nInRangeEnemyList )
 	do 
 		if npcEnemy:IsChanneling()
+			and not npcEnemy:IsMagicImmune()
 		then
 			hCastTarget = npcEnemy
 			sCastMotive = 'Q-打断'..J.Chat.GetNormName( hCastTarget )
@@ -254,7 +234,7 @@ function X.ConsiderQ()
 	then
 		if J.IsValidHero( botTarget )
 			and J.IsInRange( botTarget, bot, nRadius - 90 )
-			and J.CanCastOnMagicImmune( botTarget )			
+			and J.CanCastOnNonMagicImmune( botTarget )			
 			and not J.IsDisabled( botTarget )
 		then			
 			hCastTarget = botTarget
@@ -312,32 +292,49 @@ function X.ConsiderW()
 
 	local nSkillLV = abilityW:GetLevel()
 	local nCastRange = abilityW:GetCastRange() + aetherRange
+	local nRadius = 600
 	local nCastPoint = abilityW:GetCastPoint()
 	local nManaCost = abilityW:GetManaCost()
-  local nAttackRange = bot:GetAttackRange() + 40
-  
+	
+	local nDuration = abilityW:GetSpecialValueInt( 'duration' )
+	local nDamage = abilityW:GetSpecialValueInt( 'damage_per_second' ) * nDuration
+	
+	local nDamageType = DAMAGE_TYPE_MAGICAL
 	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
 	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 )
 	local hCastTarget = nil
 	local sCastMotive = nil
 	
+	
+	--击杀低血量敌人
+	for _, npcEnemy in pairs( nInRangeEnemyList )
+	do 
+		if J.IsValid( npcEnemy )
+			and J.CanCastOnNonMagicImmune( npcEnemy )
+			and J.CanCastOnTargetAdvanced( npcEnemy )
+			and J.WillMagicKillTarget( bot, npcEnemy, nDamage , nDuration )
+			and not npcEnemy:HasModifier( 'modifier_axe_battle_hunger_self' )
+		then
+			hCastTarget = npcEnemy
+			sCastMotive = 'W-击杀'..J.Chat.GetNormName( hCastTarget )
+			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
+		end
+	
+	end
+	
+	
+	--攻击敌人时
 	if J.IsGoingOnSomeone( bot )
 	then
 		if J.IsValidHero( botTarget )
-			and J.IsInRange( bot, botTarget, nCastRange )
-			and J.CanCastOnNonMagicImmune( botTarget )
-      and J.CanCastOnTargetAdvanced( botTarget )
-      and J.IsAllowedToSpam( bot, nManaCost )
-    then
-      if GetUnitToUnitDistance( bot, botTarget ) >= nAttackRange + 200
-        and J.CanSlowWithPhylacteryOrKhanda()
-      then
-        hCastTarget = botTarget
-        return BOT_ACTION_DESIRE_HIGH, hCastTarget
-      elseif not botTarget:HasModifier( "modifier_axe_battle_hunger" ) then
-        hCastTarget = botTarget
-        return BOT_ACTION_DESIRE_HIGH, hCastTarget
-      end
+			and J.IsInRange( botTarget, bot, nCastRange )
+			and J.CanCastOnNonMagicImmune( botTarget )			
+			and J.CanCastOnTargetAdvanced( botTarget )
+			and not botTarget:HasModifier( 'modifier_axe_battle_hunger_self' )
+		then			
+			hCastTarget = botTarget
+			sCastMotive = 'W-先手'..J.Chat.GetNormName( hCastTarget )
+			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
 		end
 	end
 	
@@ -351,9 +348,9 @@ function X.ConsiderW()
 		for _, npcEnemy in pairs( nInBonusEnemyList )
 		do
 			if J.IsValid( npcEnemy )
+				and not npcEnemy:HasModifier( 'modifier_axe_battle_hunger_self' )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
-        and not npcEnemy:HasModifier( "modifier_axe_battle_hunger" )
 			then
 				local npcEnemyHealth = npcEnemy:GetHealth()
 				if ( npcEnemyHealth < npcWeakestEnemyHealth )
@@ -374,7 +371,7 @@ function X.ConsiderW()
 	
 	
 	--对线期间消耗
-	if J.IsLaning( bot ) and J.IsAllowedToSpam( bot, nManaCost ) and nSkillLV >= 2
+	if J.IsLaning( bot ) and nMP > 0.5
 	then
 		for _, npcEnemy in pairs( nInRangeEnemyList )
 		do 
@@ -382,7 +379,7 @@ function X.ConsiderW()
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
 				and npcEnemy:GetAttackTarget() == nil
-				and not npcEnemy:HasModifier( "modifier_axe_battle_hunger" )
+				and not npcEnemy:HasModifier( 'modifier_axe_battle_hunger_self' )
 			then
 				hCastTarget = npcEnemy
 				sCastMotive = 'W-对线消耗:'..J.Chat.GetNormName( hCastTarget )
@@ -402,13 +399,35 @@ function X.ConsiderW()
 			if J.IsValid( npcEnemy )
 				and J.CanCastOnNonMagicImmune( npcEnemy )
 				and J.CanCastOnTargetAdvanced( npcEnemy )
-				and not npcEnemy:HasModifier( "modifier_axe_battle_hunger" )
+				and not npcEnemy:HasModifier( 'modifier_axe_battle_hunger_self' )
 			then
 				hCastTarget = npcEnemy
 				sCastMotive = 'W-撤退:'..J.Chat.GetNormName( hCastTarget )
 				return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
 			end
 		end
+	end
+	
+	--打野时
+	if J.IsFarming( bot )
+		and nSkillLV >= 2
+		and J.IsAllowedToSpam( bot, nManaCost * 0.25 )
+	then
+		local neutralCreepList = bot:GetNearbyNeutralCreeps( nCastRange + 100 )
+
+		local targetCreep = J.GetMostHpUnit( neutralCreepList )
+
+		if J.IsValid( targetCreep )
+			and not J.IsRoshan( targetCreep )
+			and not targetCreep:HasModifier( 'modifier_axe_battle_hunger_self' )
+			--and ( #neutralCreepList >= 2 or GetUnitToUnitDistance( targetCreep, bot ) <= 400 )
+			and ( targetCreep:GetMagicResist() < 0.3 )
+			and not J.CanKillTarget( targetCreep, bot:GetAttackDamage() * 2.88, DAMAGE_TYPE_PHYSICAL )
+		then
+			hCastTarget = targetCreep
+			sCastMotive = 'W-打野'
+			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive
+	    end
 	end
 	
 	
@@ -418,7 +437,7 @@ function X.ConsiderW()
 		if J.IsRoshan( botTarget )
 			and not J.IsDisabled( botTarget )
 			and J.IsInRange( botTarget, bot, nCastRange )
-			and not botTarget:HasModifier( "modifier_axe_battle_hunger" )
+			and not botTarget:HasModifier( 'modifier_axe_battle_hunger_self' )
 		then
 			hCastTarget = botTarget
 			sCastMotive = 'W-肉山'
@@ -439,17 +458,37 @@ function X.ConsiderR()
 
 	if not abilityR:IsFullyCastable() then return 0 end
 
+	local nSkillLV = abilityR:GetLevel()
 	local nCastRange = abilityR:GetCastRange()
-	local nDamage = abilityR:GetSpecialValueInt( "damage" )
+	local nRadius = 600
+	local nCastPoint = abilityR:GetCastPoint()
+	local nManaCost = abilityR:GetManaCost()
+	
+	local nKillDamage = 150 + 100 * nSkillLV
+	if talent5:IsTrained() then nKillDamage = nKillDamage + talent5:GetSpecialValueInt( 'value' ) end
+	
+	local nDamageType = DAMAGE_TYPE_PURE
+	local nInRangeEnemyList = J.GetAroundEnemyHeroList( nCastRange )
 	local nInBonusEnemyList = J.GetAroundEnemyHeroList( nCastRange + 200 )
+	local hCastTarget = nil
+	local sCastMotive = nil
 	
 	
+	--直接斩杀血量低于斩杀线的敌人
 	for _, npcEnemy in pairs( nInBonusEnemyList )
 	do 
 		if J.IsValidHero( npcEnemy )
-			and npcEnemy:GetHealth() <= nDamage
+			and npcEnemy:CanBeSeen()
+			and npcEnemy:GetHealth() + npcEnemy:GetHealthRegen() * 0.8 < nKillDamage
+			and not J.IsHaveAegis( npcEnemy )
+			and not npcEnemy:IsInvulnerable()
+			and not npcEnemy:IsMagicImmune() --V BUG
+			and not X.HasSpecialModifier( npcEnemy )
+			and not X.IsKillBotAntiMage( npcEnemy )
 		then
-			return BOT_ACTION_DESIRE_HIGH, npcEnemy	
+			hCastTarget = npcEnemy
+			sCastMotive = 'R-击杀'..J.Chat.GetNormName( hCastTarget )
+			return BOT_ACTION_DESIRE_HIGH, hCastTarget, sCastMotive			
 		end
 	end
 
