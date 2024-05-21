@@ -51,6 +51,9 @@ function EntityKilled:OnEntityKilled(event)
 	if isDebug then
 		DeepPrintTable(victim)
 	end
+
+	-- Respawn earlier when killed.
+	AwardBonus:AdjustDeathRespawnTime(victim)
 end
 
 -- returns useful data about the kill event
