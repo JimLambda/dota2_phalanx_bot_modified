@@ -14,6 +14,7 @@ local bLineupReserve = false
 
 local Role = require( GetScriptDirectory()..'/FunLib/aba_role' )
 local Chat = require( GetScriptDirectory()..'/FunLib/aba_chat' )
+local Overrides = require( GetScriptDirectory()..'/FunLib/aba_global_overrides' )
 local HeroSet = {}
 local SupportedHeroes = {}
 
@@ -636,32 +637,33 @@ function X.OverrideTeamHeroes()
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 
 			-- Rubick mid, and good team fights
-			-- [1] = "npc_dota_hero_rubick",
-			-- [2] = "npc_dota_hero_enigma",
-			-- [3] = "npc_dota_hero_clinkz",
+			-- [1] = "npc_dota_hero_clinkz",
+			-- [2] = "npc_dota_hero_rubick",
+			-- [3] = "npc_dota_hero_enigma",
 		    -- [4] = "npc_dota_hero_earth_spirit",
 			-- [5] = "npc_dota_hero_techies",
 			
 			-- Invoker mid, strong pos3 with combos, and good other team members.
-			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = 'npc_dota_hero_enigma',
-			-- [3] = "npc_dota_hero_arc_warden",
-		    -- [4] = "npc_dota_hero_shadow_demon",
-			-- [5] = "npc_dota_hero_nyx_assassin",
+			-- [1] = "npc_dota_hero_arc_warden",
+			-- [2] = 'npc_dota_hero_invoker',
+			-- [3] = "npc_dota_hero_enigma",
+		    -- [4] = "npc_dota_hero_nyx_assassin",
+			-- [5] = "npc_dota_hero_shadow_demon",
 			
-			-- [1] = "npc_dota_hero_invoker",
-			-- [2] = 'npc_dota_hero_tidehunter',
-			-- [3] = "npc_dota_hero_antimage",
-		    -- [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_nyx_assassin",
+			-- [1] = "npc_dota_hero_antimage",
+			-- [2] = 'npc_dota_hero_invoker',
+			-- [3] = "npc_dota_hero_tidehunter",
+		    -- [4] = "npc_dota_hero_nyx_assassin",
+			-- [5] = "npc_dota_hero_earth_spirit",
 			
 			-- Muerta pos1 and Hoodwink pos5, both go top.
+			-- muerta be pos 1 has smaller chance for bug, 
+			-- hoodwink does not work over half of the time.
 			[1] = "npc_dota_hero_muerta",
-			[2] = 'npc_dota_hero_primal_beast', -- muerta has to be pos 1, base bot script issue.
-			[3] = tSelectPoolList[3][RandomInt( 1, #tSelectPoolList[3] )], -- muerta has to be pos 1, base bot script issue.
-			-- [4] = 'npc_dota_hero_hoodwink', -- hoodwink does not work over half of the time.
-			[4] = tSelectPoolList[4][RandomInt( 1, #tSelectPoolList[4] )],
-			[5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
+			[2] = tSelectPoolList[2][RandomInt( 1, #tSelectPoolList[2] )],
+			[3] = 'npc_dota_hero_enigma',
+			[4] = 'npc_dota_hero_lycan',
+			[5] = 'npc_dota_hero_lycan',
 
 
 			-- Test buggy heroes:
@@ -676,12 +678,11 @@ function X.OverrideTeamHeroes()
 			-- [5] = tSelectPoolList[5][RandomInt( 1, #tSelectPoolList[5] )],
 		    
 			-- All Pandas/spirits
-			-- [1] = "npc_dota_hero_storm_spirit",
-			-- [2] = "npc_dota_hero_ember_spirit",
-			-- [3] = "npc_dota_hero_void_spirit",
-			-- [4] = "npc_dota_hero_earth_spirit",
-			-- [5] = "npc_dota_hero_brewmaster",
-		    
+			-- [1] = "npc_dota_hero_void_spirit",
+			-- [2] = "npc_dota_hero_storm_spirit",
+			-- [3] = "npc_dota_hero_ember_spirit",
+			-- [4] = "npc_dota_hero_brewmaster",
+			-- [5] = "npc_dota_hero_earth_spirit",
 		}
 	end
 end
@@ -702,15 +703,21 @@ function X.ShuffleArray(array)
     return array
 end
 
-local shuffleSelection = X.ShuffleArray({1, 2, 3, 4, 5})
-print('Random pick order: '..table.concat(shuffleSelection, ", "))
-for i = 1, #shuffleSelection do
-	sSelectList[i], sSelectList[shuffleSelection[i]] = sSelectList[shuffleSelection[i]], sSelectList[i]
-	tSelectPoolList[i], tSelectPoolList[shuffleSelection[i]] = tSelectPoolList[shuffleSelection[i]], tSelectPoolList[i]
-	tLaneAssignList['TEAM_RADIANT'][i], tLaneAssignList['TEAM_RADIANT'][shuffleSelection[i]] = tLaneAssignList['TEAM_RADIANT'][shuffleSelection[i]], tLaneAssignList['TEAM_RADIANT'][i]
-	tLaneAssignList['TEAM_DIRE'][i], tLaneAssignList['TEAM_DIRE'][shuffleSelection[i]] = tLaneAssignList['TEAM_DIRE'][shuffleSelection[i]], tLaneAssignList['TEAM_DIRE'][i]
-	Role.roleAssignment['TEAM_RADIANT'][i], Role.roleAssignment['TEAM_RADIANT'][shuffleSelection[i]] = Role.roleAssignment['TEAM_RADIANT'][shuffleSelection[i]], Role.roleAssignment['TEAM_RADIANT'][i]
-	Role.roleAssignment['TEAM_DIRE'][i], Role.roleAssignment['TEAM_DIRE'][shuffleSelection[i]] = Role.roleAssignment['TEAM_DIRE'][shuffleSelection[i]], Role.roleAssignment['TEAM_DIRE'][i]
+function X.ShufflePickOrder(teamPlayers)
+	local shuffleSelection = X.ShuffleArray({1, 2, 3, 4, 5})
+	-- print('Random pick order: '..table.concat(shuffleSelection, ", "))
+	for i = 1, #shuffleSelection do
+		local targetIndex = shuffleSelection[i]
+		if IsPlayerBot(teamPlayers[i]) and IsPlayerBot(teamPlayers[targetIndex]) then
+			-- print('Shuffle team '..GetTeam()..', swap '..i.." with "..targetIndex)
+			sSelectList[i], sSelectList[targetIndex] = sSelectList[targetIndex], sSelectList[i]
+			tSelectPoolList[i], tSelectPoolList[targetIndex] = tSelectPoolList[targetIndex], tSelectPoolList[i]
+			tLaneAssignList['TEAM_RADIANT'][i], tLaneAssignList['TEAM_RADIANT'][targetIndex] = tLaneAssignList['TEAM_RADIANT'][targetIndex], tLaneAssignList['TEAM_RADIANT'][i]
+			tLaneAssignList['TEAM_DIRE'][i], tLaneAssignList['TEAM_DIRE'][targetIndex] = tLaneAssignList['TEAM_DIRE'][targetIndex], tLaneAssignList['TEAM_DIRE'][i]
+			Role.roleAssignment['TEAM_RADIANT'][i], Role.roleAssignment['TEAM_RADIANT'][targetIndex] = Role.roleAssignment['TEAM_RADIANT'][targetIndex], Role.roleAssignment['TEAM_RADIANT'][i]
+			Role.roleAssignment['TEAM_DIRE'][i], Role.roleAssignment['TEAM_DIRE'][targetIndex] = Role.roleAssignment['TEAM_DIRE'][targetIndex], Role.roleAssignment['TEAM_DIRE'][i]
+		end
+	end
 end
 
 function X.GetMoveTable( nTable )
@@ -1027,9 +1034,22 @@ function X.GetRandomNameList( sStarList )
 	return sNameList
 end
 
+
+local sTeamName = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+
+local ShuffledPickOrder = {
+	TEAM_RADIANT = false,
+	TEAM_DIRE = false,
+}
+
 function AllPickHeros()
-	local nIDs = GetTeamPlayers( GetTeam() )
-	for i, id in pairs( nIDs )
+	local teamPlayers = GetTeamPlayers(GetTeam())
+	if not ShuffledPickOrder[sTeamName] then
+		X.ShufflePickOrder(teamPlayers)
+		ShuffledPickOrder[sTeamName] = true
+	end
+
+	for i, id in pairs( teamPlayers )
 	do
 		if IsPlayerBot( id ) and GetSelectedHeroName( id ) == "" and GameTime() >= fLastSlectTime + GetTeam()
 		then
@@ -1039,10 +1059,9 @@ function AllPickHeros()
 			else
 				sSelectHero = sSelectList[i]
 			end
-
 			SelectHero( id, sSelectHero )
+			-- print('Selected hero for idx='..i..', id='..id..', bot='..sSelectHero)
 			if Role["bLobbyGame"] == false then Role["bLobbyGame"] = true end
-
 			fLastSlectTime = GameTime()
 			fLastRand = RandomInt( 8, 28 )/10
 			break
@@ -1067,6 +1086,7 @@ end
 -- Function to handle the command
 local function handleCommand(command, PlayerID, bTeamOnly)
     local action, text = parseCommand(command)
+	local teamPlayers = GetTeamPlayers(GetTeam())
 
     if action == "!pick" then
         print("Picking hero " .. text)
@@ -1078,7 +1098,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 				return
 			end
 			if bTeamOnly then
-				for _, id in pairs(GetTeamPlayers(GetTeam()))
+				for _, id in pairs(teamPlayers)
 				do
 					if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
 						SelectHero(id, hero);
@@ -1086,7 +1106,7 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 					end
 				end
 			elseif bTeamOnly == false and GetTeamForPlayer(PlayerID) ~= GetTeam() then
-				for _,id in pairs(GetTeamPlayers(GetTeam()))
+				for _, id in pairs(teamPlayers)
 				do
 					if IsPlayerBot(id) and IsPlayerInHeroSelectionControl(id) and GetSelectedHeroName(id) == "" then
 						SelectHero(id, hero);
@@ -1099,23 +1119,28 @@ local function handleCommand(command, PlayerID, bTeamOnly)
 		end
     elseif action == "!pos" then
         print("Selecting pos " .. text)
-		local team = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
-		local remainingPos = RemainingPos[team]
+		local sTeamName = GetTeamForPlayer(PlayerID) == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+		local remainingPos = RemainingPos[sTeamName]
 		if HasValue(remainingPos, text) then
 			local role = tonumber(text)
 			
-			local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player.
-			for index, id in pairs(GetTeamPlayers(GetTeam()))
+			local playerIndex = PlayerID + 1 -- each team player id starts with 0, to 4 as the last player. 
+			-- this index can be differnt if the player choose a slot in lobby that has empty slots before the one the player chooses.
+			for idx, id in pairs(teamPlayers) do
+				if id == PlayerID then playerIndex = idx end
+			end
+
+			for index, id in pairs(teamPlayers)
 			do
-				if Role.roleAssignment[team][index] == role then
+				if Role.roleAssignment[sTeamName][index] == role then
 					if IsPlayerBot(id) then
 						
 						-- remove so can't re-swap
 						-- table.remove(RemainingPos[team], role)
 
-						Role.roleAssignment[team][playerIndex], Role.roleAssignment[team][index] = role, Role.roleAssignment[team][playerIndex]
-						tLaneAssignList[team][playerIndex], tLaneAssignList[team][index] = tLaneAssignList[team][index], tLaneAssignList[team][playerIndex]
-						print('Switch role successfully. Team: '..team..', playerId: '..PlayerID..', new role: '..Role.roleAssignment[team][playerIndex])
+						Role.roleAssignment[sTeamName][playerIndex], Role.roleAssignment[sTeamName][index] = role, Role.roleAssignment[sTeamName][playerIndex]
+						tLaneAssignList[sTeamName][playerIndex], tLaneAssignList[sTeamName][index] = tLaneAssignList[sTeamName][index], tLaneAssignList[sTeamName][playerIndex]
+						print('Switch role successfully. Team: '..sTeamName..', playerId: '..PlayerID..', new role: '..Role.roleAssignment[sTeamName][playerIndex])
 					else
 						print('Switch role failed, the target role belongs to human player. Ask the player directly to switch role.')
 					end

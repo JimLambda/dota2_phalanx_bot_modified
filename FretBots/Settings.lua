@@ -62,7 +62,7 @@ local announcementList = {
 	{"#2980B9", "* If difficulty >= 0, bots get bonus neutral items, and get fair bonus in gold, exp, stats, etc every minute."},
 	{"#E59866", "* If difficulty >= 1, bots get above bonus upon their death; and also get new bonus in mana/hp regens."},
 	{"#1ABC9C", "* As difficulty increments, bots get neutral items sooner and higher bonus amount."},
-	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players. Bots also provid less exp on death."},
+	{"#F39C12", "* If difficulty >= 5, when a player kills a bot, the player who made the kill receives a reduction in gold. This does not affect assisting players. Bots also provide less exp on death."},
 	{"#7FB3D5", "* The higher the difficulty you vote, the more bonus the bots will get which can make the game more challenging." },
 	{"#E74C3C", "* High difficulty can be overwhelming or even frustrating, please choose the right difficulty for you and your team." },
 	{"#D4AC0D", "* Kudos to BeginnerAI, Fretbots, and ryndrb@; and thanks to Toph, hiro1134, -Calculated, Karma, Psychdoctor for sharing ideas." },
@@ -106,13 +106,18 @@ function Settings:Initialize(difficulty)
 	-- no argument implies default, do nothing
 	if difficulty == nil then return end
 	-- Adjust bot skill values by the difficulty value
-	-- 5 is nominal (1.0), and the max swing is +/- 0.50
 	Settings.difficultyScale = 1 + ((difficulty - 5) / 10)
+	-- increase diff scale for diffculty > 5.
+	if difficulty > 5 and difficulty < 10 then
+		Settings.difficultyScale = 1 + ((difficulty - 3) / 10)
+	elseif difficulty >= 10 then
+		Settings.difficultyScale = 1 + (difficulty / 10)
+	end
 	Settings.difficultyScale = Utilities:Round(Settings.difficultyScale, 2)
 	-- Print
 	local msg = 'Difficulty Scale: '..Settings.difficultyScale
 	Debug:Print(msg)
-	Utilities:Print(msg, MSG_GOOD)
+	-- Utilities:Print(msg, MSG_GOOD) -- scale value vs difficulty they voted can confuse players.
 	-- Set Flag
 	Flags.isSettingsFinalized = true
 end

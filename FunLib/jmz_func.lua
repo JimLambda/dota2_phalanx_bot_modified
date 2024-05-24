@@ -2212,7 +2212,7 @@ function J.SetQueuePtToINT( bot, bSoulRingUsed )
 
 end
 
-
+-- 动力鞋/假腿状态
 function J.IsPTReady( bot, status )
 
 	if not bot:IsAlive()
@@ -4251,6 +4251,22 @@ function J.IsHumanPlayerInTeam()
 	return false
 end
 
+-- count the number of human vs bot players in the team. returns: #humen, #bots
+function J.NumHumanBotPlayersInTeam()
+	local nHuman, nBot = 0, 0
+	for _, member in pairs(GetTeamPlayers(GetTeam()))
+	do
+		if not IsPlayerBot(member)
+		then
+			nHuman = nHuman + 1
+		else
+			nBot = nBot + 1
+		end
+	end
+
+	return nHuman, nBot
+end
+
 function J.GetEnemiesAroundAncient()
 	local nUnitList = {}
 
@@ -4454,6 +4470,10 @@ end
 function J.GetManaAfter(manaCost)
 	local bot = GetBot()
 	return (bot:GetMana() - manaCost) / bot:GetMaxMana()
+end
+function J.GetHealthAfter(hpCost)
+	local bot = GetBot()
+	return (bot:GetHealth() - hpCost) / bot:GetMaxHealth()
 end
 
 function J.GetCreepListAroundTargetCanKill(target, nRadius, damage, bEnemy, bNeutral, bLaneCreep)

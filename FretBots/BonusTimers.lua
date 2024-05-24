@@ -153,7 +153,7 @@ function BonusTimers:NeutralItemFindTimer()
 						end
 					end
 					-- Give it
-					-- NeutralItems:GiveToUnit(neediest, bestItem)
+					NeutralItems:GiveToUnit(neediest, bestItem)
 					-- perhaps announce the item has been found
 					if Settings.neutralItems.announce then
 						Utilities:AnnounceNeutral(neediest, bestItem, MSG_NEUTRAL_FIND)
@@ -205,8 +205,7 @@ function BonusTimers:NeutralItemDoleTimer()
 					-- update assignment table
 					bot.stats.assignedNeutral = itemToDole
 					-- Give item, check for replacement
-					-- local replacedItemName = NeutralItems:GiveToUnit(bot, itemToDole)
-					local replacedItemName = nil
+					local replacedItemName = NeutralItems:GiveToUnit(bot, itemToDole)
 					-- if bot had an item . . .
 					if replacedItemName ~= nil then
 						local item = BonusTimers:GetItemFromName(replacedItemName)

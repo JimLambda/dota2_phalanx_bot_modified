@@ -29,8 +29,7 @@ function Defend.GetDefendDesire(bot, lane)
 	then
 		nDefendDesire = 1
 	else
-		-- nDefendDesire = GetDefendLaneDesire(lane) * mul[lane]
-		nDefendDesire = GetDefendLaneDesire(lane) * mul[lane] * 3
+		nDefendDesire = GetDefendLaneDesire(lane) * mul[lane]
 	end
 
 	bot.laneToDefend = lane

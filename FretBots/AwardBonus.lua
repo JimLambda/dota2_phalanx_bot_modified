@@ -247,19 +247,6 @@ function AwardBonus:Death(bot)
 	end
 end
 
--- Adjust the respawn time of the killed bot.
-function AwardBonus:AdjustDeathRespawnTime(bot)
-	-- Drop out for edge cases (LD bear, AW clone)
-	if not DataTables:IsRealHero(bot) then
-		Debug:Print(bot:GetName()..' is not a real hero unit.  No Death Respawn Time Adjustment given.')
-		return
-	end
-
-	local respawnTime = 0  -- Set custom respawn time here
-	-- Set the respawn time of the killed bot.
-    bot:SetTimeUntilRespawn(respawnTime)
-end
-
 -- Increments the chance of all accruing bonus awards
 function AwardBonus:AccruetDeathBonusChances(bot)
 	for _, award in pairs(Settings.deathBonus.order) do
