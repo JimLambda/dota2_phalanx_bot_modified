@@ -150,7 +150,7 @@ local sPos1List = {
 	-- "npc_dota_hero_alchemist",
 	-- "npc_dota_hero_antimage",
 	-- "npc_dota_hero_arc_warden",
-	-- "npc_dota_hero_bloodseeker",
+	"npc_dota_hero_bloodseeker",
 	"npc_dota_hero_bristleback",
 	-- "npc_dota_hero_chaos_knight",
 	-- "npc_dota_hero_clinkz",
