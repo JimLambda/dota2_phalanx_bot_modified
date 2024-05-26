@@ -4273,7 +4273,8 @@ function J.GetEnemiesAroundAncient()
 	for _, unit in pairs(GetUnitList(UNIT_LIST_ENEMY_HEROES))
 	do
 		if  J.IsValidHero(unit)
-		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) < 1600
+		-- and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) < 1600
+		and GetUnitToUnitDistance(unit, GetAncient(GetTeam())) < 2400
 		then
 			table.insert(nUnitList, unit)
 		end
@@ -4282,7 +4283,8 @@ function J.GetEnemiesAroundAncient()
 	for _, creep in pairs(GetUnitList(UNIT_LIST_ENEMY_CREEPS))
 	do
 		if  J.IsValid(creep)
-		and GetUnitToUnitDistance(creep, GetAncient(GetTeam())) < 1600
+		-- and GetUnitToUnitDistance(creep, GetAncient(GetTeam())) < 1600
+		and GetUnitToUnitDistance(creep, GetAncient(GetTeam())) < 2400
 		then
 			table.insert(nUnitList, creep)
 		end
