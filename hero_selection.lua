@@ -323,7 +323,7 @@ local sPos4List = {
 	-- -- "npc_dota_hero_hoodwink", -- DOESN'T WORK
 	"npc_dota_hero_jakiro",
 	-- "npc_dota_hero_keeper_of_the_light",
-	-- "npc_dota_hero_lich",
+	"npc_dota_hero_lich",
 	-- "npc_dota_hero_lina",
 	-- "npc_dota_hero_lion",
 	-- "npc_dota_hero_mirana",
@@ -381,7 +381,7 @@ local sPos5List = {
 	-- -- "npc_dota_hero_hoodwink", -- DOESN'T WORK
 	"npc_dota_hero_jakiro",
 	-- "npc_dota_hero_keeper_of_the_light",
-	-- "npc_dota_hero_lich",
+	"npc_dota_hero_lich",
 	-- "npc_dota_hero_lina",
 	-- "npc_dota_hero_lion",
 	-- "npc_dota_hero_mirana",
