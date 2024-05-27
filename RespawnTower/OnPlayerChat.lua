@@ -1,4 +1,5 @@
 require("bots.RespawnTower.OnEntityHurtForRespawnTower")
+require("bots.RespawnTower.OnEntityKilledForRespawnTower")
 
 local isOnPlayerChatRegistered = false
 
@@ -15,10 +16,21 @@ function OnPlayerChat:OnPlayerChat(event)
     -- Set configs according to chat content.
     if rawText == "--invulnerable buildings" or rawText == "-ib" then
         EntityHurtForRespawnTower.shouldBeInvulnerableFlag = true
+        GameRules:SendCustomMessage("Invulnerable Buildings activated!", 0, 0)
     end
     if rawText == "--vulnerable buildings" or rawText == "-vb" then
         EntityHurtForRespawnTower.shouldBeInvulnerableFlag = false
         EntityHurtForRespawnTower:SetBuildingVulnerable()
+        GameRules:SendCustomMessage("Vulnerable Buildings activated!", 0, 0)
+    end
+
+    if rawText == "--fast respawn" or rawText == "-fr" then
+        EntityKilledForRespawnTower.shouldFastRespawnFlag = true
+        GameRules:SendCustomMessage("Fast Respawn activated!", 0, 0)
+    end
+    if rawText == "--normal respawn" or rawText == "-nr" then
+        EntityKilledForRespawnTower.shouldFastRespawnFlag = false
+        GameRules:SendCustomMessage("Normal Respawn activated!", 0, 0)
     end
 end
 

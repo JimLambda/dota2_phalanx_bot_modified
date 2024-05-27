@@ -7,6 +7,8 @@ if EntityKilledForRespawnTower == nil then
 	EntityKilledForRespawnTower = {}
 end
 
+EntityKilledForRespawnTower.shouldFastRespawnFlag = false
+
 -- Event Listener
 function EntityKilledForRespawnTower:OnEntityKilled(event)
 	-- Get Event Data
@@ -15,16 +17,18 @@ function EntityKilledForRespawnTower:OnEntityKilled(event)
 	if victim == nil then
 		return
 	end
-	if victim:IsTower() or victim:IsBuilding() then
-		if
-			-- victim:GetName() == "dota_goodguys_tower4_top" or victim:GetName() == "dota_goodguys_tower4_bot" or
-			-- 	victim:GetName() == "dota_badguys_tower4_top" or
-			-- 	victim:GetName() == "dota_badguys_tower4_bot"
-			true
-		 then
-			-- Respawn earlier when killed.
-			EntityKilledForRespawnTower:AdjustDeathRespawnTimeForBuilding(victim)
-		end
+	-- if victim:IsTower() or victim:IsBuilding() then
+	-- 	if -- victim:GetName() == "dota_goodguys_tower4_top" or victim:GetName() == "dota_goodguys_tower4_bot" or
+	-- 		-- 	victim:GetName() == "dota_badguys_tower4_top" or
+	-- 		-- 	victim:GetName() == "dota_badguys_tower4_bot"
+	-- 		true then
+	-- 		-- Respawn earlier when killed.
+	-- 		EntityKilledForRespawnTower:AdjustDeathRespawnTimeForBuilding(victim)
+	-- 	end
+	-- end
+
+	if isHero and EntityKilledForRespawnTower.shouldFastRespawnFlag then
+		EntityKilledForRespawnTower:AdjustDeathRespawnTimeForHero(victim)
 	end
 end
 
@@ -66,4 +70,14 @@ function EntityKilledForRespawnTower:AdjustDeathRespawnTimeForBuilding(building)
 	building:SetInvulnCount(50)
 	-- building:RespawnUnit()
 	-- building:SetTimeUntilRespawn(respawnTime)
+end
+
+-- Adjust the respawn time of the killed hero.
+function EntityKilledForRespawnTower:AdjustDeathRespawnTimeForHero(hero, respawnTime)
+	local defaultRespawnTime = 0 -- Set custom respawn time here
+	if respawnTime == nil then
+		respawnTime = defaultRespawnTime
+	end
+	-- Set the respawn time of the killed hero.
+	hero:SetTimeUntilRespawn(respawnTime)
 end
