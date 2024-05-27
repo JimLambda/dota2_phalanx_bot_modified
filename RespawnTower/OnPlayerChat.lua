@@ -13,10 +13,10 @@ function OnPlayerChat:OnPlayerChat(event)
     local playerID, rawText = OnPlayerChat:GetChatEventData(event)
 
     -- Set configs according to chat content.
-    if rawText == "-invulnerable buildings" or rawText == "-ib" then
+    if rawText == "--invulnerable buildings" or rawText == "-ib" then
         EntityHurtForRespawnTower.shouldBeInvulnerableFlag = true
     end
-    if rawText == "-vulnerable buildings" or rawText == "-vb" then
+    if rawText == "--vulnerable buildings" or rawText == "-vb" then
         EntityHurtForRespawnTower.shouldBeInvulnerableFlag = false
         EntityHurtForRespawnTower:SetBuildingVulnerable()
     end
