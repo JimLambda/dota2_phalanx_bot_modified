@@ -18,6 +18,7 @@ function OnPlayerChat:OnPlayerChat(event)
     end
     if rawText == "-vulnerable buildings" or rawText == "-vb" then
         EntityHurtForRespawnTower.shouldBeInvulnerableFlag = false
+        EntityHurtForRespawnTower:SetBuildingVulnerable()
     end
 end
 

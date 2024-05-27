@@ -11,6 +11,7 @@ end
 EntityHurtForRespawnTower.shouldBeInvulnerableFlag = false
 EntityHurtForRespawnTower.effectedBuildings = {}
 
+-- Only print debug info when the debugFlag is set to true.
 local function DebugPrint(...)
 	local args = {...}
 
@@ -51,21 +52,22 @@ local function InsertBuildingIntoTable(targeTable, newItem)
 			DebugPrint("Function item:GetName() successfully")
 		else
 			DebugPrint("Error occurred: ", err)
-			return false
 		end
 
-		status, err = pcall(newItem.GetName, newItem)
+		local status2, err2 = pcall(newItem.GetName, newItem)
 
-		if status then
+		if status2 then
 			DebugPrint("Function newItem:GetName() successfully")
 		else
-			DebugPrint("Error occurred: ", err)
+			DebugPrint("Error occurred: ", err2)
 			return false
 		end
 
-		if item:GetName() == newItem:GetName() then
-			DebugPrint("Building with name ", newItem:GetName(), " already exists.")
-			return false
+		if status and status2 then
+			if item:GetName() == newItem:GetName() then
+				DebugPrint("Building with name ", newItem:GetName(), " already exists.")
+				return false
+			end
 		end
 	end
 
@@ -94,8 +96,8 @@ function EntityHurtForRespawnTower:OnEntityHurt(event)
 			if EntityHurtForRespawnTower.shouldBeInvulnerableFlag == true then
 				-- Respawn earlier when killed.
 				EntityHurtForRespawnTower:SetBuildingInvulnerable(victim)
-			elseif EntityHurtForRespawnTower.shouldBeInvulnerableFlag == false then
-				EntityHurtForRespawnTower:SetBuildingVulnerable(victim)
+			-- elseif EntityHurtForRespawnTower.shouldBeInvulnerableFlag == false then
+			-- 	EntityHurtForRespawnTower:SetBuildingVulnerable(victim)
 			end
 		end
 	end
@@ -146,7 +148,17 @@ function EntityHurtForRespawnTower:SetBuildingInvulnerable(building)
 	-- building:SetTimeUntilRespawn(respawnTime)
 end
 
-function EntityHurtForRespawnTower:SetBuildingVulnerable(building)
-	building:SetInvulnCount(0)
+function EntityHurtForRespawnTower:SetBuildingVulnerable()
+	for index, building in ipairs(EntityHurtForRespawnTower.effectedBuildings) do
+		local status, err = pcall(building.SetInvulnCount, building, 0)
+
+		if status then
+			DebugPrint("Function building:SetInvulnCount(0) successfully")
+		else
+			DebugPrint("Error occurred: ", err)
+		end
+
+		-- building:SetInvulnCount(0)
+	end
 	-- print(building:GetName(), " has ", building:GetInvulnCount(), " invulnerability counts.")
 end
