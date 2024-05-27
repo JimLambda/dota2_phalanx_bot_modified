@@ -1,6 +1,7 @@
 local RADIANT = 2
 local DIRE = 3
 local isEntityHurtForRespawnTowerRegistered = false
+local debugFlag = true
 
 -- Instantiate ourself
 if EntityHurtForRespawnTower == nil then
@@ -10,22 +11,69 @@ end
 EntityHurtForRespawnTower.shouldBeInvulnerableFlag = false
 EntityHurtForRespawnTower.effectedBuildings = {}
 
+local function DebugPrint(...)
+	local args = {...}
+
+	if debugFlag then
+		print(unpack(args))
+	else
+		return
+	end
+end
 
 -- A stackoverflow found debug function.
 local function dump(o)
-	if type(o) == 'table' then
-	   local s = '{ '
-	   for k,v in pairs(o) do
-		  if type(k) ~= 'number' then k = '"'..k..'"' end
-		  s = s .. '['..k..'] = ' .. dump(v) .. ','
-	   end
-	   return s .. '} '
+	if type(o) == "table" then
+		local s = "{ "
+		for k, v in pairs(o) do
+			if type(k) ~= "number" then
+				k = '"' .. k .. '"'
+			end
+			s = s .. "[" .. k .. "] = " .. dump(v) .. ","
+		end
+		return s .. "} "
 	else
-	   return tostring(o)
+		return tostring(o)
 	end
- end
+end
 
+--  Insert building into EntityHurtForRespawnTower.effectedBuildings without duplicate.
+local function InsertBuildingIntoTable(targeTable, newItem)
+	DebugPrint("EntityHurtForRespawnTower.effectedBuildings:", dump(EntityHurtForRespawnTower.effectedBuildings))
 
+	-- Iterate over the table to check for duplicates
+	for _, item in ipairs(targeTable) do
+		DebugPrint("Iterating item: ", item, " And the newItem: ", newItem)
+
+		local status, err = pcall(item.GetName, item)
+
+		if status then
+			DebugPrint("Function item:GetName() successfully")
+		else
+			DebugPrint("Error occurred: ", err)
+			return false
+		end
+
+		status, err = pcall(newItem.GetName, newItem)
+
+		if status then
+			DebugPrint("Function newItem:GetName() successfully")
+		else
+			DebugPrint("Error occurred: ", err)
+			return false
+		end
+
+		if item:GetName() == newItem:GetName() then
+			DebugPrint("Building with name ", newItem:GetName(), " already exists.")
+			return false
+		end
+	end
+
+	-- If no duplicate found, insert the new item
+	table.insert(targeTable, newItem)
+	DebugPrint("Building with name ", newItem:GetName(), " inserted.")
+	return true
+end
 
 -- Event Listener
 function EntityHurtForRespawnTower:OnEntityHurt(event)
@@ -36,7 +84,7 @@ function EntityHurtForRespawnTower:OnEntityHurt(event)
 		return
 	end
 	if victim:IsTower() or victim:IsBuilding() then
-		table.insert(EntityHurtForRespawnTower.effectedBuildings, victim)
+		InsertBuildingIntoTable(EntityHurtForRespawnTower.effectedBuildings, victim)
 		-- print("EntityHurtForRespawnTower.effectedBuildings:", dump(EntityHurtForRespawnTower.effectedBuildings))
 
 		if -- victim:GetName() == "dota_goodguys_tower4_top" or victim:GetName() == "dota_goodguys_tower4_bot" or
@@ -93,15 +141,12 @@ function EntityHurtForRespawnTower:SetBuildingInvulnerable(building)
 	local respawnTime = 0 -- Set custom respawn time here
 	-- Set the respawn time of the killed bot.
 	building:SetInvulnCount(1)
-	print(building:GetName(), " has ", building:GetInvulnCount(), " invulnerability counts.")
+	DebugPrint(building:GetName(), " has ", building:GetInvulnCount(), " invulnerability counts.")
 	-- building:RespawnUnit()
 	-- building:SetTimeUntilRespawn(respawnTime)
 end
-
 
 function EntityHurtForRespawnTower:SetBuildingVulnerable(building)
 	building:SetInvulnCount(0)
 	-- print(building:GetName(), " has ", building:GetInvulnCount(), " invulnerability counts.")
 end
-
-
