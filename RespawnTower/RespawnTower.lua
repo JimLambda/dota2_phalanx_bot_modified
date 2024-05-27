@@ -16,9 +16,11 @@ It would've been nice to call this within the bot script, but I don't think it i
 
 require("bots.RespawnTower.OnEntityKilledForRespawnTower")
 require("bots.RespawnTower.OnEntityHurtForRespawnTower")
+require("bots.RespawnTower.OnPlayerChat")
 
 EntityKilledForRespawnTower:RegisterEvents()
 EntityHurtForRespawnTower:RegisterEvents()
+OnPlayerChat:RegisterEvents()
 
 -- if RespawnTowerMain == nil then
 --     RespawnTowerMain = {}

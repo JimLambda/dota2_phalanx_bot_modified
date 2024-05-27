@@ -7,6 +7,26 @@ if EntityHurtForRespawnTower == nil then
 	EntityHurtForRespawnTower = {}
 end
 
+EntityHurtForRespawnTower.shouldBeInvulnerableFlag = false
+EntityHurtForRespawnTower.effectedBuildings = {}
+
+
+-- A stackoverflow found debug function.
+local function dump(o)
+	if type(o) == 'table' then
+	   local s = '{ '
+	   for k,v in pairs(o) do
+		  if type(k) ~= 'number' then k = '"'..k..'"' end
+		  s = s .. '['..k..'] = ' .. dump(v) .. ','
+	   end
+	   return s .. '} '
+	else
+	   return tostring(o)
+	end
+ end
+
+
+
 -- Event Listener
 function EntityHurtForRespawnTower:OnEntityHurt(event)
 	-- Get other event data
@@ -16,13 +36,18 @@ function EntityHurtForRespawnTower:OnEntityHurt(event)
 		return
 	end
 	if victim:IsTower() or victim:IsBuilding() then
+		table.insert(EntityHurtForRespawnTower.effectedBuildings, victim)
+		-- print("EntityHurtForRespawnTower.effectedBuildings:", dump(EntityHurtForRespawnTower.effectedBuildings))
+
 		if -- victim:GetName() == "dota_goodguys_tower4_top" or victim:GetName() == "dota_goodguys_tower4_bot" or
 			-- 	victim:GetName() == "dota_badguys_tower4_top" or
 			-- 	victim:GetName() == "dota_badguys_tower4_bot"
 			true then
-			if victim:GetHealthPercent() < 80 then
+			if EntityHurtForRespawnTower.shouldBeInvulnerableFlag == true then
 				-- Respawn earlier when killed.
 				EntityHurtForRespawnTower:SetBuildingInvulnerable(victim)
+			elseif EntityHurtForRespawnTower.shouldBeInvulnerableFlag == false then
+				EntityHurtForRespawnTower:SetBuildingVulnerable(victim)
 			end
 		end
 	end
@@ -72,3 +97,11 @@ function EntityHurtForRespawnTower:SetBuildingInvulnerable(building)
 	-- building:RespawnUnit()
 	-- building:SetTimeUntilRespawn(respawnTime)
 end
+
+
+function EntityHurtForRespawnTower:SetBuildingVulnerable(building)
+	building:SetInvulnCount(0)
+	-- print(building:GetName(), " has ", building:GetInvulnCount(), " invulnerability counts.")
+end
+
+
