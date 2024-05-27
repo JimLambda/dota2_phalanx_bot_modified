@@ -594,13 +594,65 @@ tSelectPoolList = {
 	[5] = sPos5List,
 }
 
+
+print("=======================================")
+print("DEBUG: SupportedHeroes:", SupportedHeroes)
+local function dump(o)
+	if type(o) == "table" then
+		local s = "{ "
+		for k, v in pairs(o) do
+			if type(k) ~= "number" then
+				k = '"' .. k .. '"'
+			end
+			s = s .. "[" .. k .. "] = " .. dump(v) .. ","
+		end
+		return s .. "} "
+	else
+		return tostring(o)
+	end
+end
+print("dump SupportedHeroes:", dump(SupportedHeroes))
+print("dump sPos1List:", dump(sPos1List))
+
 -- Select all supported heroes as select pool list.
+local sSupportedHeroesList = {}
+for key, value in pairs(SupportedHeroes) do
+	table.insert(sSupportedHeroesList, key)
+end
+print("dump sSupportedHeroesList:", dump(sSupportedHeroesList))
+print("DEBUG: sSupportedHeroesList:", dump(sSupportedHeroesList))
+
+local function dumpTable(tbl, indent)
+    indent = indent or 0
+    local formatting = string.rep("  ", indent)
+    if type(tbl) ~= "table" then
+        print(formatting .. tostring(tbl))
+        return
+    end
+
+    print(formatting .. "{")
+    for key, value in pairs(tbl) do
+        local formattedKey = tostring(key)
+        if type(value) == "table" then
+            print(formatting .. "  [" .. formattedKey .. "] = ")
+            dumpTable(value, indent + 1)
+        else
+            local formattedValue = tostring(value)
+            print(formatting .. "  [" .. formattedKey .. "] = " .. formattedValue)
+        end
+    end
+    print(formatting .. "}")
+end
+
+print("dumpTable sSupportedHeroesList:")
+dumpTable(sSupportedHeroesList)
+
 tSelectPoolList = {
-	[1] = SupportedHeroes,
-	[2] = SupportedHeroes,
-	[3] = SupportedHeroes,
-	[4] = SupportedHeroes,
-	[5] = SupportedHeroes,
+	[1] = sSupportedHeroesList,
+	[2] = sSupportedHeroesList,
+	[3] = sSupportedHeroesList,
+	[4] = sSupportedHeroesList,
+	[5] = sSupportedHeroesList,
 }
 
 sSelectList = {
