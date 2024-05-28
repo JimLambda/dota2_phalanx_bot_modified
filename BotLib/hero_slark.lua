@@ -34,28 +34,43 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_1'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_quelling_blade",
-	"item_slippers",
-	"item_circlet",
+	-- "item_tango",
+	-- "item_double_branches",
+	-- "item_quelling_blade",
+	-- "item_slippers",
+	-- "item_circlet",
 
-	"item_wraith_band",
-	"item_power_treads",
-	"item_magic_wand",
+	-- "item_wraith_band",
+	-- "item_power_treads",
+	-- "item_magic_wand",
+	-- "item_diffusal_blade",
+	-- "item_echo_sabre",
+	-- "item_ultimate_scepter",
+	-- "item_aghanims_shard",
+	-- "item_black_king_bar",--
+	-- "item_skadi",--
+	-- "item_basher",
+	-- "item_disperser",--
+	-- "item_abyssal_blade",--
+	-- "item_ultimate_scepter_2",
+	-- "item_bloodthorn",--
+	-- "item_nullifier",--
+	-- "item_moon_shard"
+
+
 	"item_diffusal_blade",
-	"item_echo_sabre",
-	"item_ultimate_scepter",
+	-- "item_echo_sabre",
 	"item_aghanims_shard",
+	"item_ultimate_scepter",
 	"item_black_king_bar",--
-	"item_skadi",--
 	"item_basher",
+	"item_skadi",--
+	"item_monkey_king_bar",--
 	"item_disperser",--
 	"item_abyssal_blade",--
 	"item_ultimate_scepter_2",
-	"item_bloodthorn",--
-	"item_nullifier",--
-	"item_moon_shard"
+	"item_satanic",--
+	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_2'] = sRoleItemsBuyList['pos_1']

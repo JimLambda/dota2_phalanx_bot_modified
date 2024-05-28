@@ -45,57 +45,73 @@ local nUtility = sUtility[RandomInt(1, #sUtility)]
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_2'] = {
-    "item_tango",
-    "item_double_branches",
+    -- "item_tango",
+    -- "item_double_branches",
 
-    "item_bracer",
-    "item_bottle",
+    -- "item_bracer",
+    -- "item_bottle",
+    -- "item_boots",
+    -- "item_magic_wand",
+    -- "item_eternal_shroud",--
+    -- "item_blink",
+    -- "item_ultimate_scepter",
+    -- "item_travel_boots",
+    -- "item_bloodstone",--
+    -- "item_black_king_bar",--
+    -- "item_kaya_and_sange",--
+    -- "item_ultimate_scepter_2",
+    -- "item_overwhelming_blink",--
+    -- "item_travel_boots_2",--
+    -- "item_aghanims_shard",
+    -- "item_moon_shard",
+
+
     "item_boots",
-    "item_magic_wand",
-    "item_eternal_shroud",--
+    "item_lotus_orb",--
     "item_blink",
     "item_ultimate_scepter",
     "item_travel_boots",
     "item_bloodstone",--
-    "item_black_king_bar",--
-    "item_kaya_and_sange",--
+    "item_heart",--
+    "item_aghanims_shard",
     "item_ultimate_scepter_2",
+    "item_shivas_guard",
     "item_overwhelming_blink",--
     "item_travel_boots_2",--
-    "item_aghanims_shard",
     "item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_3'] = {
-    "item_tango",
-    "item_double_branches",
-    "item_magic_stick",
-    "item_ring_of_protection",
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_2']
+-- sRoleItemsBuyList['pos_3'] = {
+--     "item_tango",
+--     "item_double_branches",
+--     "item_magic_stick",
+--     "item_ring_of_protection",
 
-    "item_helm_of_iron_will",
-    "item_boots",
-    "item_magic_wand",
-    "item_phase_boots",
-    "item_veil_of_discord",
-    "item_eternal_shroud",--
-    "item_ultimate_scepter",
-    "item_blink",
-    "item_shivas_guard",--
-    nUtility,--
-    "item_black_king_bar",--
-    "item_travel_boots",
-    "item_overwhelming_blink",--
-    "item_ultimate_scepter_2",
-    "item_travel_boots_2",--
-    "item_aghanims_shard",
-    "item_moon_shard",
-}
+--     "item_helm_of_iron_will",
+--     "item_boots",
+--     "item_magic_wand",
+--     "item_phase_boots",
+--     "item_veil_of_discord",
+--     "item_eternal_shroud",--
+--     "item_ultimate_scepter",
+--     "item_blink",
+--     "item_shivas_guard",--
+--     nUtility,--
+--     "item_black_king_bar",--
+--     "item_travel_boots",
+--     "item_overwhelming_blink",--
+--     "item_ultimate_scepter_2",
+--     "item_travel_boots_2",--
+--     "item_aghanims_shard",
+--     "item_moon_shard",
+-- }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

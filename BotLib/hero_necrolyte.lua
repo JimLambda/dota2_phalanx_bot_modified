@@ -53,16 +53,30 @@ local sHalberdPipe = RandomInt( 1, 2 ) == 1 and "item_heavens_halberd" or "item_
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_2'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-	"item_circlet",
-	"item_circlet",
+	-- "item_tango",
+	-- "item_double_branches",
+	-- "item_faerie_fire",
+	-- "item_circlet",
+	-- "item_circlet",
 
-	"item_bracer",
+	-- "item_bracer",
+	-- "item_boots",
+	-- "item_bracer",
+	-- "item_magic_wand",
+	-- "item_travel_boots",
+	-- "item_aghanims_shard",
+	-- "item_heart",--
+	-- "item_ultimate_scepter",
+	-- "item_kaya_and_sange",--
+	-- "item_shivas_guard",--
+	-- "item_octarine_core",--
+	-- "item_travel_boots_2",--
+	-- "item_ultimate_scepter_2",
+	-- "item_wind_waker",--
+	-- "item_moon_shard",
+
+
 	"item_boots",
-	"item_bracer",
-	"item_magic_wand",
 	"item_travel_boots",
 	"item_aghanims_shard",
 	"item_heart",--
@@ -76,35 +90,36 @@ sRoleItemsBuyList['pos_2'] = {
 	"item_moon_shard",
 }
 
-sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_faerie_fire",
-	"item_circlet",
-	"item_circlet",
+sRoleItemsBuyList['pos_3'] = sRoleItemsBuyList['pos_2']
+-- sRoleItemsBuyList['pos_3'] = {
+-- 	"item_tango",
+-- 	"item_double_branches",
+-- 	"item_faerie_fire",
+-- 	"item_circlet",
+-- 	"item_circlet",
 
-	"item_bracer",
-	"item_boots",
-	"item_bracer",
-	"item_magic_wand",
-	"item_travel_boots",
-	"item_aghanims_shard",
-	"item_heart",--
-	"item_ultimate_scepter",
-	sHalberdPipe,--
-	"item_shivas_guard",--
-	"item_lotus_orb",--
-	"item_travel_boots_2",--
-	"item_ultimate_scepter_2",
-	"item_wind_waker",--
-	"item_moon_shard",
-}
+-- 	"item_bracer",
+-- 	"item_boots",
+-- 	"item_bracer",
+-- 	"item_magic_wand",
+-- 	"item_travel_boots",
+-- 	"item_aghanims_shard",
+-- 	"item_heart",--
+-- 	"item_ultimate_scepter",
+-- 	sHalberdPipe,--
+-- 	"item_shivas_guard",--
+-- 	"item_lotus_orb",--
+-- 	"item_travel_boots_2",--
+-- 	"item_ultimate_scepter_2",
+-- 	"item_wind_waker",--
+-- 	"item_moon_shard",
+-- }
 
-sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_2']
 
-sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_2']
 
 X['sBuyList'] = sRoleItemsBuyList[sRole]
 

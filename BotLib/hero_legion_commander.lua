@@ -37,24 +37,42 @@ local sCrimsonPipeHalberd = utilityItems[RandomInt(1, #utilityItems)]
 local sRoleItemsBuyList = {}
 
 sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_double_branches",
-	"item_quelling_blade",
+	-- "item_tango",
+	-- "item_double_branches",
+	-- "item_quelling_blade",
 
-	"item_bracer",
-	"item_phase_boots",
-	"item_magic_wand",
-	"item_blade_mail",
+	-- "item_bracer",
+	-- "item_phase_boots",
+	-- "item_magic_wand",
+	-- "item_blade_mail",
+	-- "item_blink",
+	-- "item_black_king_bar",--
+	-- sCrimsonPipeHalberd,--
+	-- "item_assault",--
+	-- "item_greater_crit",--
+	-- "item_overwhelming_blink",--
+	-- "item_travel_boots_2",--
+	-- "item_moon_shard",
+	-- "item_aghanims_shard",
+	-- "item_ultimate_scepter_2",
+
+
+
+	
+	"item_boots",
+	"item_bfury",
 	"item_blink",
-	"item_black_king_bar",--
-	sCrimsonPipeHalberd,--
-	"item_assault",--
-	"item_greater_crit",--
+	"item_echo_sabre",--
+	"item_aghanims_shard",
+	"item_ultimate_scepter",
+	"item_satanic",
+	"item_travel_boots",
+	"item_ultimate_scepter_2",
+	"item_abyssal_blade",
+	"item_harpoon",
 	"item_overwhelming_blink",--
 	"item_travel_boots_2",--
 	"item_moon_shard",
-	"item_aghanims_shard",
-	"item_ultimate_scepter_2",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']

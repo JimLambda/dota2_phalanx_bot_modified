@@ -33,67 +33,85 @@ local nTalentBuildList = J.Skill.GetTalentBuild( tTalentTreeList )
 
 local sRoleItemsBuyList = {}
 
-sRoleItemsBuyList['pos_4'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_blood_grenade",
+sRoleItemsBuyList['pos_4'] = sRoleItemsBuyList['pos_3']
+-- sRoleItemsBuyList['pos_4'] = {
+-- 	"item_tango",
+-- 	"item_tango",
+-- 	"item_double_branches",
+-- 	"item_enchanted_mango",
+-- 	"item_enchanted_mango",
+-- 	"item_blood_grenade",
 
-	"item_tranquil_boots",
-	"item_magic_wand",
-	"item_force_staff",
-	"item_solar_crest",--
-	"item_glimmer_cape",--
-	"item_boots_of_bearing",--
-	"item_aghanims_shard",
-	"item_hurricane_pike",--
-	"item_sheepstick",--
-	"item_refresher",--
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-}
+-- 	"item_tranquil_boots",
+-- 	"item_magic_wand",
+-- 	"item_force_staff",
+-- 	"item_solar_crest",--
+-- 	"item_glimmer_cape",--
+-- 	"item_boots_of_bearing",--
+-- 	"item_aghanims_shard",
+-- 	"item_hurricane_pike",--
+-- 	"item_sheepstick",--
+-- 	"item_refresher",--
+-- 	"item_moon_shard",
+-- 	"item_ultimate_scepter_2",
+-- }
 
-sRoleItemsBuyList['pos_5'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
-	"item_enchanted_mango",
-	"item_enchanted_mango",
-	"item_blood_grenade",
+sRoleItemsBuyList['pos_5'] = sRoleItemsBuyList['pos_3']
+-- sRoleItemsBuyList['pos_5'] = {
+-- 	"item_tango",
+-- 	"item_tango",
+-- 	"item_double_branches",
+-- 	"item_enchanted_mango",
+-- 	"item_enchanted_mango",
+-- 	"item_blood_grenade",
 
-	"item_arcane_boots",
-	"item_magic_wand",
-	"item_force_staff",
-	"item_glimmer_cape",--
-	"item_solar_crest",--
-	"item_guardian_greaves",--
-	"item_aghanims_shard",
-	"item_hurricane_pike",--
-	"item_refresher",--
-	"item_sheepstick",--
-	"item_moon_shard",
-	"item_ultimate_scepter_2",
-}
+-- 	"item_arcane_boots",
+-- 	"item_magic_wand",
+-- 	"item_force_staff",
+-- 	"item_glimmer_cape",--
+-- 	"item_solar_crest",--
+-- 	"item_guardian_greaves",--
+-- 	"item_aghanims_shard",
+-- 	"item_hurricane_pike",--
+-- 	"item_refresher",--
+-- 	"item_sheepstick",--
+-- 	"item_moon_shard",
+-- 	"item_ultimate_scepter_2",
+-- }
 
 sRoleItemsBuyList['pos_3'] = {
-	"item_tango",
-	"item_tango",
-	"item_double_branches",
+	-- "item_tango",
+	-- "item_tango",
+	-- "item_double_branches",
 
-	"item_tranquil_boots",
-	"item_magic_wand",
+	-- "item_tranquil_boots",
+	-- "item_magic_wand",
+	-- "item_force_staff",
+	-- "item_solar_crest",--
+	-- "item_glimmer_cape",--
+	-- "item_boots_of_bearing",--
+	-- "item_aghanims_shard",
+	-- "item_hurricane_pike",--
+	-- "item_sheepstick",--
+	-- "item_refresher",--
+	-- "item_moon_shard",
+	-- "item_ultimate_scepter_2",
+
+
+	
+	"item_boots",
 	"item_force_staff",
-	"item_solar_crest",--
-	"item_glimmer_cape",--
-	"item_boots_of_bearing",--
 	"item_aghanims_shard",
 	"item_hurricane_pike",--
-	"item_sheepstick",--
-	"item_refresher",--
-	"item_moon_shard",
+	"item_devastator",--
+	"item_ultimate_scepter",
+	"item_bloodstone",
+	"item_monkey_king_bar",
+	"item_travel_boots",
 	"item_ultimate_scepter_2",
+	"item_mjollnir",
+	"item_travel_boots_2",
+	"item_moon_shard",
 }
 
 sRoleItemsBuyList['pos_1'] = sRoleItemsBuyList['pos_3']
