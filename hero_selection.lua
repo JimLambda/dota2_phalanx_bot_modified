@@ -169,7 +169,7 @@ local sPos1List = {
 	-- "npc_dota_hero_morphling",
 	-- -- "npc_dota_hero_muerta", -- DOESN'T WORK
 	-- "npc_dota_hero_naga_siren",
-	"npc_dota_hero_nevermore",
+	-- "npc_dota_hero_nevermore",
 	-- "npc_dota_hero_phantom_assassin",
 	-- "npc_dota_hero_phantom_lancer",
 	-- "npc_dota_hero_razor",
@@ -217,7 +217,7 @@ local sPos2List = {
 	-- "npc_dota_hero_monkey_king",
 	-- "npc_dota_hero_morphling",
 	"npc_dota_hero_necrolyte",
-	"npc_dota_hero_nevermore",
+	-- "npc_dota_hero_nevermore",
 	-- "npc_dota_hero_obsidian_destroyer",
 	-- "npc_dota_hero_ogre_magi",
 	-- "npc_dota_hero_omniknight",
