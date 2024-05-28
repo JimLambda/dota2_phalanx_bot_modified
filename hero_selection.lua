@@ -159,7 +159,7 @@ local sPos1List = {
 	-- "npc_dota_hero_faceless_void",
 	-- "npc_dota_hero_gyrocopter",
 	-- "npc_dota_hero_juggernaut",
-	"npc_dota_hero_life_stealer",
+	-- "npc_dota_hero_life_stealer",
 	-- "npc_dota_hero_lina",
 	-- "npc_dota_hero_luna",
 	-- "npc_dota_hero_lycan",
@@ -234,7 +234,7 @@ local sPos2List = {
 	-- "npc_dota_hero_snapfire",
 	-- "npc_dota_hero_sniper",
 	-- "npc_dota_hero_spirit_breaker",
-	"npc_dota_hero_storm_spirit",
+	-- "npc_dota_hero_storm_spirit",
 	-- "npc_dota_hero_templar_assassin",
 	-- -- "npc_dota_hero_tinker", -- TOO WEAK
 	-- "npc_dota_hero_tiny",
