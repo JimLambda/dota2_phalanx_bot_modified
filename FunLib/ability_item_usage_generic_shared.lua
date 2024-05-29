@@ -3094,8 +3094,9 @@ end
 local moonSharedTime = nil --添加使用延迟避免吃得过快以为没出
 X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 
-	if bot:GetNetWorth() < 18000
-		or ( bot:GetItemInSlot( 6 ) == nil and bot:GetItemInSlot( 7 ) == nil )
+	if bot:GetNetWorth() < 1800
+		-- or ( bot:GetItemInSlot( 6 ) == nil and bot:GetItemInSlot( 7 ) == nil )
+		or ( bot:GetItemInSlot( 6 ) == nil )
 	then
 		return BOT_ACTION_DESIRE_NONE
 	end
@@ -3116,7 +3117,7 @@ X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 			moonSharedTime = nil
 			hEffectTarget = bot
 			sCastMotive = "自己吃"
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+			return BOT_ACTION_DESIRE_ABSOLUTE, hEffectTarget, sCastType, sCastMotive
 		end
 	end
 
@@ -3143,7 +3144,7 @@ X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 			moonSharedTime = nil
 			hEffectTarget = targetMember
 			sCastMotive = "给队友"
-			return BOT_ACTION_DESIRE_HIGH, hEffectTarget, sCastType, sCastMotive
+			return BOT_ACTION_DESIRE_ABSOLUTE, hEffectTarget, sCastType, sCastMotive
 		end
 	end
 

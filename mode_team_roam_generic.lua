@@ -57,6 +57,9 @@ else
 end
 
 function GetDesire()
+	-- -- If bot has moon shard, consume it at once. -- This function has no use it seems.
+	-- TrySwapInvItemForMoonshard()
+	
 	-- check if bot is idle
 	if DotaTime() - lastIdleStateCheck >= 2 then
 		J.CheckBotIdleState()
@@ -127,7 +130,6 @@ function GetDesire()
 
 	TrySwapInvItemForClarity()
 	TrySwapInvItemForFlask()
-	TrySwapInvItemForMoonshard()
 
 	if J.Role['bStopAction'] then return 2.0 end
 

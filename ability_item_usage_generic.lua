@@ -695,7 +695,8 @@ local function ItemUsageComplement()
 	local aether = J.IsItemAvailable( "item_aether_lens" )
 	if aether ~= nil then aetherRange = 250 else aetherRange = 0 end
 
-	local nItemSlot = { 5, 4, 3, 2, 1, 0, 15, 16 }
+	-- local nItemSlot = { 5, 4, 3, 2, 1, 0, 15, 16 }
+	local nItemSlot = { 5, 4, 3, 2, 1, 0, 15, 16, 17, 18 }
 
 	for _, nSlot in pairs( nItemSlot )
 	do
