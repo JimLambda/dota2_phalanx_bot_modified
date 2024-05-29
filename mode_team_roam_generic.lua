@@ -79,7 +79,7 @@ function GetDesire()
 
 	local nDesire = 0
 
-	SwapSmokeSupport()
+	-- SwapSmokeSupport()
 
 	nDesire = ConsiderHarassInLaningPhase()
 	if nDesire > 0
@@ -124,12 +124,12 @@ function GetDesire()
 		return nDesire
 	end
 
-	TrySwapInvItemForCheese()
+	-- TrySwapInvItemForCheese()
 
-	TrySwapInvItemForRefresherShard()
+	-- TrySwapInvItemForRefresherShard()
 
-	TrySwapInvItemForClarity()
-	TrySwapInvItemForFlask()
+	-- TrySwapInvItemForClarity()
+	-- TrySwapInvItemForFlask()
 
 	if J.Role['bStopAction'] then return 2.0 end
 

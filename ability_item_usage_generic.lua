@@ -34,6 +34,9 @@ local roshanDireLoc     = Vector(-7549, 7562, 1107)
 local RadiantFountain = Vector(-6619, -6336, 384)
 local DireFountain = Vector(6928, 6372, 392)
 
+local findMoonshardTime = -90
+local flagBotHasMoonshardInSlots = false
+
 local function AbilityLevelUpComplement()
 
 	if GetGameState() ~= GAME_STATE_PRE_GAME
@@ -3125,6 +3128,8 @@ X.ConsiderItemDesire["item_moon_shard"] = function( hItem )
 			moonSharedTime = nil
 			hEffectTarget = bot
 			sCastMotive = "自己吃"
+			print("JimLambda DEBUG:=====================================")
+			print("JimLambda DEBUG:", bot:GetUnitName(), "is trying to consume moon shard.")
 			return BOT_ACTION_DESIRE_ABSOLUTE, hEffectTarget, sCastType, sCastMotive
 		end
 	end
@@ -7196,9 +7201,67 @@ local function UseGlyph()
 end
 
 
+
+-- Find moonshard slot, and update flagBotHasMoonshardInSlots. The finding and flag update will be executed every 10 seconds.
+local function TryFindingMoonshardAndUpdateTheFlag()
+	if DotaTime() >= findMoonshardTime + 10.0 then
+		local moonShardSlot = bot:FindItemSlot('item_moon_shard')
+		print("JimLambda DEBUG:======================================")
+		print("JimLambda DEBUG: moonShardSlot of", bot:GetUnitName(), ":", moonShardSlot)
+		if moonShardSlot ~= -1 then
+			print("JimLambda DEBUG:======================================")
+			print("JimLambda DEBUG: `if moonShardSlot` of", bot:GetUnitName(), "is true.")
+			flagBotHasMoonshardInSlots = true
+		else
+			print("JimLambda DEBUG:======================================")
+			print("JimLambda DEBUG: `if moonShardSlot` of", bot:GetUnitName(), "is false.")
+			flagBotHasMoonshardInSlots = false
+		end
+		findMoonshardTime = DotaTime()
+	end
+end
+
+-- Try to swap the moonshard from backpack into main slots.
+local function TrySwapingMoonShardIntoMainSlot()
+	TryFindingMoonshardAndUpdateTheFlag()
+	if flagBotHasMoonshardInSlots then
+		-- Try to swap.
+		local moonShardSlot = bot:FindItemSlot('item_moon_shard')
+		if (moonShardSlot ~= -1) and bot:GetItemSlotType(moonShardSlot) == ITEM_SLOT_TYPE_BACKPACK then
+			local lessValuableItemInMainSlots = J.Item.GetMainInvLessValItemSlot(bot)
+
+			if lessValuableItemInMainSlots ~= -1 then
+				bot:ActionImmediate_SwapItems(moonShardSlot, lessValuableItemInMainSlots)
+			end
+		end
+
+		-- -- Go back to fountain shop, so the moon shard can be consumed.
+		-- bot:Action_MoveToLocation(J.GetTeamFountain())
+
+		-- -- Try to consume the moon shard when in fountain.
+		-- if bot:DistanceFromFountain() == 0 then
+		-- 	moonShardSlot = bot:FindItemSlot('item_moon_shard')
+		-- 	local itemHandle = bot:GetItemInSlot(moonShardSlot)
+		-- 	print("JimLambda DEBUG: itemHandle:GetName() of", bot:GetUnitName(), "is:", itemHandle:GetName(),
+		-- 		". And the bot is trying to consume it.")
+		-- 	if itemHandle:GetName() == "item_moon_shard" then
+		-- 		bot:Action_UseAbilityOnEntity(itemHandle, bot)
+		-- 	end
+		-- end
+	end
+end
+
+
+
+
+
+
 function ItemUsageThink()
 	
 	ItemUsageComplement()
+
+	-- Swap moonshard if bot has it.
+	TrySwapingMoonShardIntoMainSlot()
 end
 
 function AbilityUsageThink()

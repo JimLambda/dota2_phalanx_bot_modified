@@ -1109,6 +1109,7 @@ function Item.GetMainInvLessValItemSlot( bot )
 		
 		if item ~= nil
 			and not Item.IsCanNotSwitchItem( item:GetName() )
+			-- and not (item == 'item_ward_observer' or item == 'item_ward_sentry')
 		then
 			local cost = GetItemCost( item:GetName() )
 			if cost < minPrice then
@@ -1350,15 +1351,15 @@ end
 -- returns pos_1, pos_2, pos_3, depends on the roles...
 function Item.GetRoleItemsBuyList( bot )
 	local nTeamPlayerIDs = GetTeamPlayers( GetTeam() )
-	for i = 1, 5
-	do
-		local memberID = nTeamPlayerIDs[i]
-		if bot:GetPlayerID() == memberID
-		then
-			local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
-			return 'pos_'..tostring(Role.roleAssignment[team][i])
-		end
-	end
+	-- for i = 1, 5
+	-- do
+	-- 	local memberID = nTeamPlayerIDs[i]
+	-- 	if bot:GetPlayerID() == memberID
+	-- 	then
+	-- 		local team = GetTeam() == TEAM_RADIANT and 'TEAM_RADIANT' or 'TEAM_DIRE'
+	-- 		return 'pos_'..tostring(Role.roleAssignment[team][i])
+	-- 	end
+	-- end
 	return 'pos_1'
 end
 
